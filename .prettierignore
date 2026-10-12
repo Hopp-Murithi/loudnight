@@ -1,0 +1,10 @@
+.next
+node_modules
+coverage
+package-lock.json
+src/types/database.ts
+docs/reference
+supabase/.temp
+supabase/.branches
+src/components/ui
+.probe

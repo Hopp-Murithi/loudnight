@@ -1,0 +1,567 @@
+Encore -- Full System Brief
+
+ Encore -- Full System Brief
+
+   Oct 12, 2026 · @Hopp
+
+ Executive summary
+
+  Encore is an AI programming director that fills a venue's empty nights, using Qloo's taste
+  data to decide what to run and then executing it. A bar, café, restaurant or small music
+  venue enters its address and its slow night. Encore reads the neighbourhood's taste, finds
+  what nobody nearby is offering, invents a recurring event backed by evidence, finds the
+  talent, produces the launch kit, and measures who actually came.
+  One line: Qloo knows what a neighbourhood loves. Encore turns that into people through
+  the door on a Tuesday.
+  Why it wins:
+
+      It shows the hackathon's thesis on screen. A "Generic AI vs Encore" toggle runs the
+      same venue twice. A plain LLM suggests trivia night; Encore suggests a specific night
+      with affinity scores behind every claim.
+      Qloo is the engine, not decoration. Location insights, demographics, cross-domain
+      affinity, entity search and popularity all drive decisions.
+      It closes the loop. Decide, execute, promote, measure, improve. Other tools do one of
+      those steps.
+      It is a real business. Venues already pay for promotion, booking and POS software.
+      Encore sells the missing piece: knowing what to run.
+      It avoids crowded categories. Travel planners, restaurant finders, gift and playlist bots
+      will flood the gallery. Encore serves the venue owner, not the consumer.
+  Hackathon facts: submissions close Oct 30, 2026, 11:45 pm EDT (Oct 31, 6:45 am Nairobi).
+  Target submission: Oct 29. Judging Nov 2­16, winners Nov 23. First prize $15,000.
+
+ The problem
+
+  Most small venues are busy two or three nights a week and run near-empty on the rest,
+  while rent, staff and stock cost the same every night. The fix everyone reaches for is an
+  event, but owners pick it by guesswork.
+
+                                                                                                                                                                                                                                                    Page 1 of 15
+Encore -- Full System Brief
+
+      They don't know their neighbourhood's taste. They know their regulars, not the
+      thousands of people within walking distance who never come in.
+      They copy what's nearby. Four bars on one street all run trivia, so none of them wins
+      Tuesday.
+      Generic AI makes it worse, not better. Ask any chatbot and it suggests the same safe
+      ideas for every postcode: trivia, karaoke, open mic.
+      Execution is the second wall. Even with a good idea, the owner still has to find a
+      performer, design a poster, write posts and get the word out, usually alone.
+      Nobody measures it. Nights are judged on gut feel, so good ideas get dropped too
+      early and bad ones run too long.
+  The result: owners lose money on dead nights, local performers miss paid gigs, and
+  neighbourhoods have less to do. Encore attacks all three.
+
+ The solution: the owner's journey end to end
+
+  The owner spends about two minutes on input and gets a ready-to-run 4-week event
+  series back. Worked example: The Copper Room, a bar in Brooklyn. Tuesdays are dead.
+   1. Set up (2 minutes). The owner gives the address, the slow night, a break-even
+
+      headcount ("I need 40 people"), what the space can host (stage, screen, sound,
+      kitchen) and a talent budget. Google Places fills in type, hours and photos
+      automatically.
+   2. Watch the agent think (about 60 seconds). A live trace shows each step: reading the
+      neighbourhood, checking competitors, generating concepts. Every finding carries its
+      source.
+   3. Pick a concept. Three concept cards appear, each with a name, a one-line pitch,
+      evidence chips ("Afrobeats 3.4× affinity within 2 km"), a fit score, estimated cost and a
+      reason it beats what's nearby.
+   4. Review the series plan. The chosen concept becomes 4 weekly dates on a calendar,
+      each with a variation so regulars keep coming back.
+   5. Book talent. Encore shortlists performers whose fan base overlaps this audience, at
+      the right popularity tier, and drafts a personal outreach message for each.
+   6. Launch. One click produces the event page with RSVP and QR code, a poster, posts for
+      Instagram, Facebook, TikTok and Google Business Profile, themed menu specials and
+      an ad targeting brief.
+
+                                                                                                                                                                                                                                                    Page 2 of 15
+Encore -- Full System Brief
+
+7. Run the night. Guests scan the QR code at the door to check in. The owner logs spend
+    if they want.
+
+8. Learn. After each night Encore compares turnout with the break-even target and
+    adjusts the next date: keep, tweak or swap the concept.
+
+The owner never faces a blank page. Every step ends in something they can approve, edit
+or send.
+
+Feature set
+
+Core features ship by Oct 26; wow features make the demo unforgettable; roadmap
+features are written up but not built.
+
+Feature                      What it does                          Tier  Status
+Venue onboarding                                                   Core  Hackathon
+Neighbourhood taste          Address autocomplete, slow night,     Core  Hackathon
+profile                      break-even, capabilities, budget
+Competitor gap scan                                                Core  Hackathon
+                             Qloo location + demographic
+Concept generator            insights across 8+ domains, shown     Core  Hackathon
+Evidence chips               as a "taste fingerprint"              Core  Hackathon
+
+Live agent trace             Nearby venues (Google Places)         Core  Hackathon
+4-week series calendar       and nearby events (Ticketmaster)      Core  Hackathon
+Launch kit                   on that night                         Core  Hackathon
+
+                             3 scored concepts from cross-
+                             domain affinity overlaps
+
+                             Every claim links to the Qloo result
+                             behind it; no number without a
+                             receipt
+
+                             Streams each step and finding as
+                             the agent works
+
+                             Turns one concept into a recurring
+                             series with weekly variations
+
+                             Poster, social posts, menu specials,
+                             event description
+
+                                                                                 Page 3 of 15
+Encore -- Full System Brief
+
+Feature                      What it does                           Tier  Status
+
+Event page + RSVP +          Public page per night, RSVP            Core  Hackathon
+QR                           capture, door check-in
+
+Generic AI vs Encore         Same venue, plain LLM answer           Wow   Hackathon
+toggle                       beside Encore's evidence-backed
+                             answer
+
+Talent finder + outreach     Performers with audience overlap       Wow   Hackathon
+                             at the right popularity tier; drafted
+                             messages
+
+Ad targeting brief           Qloo affinities translated into        Wow   Hackathon
+                             Meta/TikTok interest targeting and
+                             radius
+
+Learning loop                Check-ins vs break-even adjust the Wow       Hackathon
+                             next date                                    (light)
+
+Preloaded demo venues 3 real US neighbourhoods, results             Wow   Hackathon
+                                      instant, no signup
+
+Auto-posting to Meta /       Publishes posts directly               Roadmap After
+Google
+
+POS integration (Toast,      Real spend per night instead of        Roadmap After
+Square)                      check-ins only
+
+Talent marketplace +         Book and pay performers inside         Roadmap After
+payments                     Encore
+
+Multi-venue dashboard Groups, hotels, stadiums plan                 Roadmap After
+                                      across sites
+
+Brand sponsorship            Brands sponsor nights whose            Roadmap After
+matching                     audience matches theirs
+
+How the agent plans
+
+Encore runs a fixed pipeline of six steps, and Claude chooses which tools to call inside
+each step. A fixed spine keeps runs fast and predictable for judges; tool choice inside
+each step keeps it genuinely agentic.
+
+                                                                                   Page 4 of 15
+Encore -- Full System Brief
+
+1. Scout the venue. Google Places resolves the address to coordinates, venue type,
+    hours, rating and photos.
+
+2. Read the neighbourhood. Qloo insights are queried with the venue's location and a
+    radius (default 2 km) across artists, films, TV, brands, places, books, podcasts and tags,
+    plus the area's demographic skew. The output is a taste fingerprint: the top over-
+    indexing entities and tags per domain, with affinity scores.
+
+3. Find the gap. Google Places lists nearby competing venues; Ticketmaster's Discovery
+    API lists events nearby on the target weekday. Claude extracts what themes are
+    already covered so concepts avoid them.
+
+4. Generate concepts. Claude combines two or three high-affinity signals from different
+    domains into a night concept, then re-queries Qloo with those signals to confirm the
+    overlap is real. It produces 6 candidates internally and keeps the top 3.
+
+5. Score and explain. Each concept gets a score from the formula below. Each evidence
+    chip stores the Qloo request and response it came from.
+
+6. Plan and equip. The chosen concept becomes a 4-week series, talent shortlist, launch
+    kit and ad brief.
+
+Concept score (0­100):
+
+  Score = 40 \cdot AudienceFit + 20 \cdot Novelty + 20 \cdot VenueFit + 20
+  \cdot CostFit
+
+    AudienceFit = normalised Qloo affinity of the concept's signals in this area.
+    Novelty = 1 minus overlap with themes found in the gap scan.
+    VenueFit = how well the concept matches the space (stage, screen, kitchen, capacity).
+    CostFit = estimated talent and setup cost against the owner's budget.
+
+The grounding rule. Claude may only state a number that exists in a stored Qloo response.
+A validator checks every evidence chip against its response before the card is shown. If a
+claim has no receipt, it is dropped. This is the technical answer to "how do we know it isn't
+making this up?"
+
+Source                       Used for                          Access
+Qloo Insights API                                              Hackathon API key
+                             Taste fingerprint, affinities,
+                             demographics, talent candidates,
+                             concept validation
+
+                                                               Page 5 of 15
+Encore -- Full System Brief
+
+Source                       Used for                                         Access
+Google Places API            Venue details, nearby competitors                Paid, free monthly
+                                                                              credit
+Ticketmaster                 Nearby events on the target night                Free key
+Discovery API
+Claude API                   Orchestration, concept writing, copy,            Paid
+                             outreach drafts
+Owner input                  Slow night, break-even, capabilities,            Form
+                             budget, past turnout
+
+Exact Qloo parameters (entity types, location filters, demographic outputs) get
+confirmed in the day-1 API test before the pipeline is coded.
+
+Getting people in: distribution and measurement
+
+An idea fills nothing until people hear about it, so Encore treats promotion as part of the
+plan, not an afterthought. Six channels, each generated from the same taste fingerprint so
+the message matches the audience.
+
+Channel                      What Encore produces                                   Hackathon
+                                                                                    Live
+Event page                   Public page per night with RSVP, add-to-calendar       Copy-ready
+                             and share links
+                                                                                    Copy-ready
+Social posts                 Captions and visuals for Instagram, Facebook,          Copy-ready
+                             TikTok, Google Business Profile, written in the        Copy-ready
+                             audience's references                                  Copy-ready
+
+Paid ads brief               Interest targeting from Qloo affinities ("fans of X +
+                             Y"), radius, age band, suggested daily budget
+
+Performer promo kit A share pack for the booked performer so their
+                                 followers become guests
+
+Partner cross-promo Local brands the audience over-indexes on, with a
+                                 co-host pitch
+
+Regulars                     SMS/email text for the venue's existing list
+
+                                                                                    Page 6 of 15
+Encore -- Full System Brief
+
+  Measurement. Every RSVP and every QR check-in at the door is recorded per night. The
+  dashboard shows RSVPs, check-ins, show-up rate and distance to break-even. This gives
+  three things at once:
+
+      For the owner: proof the night is working, or an early signal to change it.
+      For the learning loop: the next date in the series adapts to what actually happened.
+      For the business: a growing record of which concepts filled seats in which kinds of
+      neighbourhoods. Nobody else has this outcome data.
+  Direct auto-posting to Meta and Google needs app review, so it stays on the roadmap. In
+  the demo, every asset is one tap from being copied or shared.
+
+ System architecture
+
+  Encore is one Next.js app on Vercel backed by Supabase, built on Hopp's existing stack so
+  all 18 days go to product, not setup.
+
+                                                                                                                                                                                                                                                    Page 7 of 15
+Encore -- Full System Brief
+
+Encore architecture · 4 layers
+
+Requests flow down from the clients to the agent, out to four APIs, and every Qloo
+response is cached in Postgres so evidence chips can always point back to their source.
+Data model
+
+Table                        Holds
+venues
+                             Address, coordinates, type, capacity, capabilities,
+agent_runs                   slow night, break-even, budget
+
+                             One planning run per venue and night, with status
+                             and timing
+
+                                                                                  Page 8 of 15
+Encore -- Full System Brief
+
+Table                        Holds
+
+run_steps                    Each step's tool, input, summarised output and
+                             latency, for the live trace
+
+qloo_cache                   Request hash, full response, fetch time (7-day
+                             reuse)
+
+concepts                     Name, pitch, the four sub-scores and total score
+
+evidence                     Claim text, value, and the qloo_cache row that
+                             proves it
+
+series / event_nights Dates, weekly variation, generated assets, public
+                                 slug
+
+talent_candidates            Qloo entity, popularity tier, overlap score, outreach
+                             draft
+
+rsvps / checkins             Guest name or phone, timestamp, night
+
+Engineering decisions
+
+    Models: Claude Sonnet 5.5 for orchestration and concept reasoning; Claude Haiku 5.5
+    for bulk copy (posts, captions, outreach) to keep cost and latency down.
+    Long runs: each pipeline step is its own server call, driven from the client and
+    streamed, so no single function hits Vercel's time limit.
+    Posters without an image model: designed HTML/SVG templates rendered to PNG
+    with Satori, filled with the concept's name, palette and copy. Fast, consistent and on-
+    brand.
+    Speed for judges: demo venues are precomputed and cached; a fresh run on a new
+    address takes about a minute.
+    Abuse and cost control: per-IP rate limits on fresh runs; Qloo responses reused from
+    cache.
+    Open source: MIT licence; API keys only in environment variables.
+
+Uniqueness and competitive landscape
+
+Every existing tool covers one step of the venue's problem; Encore is the only one that
+covers decide, execute, promote and measure in one loop.
+
+                                                                                    Page 9 of 15
+Encore -- Full System Brief
+
+Tool type                    Example      Decides      Executes     Promotes Measures  Uses
+                                          what to run                                  neighbourhood
+General chat                 ChatGPT,                  No                              taste data
+assistants                   Gemini       Generic      Listing
+Ticketing                    Eventbrite,  ideas        No           Drafts  No         No
+platforms                    Dice         No           No
+POS and                      Toast,                    Talent only  only
+analytics                    Square       No
+Social                       Buffer,                                Yes     Ticket sales No
+schedulers                   Later        No
+Booking                      GigSalad                               No      Sales      No
+marketplaces                              No
+Encore                                                              Yes     Engagement No
+
+                                                                    No      No         No
+
+                                          Evidence- Talent,         Yes     Check-ins Yes, via Qloo
+
+                                          backed       assets,
+
+                                                       plan
+
+What makes it unique:
+
+    It serves the supply side. Almost every taste-AI product recommends places to
+    consumers. Encore helps the place become worth recommending.
+    Cross-domain concepts. Qloo's real power is linking music, film, food and brands.
+    Encore's concepts are built from those links, which no single-domain tool can produce.
+    Receipts on every claim. The grounding rule makes the output auditable, which is rare
+    in agent demos.
+    Outcome data moat. Check-ins tie taste to real attendance. Over time Encore learns
+    which taste signals actually convert, which Qloo alone does not capture.
+
+How to protect the edge before Oct 30: run Encore at one or two real venues, even small
+ones, and put the real check-in numbers in the submission. An idea can be repeated; a real
+pilot result cannot be copied in time.
+
+Business model and path to enterprise
+
+Encore starts as low-cost SaaS for single venues and grows into the programming layer for
+hospitality groups, venues and brands. Prices below are planning assumptions to test, not
+validated figures.
+
+                                                                                                     Page 10 of 15
+Encore -- Full System Brief
+
+Stage                        Customer               Revenue                 Why they pay
+1. Self-serve                                                               One extra busy night
+SaaS                         Independent bars,      $49­99 per venue per    a month covers the
+                             cafés, restaurants,    month                   cost
+2. Performance               small venues                                   Pay only for results
+pricing
+                             Same venues, opt-in    Small fee per checked-  One place to find,
+3. Talent                                           in guest above their    book and pay talent
+marketplace                                         baseline
+                                                                            Programme off-days
+4. Enterprise                Venues and performers  Commission on           across many sites
+                                                    bookings made
+5. Brand                                            through Encore          Proven audience
+sponsorships                                                                match plus real
+                             Hospitality groups,    Annual contracts,       attendance
+                             hotel chains, malls,   multi-site dashboard
+                             stadiums and arenas
+
+                             Consumer brands        Fee per sponsored
+                                                    night or campaign
+
+Unit logic for the pitch. A venue that adds 30 guests to one weekly night, at roughly $20
+spend each, gains about $2,400 a month. Against a $49­99 subscription, the return is
+obvious. The demo should show this calculation from the owner's own break-even input.
+
+Moat over time:
+
+    Outcome data: which taste signals actually convert into attendance, by neighbourhood
+    type.
+    Network effects: more venues bring more performers, which bring better booking
+    options for every venue.
+    Switching cost: series history, regulars and performer relationships live in Encore.
+
+Go-to-market: start with venue clusters in a few US cities, partner with local performer
+collectives, and sell through POS and hospitality software integrations. Kenya and other
+markets follow once Qloo's location coverage there is confirmed.
+
+                                                                            Page 11 of 15
+Encore -- Full System Brief
+
+Hackathon fit
+
+Encore meets every stated requirement and is designed around each judging criterion.
+Requirements below come from the hackathon summary; the official rules still need a full
+read on day 1.
+
+Requirements
+
+    Working, publicly accessible app (hosted on Vercel, no local-only demo)
+    Public source repository with an open-source licence (MIT)
+    Written explanation of functionality and Qloo integration
+    Video: not required, but a 2-minute walkthrough is planned anyway
+    Confirm eligibility for residents of Kenya and how prizes are paid
+    Confirm whether work must start after Sep 30 and how Qloo API access is granted
+
+Judging criteria
+
+Criterion                    How Encore scores                    Proof in the demo
+Technological
+implementation               Multi-step agent with tool use,      Live trace; evidence chip
+Product design               streaming trace, grounding           opens its Qloo response
+                             validator, caching, 4 external APIs
+Potential impact
+                             Two-minute onboarding,               Judge gets a full plan without
+Originality                  preloaded venues, one-tap            signing up
+                             launch kit, mobile-first
+Meaningful use of
+Qloo                         Real money for small venues, paid    Break-even calculator; pilot
+                             gigs for local performers, livelier  venue results
+                             neighbourhoods
+
+                             Supply-side taste AI; cross-         Generic AI vs Encore toggle
+                             domain concepts; nobody else
+                             closes the loop
+
+                             Location, demographics, cross-       "Powered by Qloo" panel
+                             domain affinity, popularity, entity  listing every call in a run
+                             search all drive decisions
+
+The judges. Each one should see their own world in it: Boehly owns teams and venues,
+Cedric the Entertainer performs in rooms like these, Calacanis backs businesses with
+clear revenue, Diolosa will look at the depth of Qloo use, Seligman at trust and governance
+
+                                                                                               Page 12 of 15
+Encore -- Full System Brief
+
+  (the grounding rule).
+
+ Scope, build plan and risks
+
+  The build runs in five gated phases from Oct 12 to Oct 29, leaving Oct 30 as a buffer. A
+  phase does not end until its gate passes.
+
+Build plan · 5 phases, Oct 12­29
+
+If the day-1 gate fails (Qloo location data is thin for the chosen areas), switch
+neighbourhoods or lean on interest signals before writing pipeline code.
+
+Cut-list if behind schedule, in this order:
+1. Learning loop (keep check-in counts, drop automatic adjustment)
+2. Partner cross-promo suggestions
+3. Talent outreach drafts (keep the shortlist)
+4. Poster generation (keep the posts)
+
+Never cut: the Generic vs Encore toggle, evidence chips with receipts, the live trace,
+preloaded demo venues, and live hosting.
+Risks
+
+Risk                           Likelihood  Impact    Mitigation
+                                           Critical
+Kenya not eligible, or prizes  Low­                  Read the official rules on day 1;
+can't be paid there            medium                ask organisers on Devpost if
+                                                     unclear
+
+                                                     Page 13 of 15
+Encore -- Full System Brief
+
+Risk                          Likelihood  Impact Mitigation
+                              Medium
+Qloo location data thin for   Medium      High    Test 3 neighbourhoods on day 1;
+the chosen areas              High                pick the richest US areas
+
+Qloo rate limits or slow API              High    Cache every response;
+key approval                                      precompute demo venues
+
+Talent suggestions are                    Medium  Filter to lower popularity tiers;
+famous, not bookable                              frame as "acts this crowd loves,
+                                                  book a local act in this style"
+
+Agent states numbers Qloo     Medium      High    Grounding validator drops any
+never returned                Medium              claim without a receipt
+
+Long runs time out on Vercel              Medium One server call per pipeline step,
+                                                         streamed
+
+Solo scope creep              High        High    Daily gates and the cut-list above
+No real pilot venue in time   Medium
+                                          Medium  Still submit; a friendly venue
+                                                  anywhere counts, labelled
+                                                  honestly
+
+Demo script and submission checklist
+
+The demo must make the case in two minutes without any explanation from Hopp.
+
+Two-minute walkthrough
+
+1. 0:00­0:15, the hook. "This bar in Brooklyn is empty every Tuesday. Here's what a
+    normal AI tells the owner." Show the generic answer: trivia night.
+
+2. 0:15­0:45, Encore runs. Same venue, live trace: neighbourhood read, competitor gap,
+    concepts forming.
+
+3. 0:45­1:10, the evidence. Open a concept card. Tap an evidence chip to show the actual
+    Qloo result behind it.
+
+4. 1:10­1:35, execution. Pick the concept: 4-week calendar, talent shortlist, poster and
+    posts appear.
+
+5. 1:35­1:50, the door. Show the event page, an RSVP, and a QR check-in updating the
+    dashboard.
+
+                                                                                  Page 14 of 15
+Encore -- Full System Brief
+
+   6. 1:50­2:00, the business. Break-even calculator and pilot venue result, if available.
+      Close: "Qloo knows the taste. Encore fills the room."
+
+  Submission checklist
+      Live URL works on desktop and phone, in a logged-out browser
+      3 preloaded demo venues return results instantly
+      Public repo, MIT licence, README with setup, architecture and Qloo usage
+      Devpost write-up: problem, solution, how Qloo is used (endpoint by endpoint),
+      architecture, challenges, what's next
+      Screenshots of trace, concept card, launch kit, dashboard
+      2-minute video uploaded
+      Pilot venue result and owner quote, if available
+      Submitted by Oct 29; Oct 30 kept free for fixes
+
+                                                                                                                                                                                                                                                  Page 15 of 15
+

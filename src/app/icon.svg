@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Encore">
+  <rect width="64" height="64" rx="8" fill="#1c1411"/>
+  <path d="M14 50 L32 12 L50 50 Z" fill="#e8a33d" opacity="0.28"/>
+  <circle cx="32" cy="12" r="4" fill="#e8a33d"/>
+  <path d="M22 26h20v5H28v5h12v5H28v5h14v5H22z" fill="#ffffff"/>
+</svg>
