@@ -79,6 +79,7 @@ export function apiStreamRoute<TBody = undefined, TParams = Record<string, never
   return async (request: NextRequest, route: RouteParams<TParams>) => {
     try {
       const ctx = await getApiContext(options.roles)
+      if (options.rateLimit) await enforceRateLimit(request.headers, options.rateLimit)
       const body = await parseBody(request, options.body)
       const stream = await handler({ ctx, body, params: await route.params, request })
       return new Response(stream, { headers: { "Content-Type": NDJSON, "Cache-Control": "no-store" } })

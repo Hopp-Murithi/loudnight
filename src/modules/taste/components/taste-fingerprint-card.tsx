@@ -14,11 +14,11 @@ export function TasteFingerprintCard({ fingerprint }: { fingerprint: TasteFinger
           The neighbourhood&apos;s taste
         </h2>
         <p className="text-sm text-muted-foreground">
-          {withResults} of {fingerprint.domains.length} areas of taste read from Qloo. Each number is the affinity Qloo
-          gave it.
+          {withResults} of {fingerprint.domains.length} areas of taste read from Qloo, strongest first. Every answer is
+          under Qloo calls.
         </p>
       </div>
-      <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <ul className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
         {fingerprint.domains.map((domain) => (
           <li key={domain.domain} className="min-w-0">
             <DomainTile result={domain} />

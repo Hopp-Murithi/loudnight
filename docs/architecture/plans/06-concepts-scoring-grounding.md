@@ -1,6 +1,6 @@
 # Plan 06: Concepts, scoring and grounding
 
-Status: Not started
+Status: Done (Oct 13), except the user's UI review of the card, chip and sheet.
 Depends on: 04, 05
 Phase: 3
 Judging criteria: Technological Implementation (non-trivial agent with tool use and a grounding validator), Quality of the Idea (cross-domain concepts no single-domain tool can make)
@@ -66,15 +66,26 @@ Out: orchestration and streaming (plan 07), series creation after choice (plan 1
 - Receipt route: hidden evidence returns 404; the slice contains the cited field and not unrelated entities.
 - Database: evidence with a bad value refused (exists in `rls.sql`); add a test that choosing a concept is refused for door staff.
 
+## Build notes (Oct 13)
+
+- Migration `20261013085947_concept_details_and_choice`: `format`, `needs`, `themes`, `expected_audience` and `chosen_at` on concepts; one choice per run (partial unique index); `choose_concept` runs with the caller's rights, under a policy for owners and managers on shortlisted concepts only; choices are audited. Applied locally and on hosted; `rls.sql` passes on both.
+- The model never writes numbers. Claims are word labels citing a signal id or an overlap id; Encore attaches the value from the receipt. The validator still drops any label whose digits do not equal the cited value at two decimals, ignoring digits inside a taste's own name ("2 Dope Queens").
+- The fingerprint, covered themes and venue constraints go in the first message as a JSON data block instead of three getter tools, which saves a model turn each. `check_overlap` and `submit_concepts` are the tools. All checks in a turn run in parallel, and a failed Qloo check comes back to the model as a tool error instead of ending the run.
+- Overlap: `signal.interests.tags` (or `.entities`) with the anchor, `signal.location` with the venue, and `filter.type` (plus `filter.tag.types`) of the target. The target's affinity in that answer is the overlap, with spread values (0.78 to 0.99) where plain area affinities cluster at 1.0. AudienceFit is the mean of the cited overlaps; a target Qloo did not return counts as zero.
+- Novelty matches themes by shared words (hyphens split, plurals folded) and the synonym groups in `config/concepts.ts`; "Drinks, no programme" never counts.
+- Live results (hosted, Oct 13): Williamsburg 104 s before the parallel change; East Austin 61 s and Logan Square 55 s after it, six candidates each, every evidence value matching its cached response. Grounding dropped unbacked claims as designed (for example "Pairing is untested but cheap to try": no receipt).
+- For plan 09: the demo venues' settings give venue and cost fit 1.0 to almost every concept, so totals cluster above 90. Realistic capabilities and budgets will spread them.
+- Script: `npm run concepts:print -- <venueId>` (`KEEP_RUN=1` keeps the run for route checks).
+
 ## Deliverables
 
-- [ ] Six candidates generated and three shortlisted for each demo venue, each with claims from at least two domains
-- [ ] Every chip on every card opens a receipt whose highlighted value matches the chip
-- [ ] A made-up number is dropped by the validator (unit) and refused by the database (`rls.sql`)
-- [ ] Sub-scores computed from receipts and settings; totals match the formula
-- [ ] Receipt endpoint returns slices only, access checked through RLS
-- [ ] Choosing a concept works for owner and manager, refused for door staff
-- [ ] Screen standard met for the card, chip and sheet
+- [x] Six candidates generated and three shortlisted for each demo venue, each with claims from at least two domains
+- [x] Every chip on every card opens a receipt whose highlighted value matches the chip (the script checks every evidence row against `qloo_cache`; the live receipt route returned the matching slice)
+- [x] A made-up number is dropped by the validator (unit) and refused by the database (`rls.sql`)
+- [x] Sub-scores computed from receipts and settings; totals match the formula
+- [x] Receipt endpoint returns slices only, access checked through RLS (hidden evidence returns 404)
+- [x] Choosing a concept works for owner and manager, refused for door staff (`rls.sql`, hosted and local; signed out returns 401)
+- [ ] Screen standard met for the card, chip and sheet (built and in the gallery under Concepts and receipts; awaiting the user's check at four widths)
 
 ## Verification
 

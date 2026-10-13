@@ -28,6 +28,14 @@ describe("qlooInsightsSchema", () => {
     expect(parsed).toHaveProperty("_synthetic", true)
   })
 
+  it("accepts a null popularity, which some TV shows carry", () => {
+    const show = {
+      _synthetic: true,
+      results: { entities: [{ entity_id: "SYN", name: "Sample Show", popularity: null }] },
+    }
+    expect(qlooInsightsSchema.safeParse(show).success).toBe(true)
+  })
+
   it("accepts an entity tag that carries only its type", () => {
     const partial = {
       _synthetic: true,

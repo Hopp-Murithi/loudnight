@@ -33,6 +33,12 @@ const loadContext = cache(async (): Promise<RequestContext | null> => {
   }
 })
 
+// For public pages: whether a real account is looking, so the header can offer their venues instead of sign in.
+export async function hasAccountSession(): Promise<boolean> {
+  const ctx = await loadContext()
+  return ctx !== null && !ctx.user.isAnonymous
+}
+
 const allows = (roles: AppRole[] | undefined, role: AppRole) => !roles || roles.includes(role)
 
 // For API routes: throws typed errors the route wrapper turns into 401 or 403.

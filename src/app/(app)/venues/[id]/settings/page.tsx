@@ -16,7 +16,7 @@ export default async function VenueSettingsPage({ params }: PageProps<"/venues/[
   return (
     <>
       <PageHeader title="Settings" description={`What Encore knows about ${venue.name}.`} />
-      <div className="grid gap-6 xl:grid-cols-2">
+      <div className="grid items-start gap-6 xl:grid-cols-2">
         <SectionCard title="Venue details" description="Name, address and time zone.">
           <VenueIdentityForm venue={venue} />
         </SectionCard>

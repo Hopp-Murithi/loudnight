@@ -16,7 +16,7 @@ import {
 import { qlooInsightsSchema, type QlooInsights } from "@/lib/qloo/schemas"
 import type { AdminSupabase } from "@/lib/supabase/admin"
 import type { Json } from "@/types/database"
-import { recordStep, type StepContext } from "@/modules/runs/runs.steps"
+import { withStep, type StepContext } from "@/modules/runs/runs.steps"
 import { audienceSkew, domainResult, failedDomain } from "./taste.fingerprint"
 import { tasteRepository } from "./taste.repository"
 import type { AudienceSkew, TasteDomainResult, TasteFingerprint } from "./taste.schemas"
@@ -69,18 +69,14 @@ function domainRequest(domain: TasteDomain, area: Neighbourhood): QlooRequest {
   return tasteEntitiesRequest(source.type, area.point, source.popularity)
 }
 
-// A traced Qloo call. Without a run (scripts, demo upkeep) it still caches, it just leaves no trace row.
-async function tracedQloo(admin: AdminSupabase, request: QlooRequest, label: string, trace?: StepContext) {
-  const finish = trace ? await recordStep(trace, "qloo.insights", asJson({ label, ...request })) : null
-  try {
-    const answer = await cachedQloo(admin, request)
-    await finish?.({ ok: true, summary: { label, fromCache: answer.fromCache }, cacheId: answer.cacheId })
-    return answer
-  } catch (error) {
-    await finish?.({ ok: false, summary: { label } })
-    throw error
-  }
-}
+const tracedQloo = (admin: AdminSupabase, request: QlooRequest, label: string, trace?: StepContext) =>
+  withStep(
+    trace,
+    "qloo.insights",
+    asJson({ label, ...request }),
+    () => cachedQloo(admin, request),
+    (answer) => ({ summary: { label, fromCache: answer.fromCache }, cacheId: answer.cacheId }),
+  )
 
 async function readDomain(admin: AdminSupabase, domain: TasteDomain, area: Neighbourhood, trace?: StepContext) {
   try {

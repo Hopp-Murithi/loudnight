@@ -54,3 +54,9 @@ export const NIGHT_PHOTOS: NightPhoto[] = [
 ]
 
 export const NIGHT_SLIDE_SECONDS = 6
+
+// Each venue keeps the same photo everywhere, chosen from its id so it never changes between visits.
+export function photoForVenue(venueId: string): NightPhoto {
+  const sum = [...venueId].reduce((total, char) => total + char.charCodeAt(0), 0)
+  return NIGHT_PHOTOS[sum % NIGHT_PHOTOS.length]
+}

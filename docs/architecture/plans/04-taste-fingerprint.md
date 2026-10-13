@@ -1,6 +1,6 @@
 # Plan 04: Neighbourhood taste fingerprint
 
-Status: Built and verified locally (Oct 13). Waiting on the hosted migration and the UI review.
+Status: Done (Oct 13), except the user's UI review of the card.
 Depends on: 02
 Phase: 2
 Judging criteria: Technological Implementation (depth of Qloo use), Quality of the Idea (cross-domain taste for the supply side)
@@ -47,7 +47,7 @@ Out: run orchestration and streaming (plan 07), concept generation (plan 06).
 ## Build notes (Oct 13)
 
 - Receipts are `text[]` key paths, the same form the evidence trigger reads with `#>>`, so a fingerprint value becomes evidence without conversion.
-- Cache history: refreshing an answer in place would have changed values that older evidence quotes. Migration `20261013103000_qloo_cache_history` keeps superseded rows (`superseded_at`), allows one current row per request, and stores answers through `store_qloo_answer` (service role only). Asserted in `rls.sql`. **Applied locally only**: the Supabase MCP has no permission on hack2026 and the CLI is not linked, so the hosted apply, advisors and hosted `rls.sql` run are pending.
+- Cache history: refreshing an answer in place would have changed values that older evidence quotes. Migration `20261013083840_qloo_cache_history` keeps superseded rows (`superseded_at`), allows one current row per request, and stores answers through `store_qloo_answer` (service role only). Asserted in `rls.sql`. Applied to hosted on Oct 13 (version `20261013083840`); hosted `rls.sql` passes and the advisors show no new findings. The hosted fingerprint returns 11 of 11 domains for all three demo venues.
 - Rate limit: 11 parallel calls hit 429 on the hackathon key. Calls run 3 at a time (`QLOO.maxConcurrent`); no 429 since.
 - Schema: some artist tags arrive with only a `type`; tag `id` and `name` are optional so one odd tag cannot fail a domain.
 - Quality: artists use a popularity band of 0.3 to 0.7. Below 0.3 was noise (novelty acts, a sports team). Podcasts are uncapped (the cap emptied them). Films and TV keep the cap only, because a floor starved them.

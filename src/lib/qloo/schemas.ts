@@ -8,7 +8,7 @@ const tagRef = z.looseObject({ id: z.string().optional(), name: z.string().optio
 export const qlooEntitySchema = z.looseObject({
   entity_id: z.string(),
   name: z.string(),
-  popularity: z.number().optional(),
+  popularity: z.number().nullish(),
   location: z.looseObject({ lat: z.number(), lon: z.number() }).optional(),
   tags: z.array(tagRef).optional(),
   query: affinityQuery.optional(),
@@ -18,7 +18,7 @@ export const qlooTagSchema = z.looseObject({
   tag_id: z.string(),
   name: z.string(),
   subtype: z.string().optional(),
-  popularity: z.number().optional(),
+  popularity: z.number().nullish(),
   query: affinityQuery,
 })
 

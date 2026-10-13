@@ -1,7 +1,7 @@
 import Link from "next/link"
 import type { ReactNode } from "react"
 import { Button } from "@/components/ui/button"
-import { ROUTES, SITE } from "@/config/site"
+import { ROUTES, SIGNED_IN_HOME, SITE } from "@/config/site"
 import { cn } from "@/lib/utils"
 import { Brand } from "./brand"
 import { SkipLink } from "./skip-link"
@@ -9,7 +9,13 @@ import { ThemeToggle } from "./theme-toggle"
 
 // The frame for everything a guest or judge sees without an account: landing, demo, event and door pages.
 // `bleed` lets a page run full-width bands under a night header; it then sets its own widths.
-export function PublicShell({ children, bleed = false }: { children: ReactNode; bleed?: boolean }) {
+interface PublicShellProps {
+  children: ReactNode
+  bleed?: boolean
+  signedIn?: boolean
+}
+
+export function PublicShell({ children, bleed = false, signedIn = false }: PublicShellProps) {
   return (
     <div className="flex min-h-dvh flex-col">
       <SkipLink />
@@ -18,12 +24,20 @@ export function PublicShell({ children, bleed = false }: { children: ReactNode; 
           <Brand />
           <nav aria-label="Account" className="flex items-center gap-1 sm:gap-2">
             <ThemeToggle />
-            <Button variant="ghost" nativeButton={false} render={<Link href={ROUTES.login} />}>
-              Sign in
-            </Button>
-            <Button nativeButton={false} render={<Link href={ROUTES.signup} />} className="hidden sm:inline-flex">
-              Create an account
-            </Button>
+            {signedIn ? (
+              <Button nativeButton={false} render={<Link href={SIGNED_IN_HOME} />}>
+                Your venues
+              </Button>
+            ) : (
+              <>
+                <Button variant="ghost" nativeButton={false} render={<Link href={ROUTES.login} />}>
+                  Sign in
+                </Button>
+                <Button nativeButton={false} render={<Link href={ROUTES.signup} />} className="hidden sm:inline-flex">
+                  Create an account
+                </Button>
+              </>
+            )}
           </nav>
         </header>
       </div>

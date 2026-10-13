@@ -24,10 +24,10 @@ const fingerprint: TasteFingerprint = {
 }
 
 describe("TasteFingerprintCard", () => {
-  it("writes every value out as text", () => {
+  it("ranks each domain by name, strongest first, without saturated scores", () => {
     render(<TasteFingerprintCard fingerprint={fingerprint} />)
-    expect(screen.getByText("Sample soul", { selector: "span" })).toBeInTheDocument()
-    expect(screen.getByText("0.99")).toBeInTheDocument()
+    expect(screen.getByText("Sample soul", { selector: "li" })).toBeInTheDocument()
+    expect(screen.queryByText("0.99")).not.toBeInTheDocument()
     expect(screen.getByText(/1 of 3 areas of taste/)).toBeInTheDocument()
   })
 

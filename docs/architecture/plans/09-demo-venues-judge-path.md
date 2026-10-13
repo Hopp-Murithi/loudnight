@@ -1,6 +1,6 @@
 # Plan 09: Demo venues and the judge path
 
-Status: Not started
+Status: First pass built and live (sections 1 to 4 and 6). Series and launch kit wait for plans 10 and 11; refresh from the admin console waits for plan 08.
 Depends on: 07 (first pass), 10 and 11 (second pass)
 Phase: 3 for sections 1 to 4 and 6; phase 4 adds section 5 (series and launch kit) and reruns the precompute
 Judging criteria: Design (judge gets a full plan without signing up), Quality of the Idea (the hook: "a normal AI says trivia night")
@@ -49,13 +49,20 @@ Out: changes to the pipeline itself.
 
 ## Deliverables
 
-- [ ] All three demo venues precomputed by the real pipeline, including series and launch kit
+- [ ] All three demo venues precomputed by the real pipeline, including series and launch kit (the three plans are precomputed on the hosted project, Oct 13; series and launch kit pending plans 10 and 11)
 - [ ] `/demo/[venueId]` loads for a logged-out visitor in under 3 seconds on a phone profile
 - [ ] Generic answer shown first; toggle, receipts, trace replay and launch kit preview all work
-- [ ] Landing cards link to ready demos; "Try your own venue" leads to onboarding
+- [x] Landing links open ready demos; "Try your own venue" leads to onboarding
 - [ ] Refresh from the admin console works and is audited
-- [ ] Open Graph images render for each demo venue
+- [x] Open Graph images render for each demo venue
 - [ ] Screen standard met at four widths in both themes
+
+## What changed while building
+
+- The page reads through the visitor's own cookie client, so it is rendered on demand, not cached for an hour. It is still one round of parallel reads.
+- The trace replay lives in the Steps tab of "How Encore got there", not in its own section, to keep the page to one idea at a time.
+- The landing page shows demo venues as a row of links under the five-picture story, not as cards.
+- `npm run demo:precompute` runs the upkeep. A failed refresh deletes only the half-made run and keeps the previous plan.
 
 ## Verification
 

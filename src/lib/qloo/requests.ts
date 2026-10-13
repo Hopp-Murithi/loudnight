@@ -97,3 +97,21 @@ export function tagsRequest(query: string, tagType?: string): QlooRequest {
   if (tagType) params["filter.tag.types"] = tagType
   return { path: "/v2/tags", params }
 }
+
+export interface QlooSignalRef {
+  kind: "tag" | "entity"
+  qlooId: string
+  qlooType: string
+}
+
+// Near here, what do fans of the anchor love in the target's domain? The target's affinity there is the overlap.
+export function overlapRequest(anchor: QlooSignalRef, target: QlooSignalRef, point: GeoPoint): QlooRequest {
+  const params: QlooParams = {
+    "filter.type": target.kind === "tag" ? "urn:tag" : target.qlooType,
+    [anchor.kind === "tag" ? "signal.interests.tags" : "signal.interests.entities"]: anchor.qlooId,
+    "signal.location": wktPoint(point),
+    take: QLOO.overlapTake,
+  }
+  if (target.kind === "tag") params["filter.tag.types"] = target.qlooType
+  return { path: "/v2/insights", params }
+}

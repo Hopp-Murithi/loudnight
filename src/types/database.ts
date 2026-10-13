@@ -36,6 +36,7 @@ export type Database = {
     Tables: {
       agent_runs: {
         Row: {
+          context: Json
           created_at: string
           current_step: Database["public"]["Enums"]["pipeline_step"] | null
           error_message: string | null
@@ -43,6 +44,7 @@ export type Database = {
           generic_answer: string | null
           id: string
           mode: Database["public"]["Enums"]["run_mode"]
+          pair_id: string | null
           requested_by: string | null
           started_at: string | null
           status: Database["public"]["Enums"]["run_status"]
@@ -50,6 +52,7 @@ export type Database = {
           venue_id: string
         }
         Insert: {
+          context?: Json
           created_at?: string
           current_step?: Database["public"]["Enums"]["pipeline_step"] | null
           error_message?: string | null
@@ -57,6 +60,7 @@ export type Database = {
           generic_answer?: string | null
           id?: string
           mode?: Database["public"]["Enums"]["run_mode"]
+          pair_id?: string | null
           requested_by?: string | null
           started_at?: string | null
           status?: Database["public"]["Enums"]["run_status"]
@@ -64,6 +68,7 @@ export type Database = {
           venue_id: string
         }
         Update: {
+          context?: Json
           created_at?: string
           current_step?: Database["public"]["Enums"]["pipeline_step"] | null
           error_message?: string | null
@@ -71,6 +76,7 @@ export type Database = {
           generic_answer?: string | null
           id?: string
           mode?: Database["public"]["Enums"]["run_mode"]
+          pair_id?: string | null
           requested_by?: string | null
           started_at?: string | null
           status?: Database["public"]["Enums"]["run_status"]
@@ -78,6 +84,13 @@ export type Database = {
           venue_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "agent_runs_pair_fkey"
+            columns: ["pair_id", "venue_id"]
+            isOneToOne: false
+            referencedRelation: "agent_runs"
+            referencedColumns: ["id", "venue_id"]
+          },
           {
             foreignKeyName: "agent_runs_requested_by_fkey"
             columns: ["requested_by"]
@@ -175,51 +188,66 @@ export type Database = {
       concepts: {
         Row: {
           audience_fit: number
+          chosen_at: string | null
           cost_fit: number
           created_at: string
           estimated_cost_cents: number
+          expected_audience: number | null
+          format: Database["public"]["Enums"]["concept_format"]
           id: string
           is_shortlisted: boolean
           name: string
+          needs: Database["public"]["Enums"]["venue_capability"][]
           novelty: number
           pitch: string
           rank: number
           reason_beats_nearby: string
           run_id: string
+          themes: string[]
           total_score: number | null
           venue_fit: number
           venue_id: string
         }
         Insert: {
           audience_fit: number
+          chosen_at?: string | null
           cost_fit: number
           created_at?: string
           estimated_cost_cents?: number
+          expected_audience?: number | null
+          format?: Database["public"]["Enums"]["concept_format"]
           id?: string
           is_shortlisted?: boolean
           name: string
+          needs?: Database["public"]["Enums"]["venue_capability"][]
           novelty: number
           pitch: string
           rank: number
           reason_beats_nearby: string
           run_id: string
+          themes?: string[]
           total_score?: number | null
           venue_fit: number
           venue_id: string
         }
         Update: {
           audience_fit?: number
+          chosen_at?: string | null
           cost_fit?: number
           created_at?: string
           estimated_cost_cents?: number
+          expected_audience?: number | null
+          format?: Database["public"]["Enums"]["concept_format"]
           id?: string
           is_shortlisted?: boolean
           name?: string
+          needs?: Database["public"]["Enums"]["venue_capability"][]
           novelty?: number
           pitch?: string
           rank?: number
           reason_beats_nearby?: string
           run_id?: string
+          themes?: string[]
           total_score?: number | null
           venue_fit?: number
           venue_id?: string
@@ -751,6 +779,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      choose_concept: { Args: { p_concept_id: string }; Returns: string }
       consume_rate_limit: {
         Args: { bucket: string; max_hits: number; window_seconds: number }
         Returns: boolean
@@ -786,6 +815,15 @@ export type Database = {
     }
     Enums: {
       app_role: "owner" | "administrator"
+      concept_format:
+        | "live_music"
+        | "dj_night"
+        | "screening"
+        | "food_and_drink"
+        | "talk"
+        | "game"
+        | "workshop"
+        | "other"
       night_decision: "keep" | "tweak" | "swap"
       night_status: "draft" | "published" | "cancelled"
       pipeline_step:
@@ -948,6 +986,16 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["owner", "administrator"],
+      concept_format: [
+        "live_music",
+        "dj_night",
+        "screening",
+        "food_and_drink",
+        "talk",
+        "game",
+        "workshop",
+        "other",
+      ],
       night_decision: ["keep", "tweak", "swap"],
       night_status: ["draft", "published", "cancelled"],
       pipeline_step: [

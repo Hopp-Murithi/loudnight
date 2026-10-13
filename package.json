@@ -20,7 +20,10 @@
     "db:types": "supabase gen types typescript --local > src/types/database.ts && prettier --write src/types/database.ts",
     "db:types:linked": "supabase gen types typescript --linked > src/types/database.ts && prettier --write src/types/database.ts",
     "db:test": "node scripts/run-db-tests.mjs",
-    "taste:print": "tsx --conditions=react-server --env-file=.env.local scripts/print-fingerprint.ts"
+    "taste:print": "tsx --conditions=react-server --env-file=.env.local scripts/print-fingerprint.ts",
+    "gap:print": "tsx --conditions=react-server --env-file=.env.local scripts/print-gap.ts",
+    "concepts:print": "tsx --conditions=react-server --env-file=.env.local scripts/print-concepts.ts",
+    "demo:precompute": "tsx --conditions=react-server --env-file=.env.local scripts/precompute-demo.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "0.131.0",

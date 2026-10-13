@@ -9,7 +9,7 @@ declare
   u_other uuid := gen_random_uuid(); u_admin uuid := gen_random_uuid();
   v_mine uuid; v_other uuid; v_demo uuid := gen_random_uuid();
   run_id uuid; concept_id uuid; cache_id uuid; series_id uuid; night_draft uuid; night_live uuid; v_rsvp uuid; i int;
-  n int; failed boolean; new_venue uuid; before_count int; cache_old uuid; cache_new uuid;
+  n int; failed boolean; new_venue uuid; before_count int; cache_old uuid; cache_new uuid; concept_two uuid; concept_out uuid; started_run uuid;
   demo_count int := (select count(*) from public.venues where is_demo);
 begin
   insert into auth.users (id, instance_id, aud, role, email, raw_app_meta_data, raw_user_meta_data, is_anonymous, created_at, updated_at) values
@@ -72,9 +72,13 @@ begin
     values (repeat('a', 64), '/v2/insights', '{}', '{"results":{"entities":[{"name":"Afrobeats","affinity":0.94}]}}', now() + interval '7 days')
     returning id into cache_id;
   insert into public.agent_runs (venue_id, requested_by, target_weekday) values (v_mine, u_owner, 'tuesday') returning id into run_id;
-  insert into public.concepts (run_id, venue_id, rank, name, pitch, reason_beats_nearby, audience_fit, novelty, venue_fit, cost_fit)
-    values (run_id, v_mine, 1, 'Afrobeats Tuesday', 'Live afrobeats', 'Nobody nearby runs it', 0.9, 0.8, 0.7, 0.6)
+  insert into public.concepts (run_id, venue_id, rank, is_shortlisted, name, pitch, reason_beats_nearby, audience_fit, novelty, venue_fit, cost_fit)
+    values (run_id, v_mine, 1, true, 'Afrobeats Tuesday', 'Live afrobeats', 'Nobody nearby runs it', 0.9, 0.8, 0.7, 0.6)
     returning id into concept_id;
+  insert into public.concepts (run_id, venue_id, rank, is_shortlisted, name, pitch, reason_beats_nearby, audience_fit, novelty, venue_fit, cost_fit)
+    values (run_id, v_mine, 3, true, 'Second night', 'Another', 'Also fresh', 0.5, 0.5, 0.5, 0.5) returning id into concept_two;
+  insert into public.concepts (run_id, venue_id, rank, name, pitch, reason_beats_nearby, audience_fit, novelty, venue_fit, cost_fit)
+    values (run_id, v_mine, 4, 'Not shortlisted', 'x', 'x', 0.1, 0.1, 0.1, 0.1) returning id into concept_out;
   assert (select total_score from public.concepts where id = concept_id) = 78, 'score = 40x0.9 + 20x0.8 + 20x0.7 + 20x0.6 = 78';
   insert into public.evidence (concept_id, venue_id, qloo_cache_id, claim, value, response_path)
     values (concept_id, v_mine, cache_id, 'Afrobeats affinity', 0.94, '{results,entities,0,affinity}');
@@ -100,7 +104,7 @@ begin
   -- the team plans a series: one draft night, one published night
   perform set_config('request.jwt.claims', json_build_object('sub', u_manager, 'role', 'authenticated')::text, true);
   set local role authenticated;
-  select count(*) into n from public.concepts where venue_id = v_mine; assert n = 1, 'managers read agent output';
+  select count(*) into n from public.concepts where venue_id = v_mine; assert n = 3, 'managers read agent output';
   select count(*) into n from public.qloo_cache where id = cache_id; assert n = 1, 'and the receipt behind it';
   failed := false;
   begin insert into public.evidence (concept_id, venue_id, qloo_cache_id, claim, value, response_path) values (concept_id, v_mine, cache_id, 'Forged', 0.94, '{results,entities,0,affinity}'); exception when insufficient_privilege then failed := true; end;
@@ -116,6 +120,30 @@ begin
   select id into night_live from public.event_nights where public_slug = 'afrobeats-tuesday-one';
   select id into night_draft from public.event_nights where public_slug = 'afrobeats-tuesday-two';
   select count(*) into n from public.venue_settings where venue_id = v_mine; assert n = 1, 'managers see the money';
+  perform public.choose_concept(concept_id);
+  assert (select chosen_at is not null from public.concepts where id = concept_id), 'managers choose a night';
+  perform public.choose_concept(concept_two);
+  select count(*) into n from public.concepts c where c.run_id = run_id and c.chosen_at is not null; assert n = 1, 'one choice per run';
+  assert (select chosen_at is not null from public.concepts where id = concept_two), 'and a new choice replaces the old one';
+  failed := false;
+  begin perform public.choose_concept(concept_out); exception when sqlstate 'P0002' then failed := true; end;
+  assert failed, 'only shortlisted nights can be chosen';
+  failed := false;
+  begin update public.concepts set name = 'renamed' where id = concept_id; exception when insufficient_privilege then failed := true; end;
+  assert failed, 'sessions change nothing on a concept but the choice';
+  insert into public.agent_runs (venue_id, requested_by, mode, target_weekday) values (v_mine, u_manager, 'encore', 'tuesday')
+    returning id into started_run;
+  insert into public.agent_runs (venue_id, mode, target_weekday, pair_id) values (v_mine, 'generic', 'tuesday', started_run);
+  select count(*) into n from public.agent_runs where id = started_run or pair_id = started_run; assert n = 2, 'managers start a run and its generic twin';
+  failed := false;
+  begin insert into public.agent_runs (venue_id, requested_by, target_weekday) values (v_mine, u_owner, 'tuesday'); exception when insufficient_privilege then failed := true; end;
+  assert failed, 'nobody starts a run in someone else''s name';
+  failed := false;
+  begin insert into public.agent_runs (venue_id, mode, target_weekday) values (v_mine, 'generic', 'tuesday'); exception when insufficient_privilege then failed := true; end;
+  assert failed, 'a generic run must point at an Encore run';
+  failed := false;
+  begin insert into public.agent_runs (venue_id, requested_by, target_weekday, status) values (v_mine, u_manager, 'tuesday', 'succeeded'); exception when insufficient_privilege then failed := true; end;
+  assert failed, 'a run starts queued';
   reset role;
 
   -- an anonymous guest on the public event page
@@ -129,6 +157,12 @@ begin
   select count(*) into n from public.venue_settings where venue_id = v_demo; assert n = 1, 'demo settings are open to judges';
   insert into public.rsvps (event_night_id, venue_id, guest_name, guest_contact, checkin_code)
     values (night_live, v_mine, 'Ada', 'ada@example.com', 'code-guest-1');
+  failed := false;
+  begin perform public.choose_concept(concept_id); exception when insufficient_privilege then failed := true; end;
+  assert failed, 'guests cannot choose a night';
+  failed := false;
+  begin insert into public.agent_runs (venue_id, target_weekday) values (v_mine, 'tuesday'); exception when insufficient_privilege then failed := true; end;
+  assert failed, 'guests cannot start a run';
   failed := false;
   begin insert into public.rsvps (event_night_id, venue_id, guest_name) values (night_draft, v_mine, 'Early'); exception when insufficient_privilege then failed := true; end;
   assert failed, 'guests cannot RSVP to a draft night';
@@ -155,6 +189,12 @@ begin
   assert n = 0, 'door staff cannot log spend';
   update public.event_nights set status = 'cancelled' where id = night_live; get diagnostics n = row_count;
   assert n = 0, 'door staff cannot change the plan';
+  failed := false;
+  begin perform public.choose_concept(concept_id); exception when insufficient_privilege then failed := true; end;
+  assert failed, 'door staff cannot choose a night';
+  failed := false;
+  begin insert into public.agent_runs (venue_id, requested_by, target_weekday) values (v_mine, u_door, 'tuesday'); exception when insufficient_privilege then failed := true; end;
+  assert failed, 'door staff cannot start a run';
   reset role;
 
   -- an administrator previews the owner: sees what they see, changes nothing

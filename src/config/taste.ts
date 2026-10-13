@@ -55,3 +55,6 @@ export const AGE_BAND_LABELS: Record<string, string> = {
   "45_to_54": "45 to 54",
   "55_and_older": "55 and over",
 }
+
+// Music "genres" Qloo returns that are really places. They say where people are, not what they listen to.
+export const PLACE_LIKE_TAGS = ["usa", "american", "new york", "brooklyn", "chicago", "austin", "texas", "london"]

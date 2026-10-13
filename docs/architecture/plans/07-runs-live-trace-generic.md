@@ -1,6 +1,6 @@
 # Plan 07: Pipeline runs, live trace and generic toggle
 
-Status: Not started
+Status: Built and verified end to end on hosted (Oct 13). Waiting on the UI review; timing above the one-minute target on a fresh area.
 Depends on: 06
 Phase: 3
 Judging criteria: Technological Implementation (multi-step agent, streaming, every Qloo call listed), Quality of the Idea (the toggle shows why Qloo matters), Design (watching it think)
@@ -61,13 +61,24 @@ Out: demo precompute and the public demo page (plan 09).
 - Generic prompt receives no Qloo data (unit on the prompt builder).
 - Run cap message maps from `EA429`.
 
+## Build notes (Oct 13)
+
+- Migration `20261013102247_run_context_and_start`: `agent_runs.context` (what each step hands the next), `pair_id` linking the generic twin, and an insert policy so owners and managers start runs with their own session (the hourly cap trigger and preview policies apply). Applied locally and on hosted; `rls.sql` passes on both.
+- Steps: `POST /api/v1/runs/[runId]/steps/[step]` streams NDJSON (`started`, `tool`, `finding`, `done`, `error`). A step is claimed atomically, so a double click or a second tab cannot run it twice; a step cut off by the host is treated as stale after 120 s and may be taken again. A finished step replays from stored rows with no new calls. Work continues after the reader leaves (`keepAlive`).
+- The stream wrapper did not enforce its `rateLimit` option; it does now.
+- `useRun` drives the steps in order, merges live lines with the stored run, refetches the run after each step, and retries only the failed step.
+- Generic mode sends only name, type, city and night (tested to contain no Qloo data), asks for plain text, and strips markdown and long dashes before storing.
+- End to end on hosted (real session, Union Pool): six steps, 48 trace rows, 26 Qloo pairings checked (13 confirmed), every claim with a receipt, generic answer stored, receipts and choosing work, replay made no new rows, an unknown step returns 422. The test account and venue were deleted.
+- Quality fix from that run: music tags that are really places ("Usa", "New york") are left out of the fingerprint.
+- Gallery: Planning run (trace with a failed step, generic answer, Powered by Qloo).
+
 ## Deliverables
 
-- [ ] A fresh run on a new address streams all six steps to three concepts in about a minute
-- [ ] No request runs longer than one step; reload resumes; a failed step retries alone
-- [ ] Generic answer stored and shown; toggle and side by side work at every width
-- [ ] Powered by Qloo lists every call with cache status and opens receipts
-- [ ] Run cap and per-IP limit give plain messages with the time to retry
+- [ ] A fresh run on a new address streams all six steps to three concepts in about a minute (works end to end; 124 s on a never-seen area, of which 22 s is the first Qloo read and 71 s the planner; each step stays under its 120 s limit)
+- [x] No request runs longer than one step; reload resumes; a failed step retries alone
+- [ ] Generic answer stored and shown; toggle and side by side work at every width (stored and served live; widths await the user's review)
+- [x] Powered by Qloo lists every call with cache status and opens receipts
+- [x] Run cap and per-IP limit give plain messages with the time to retry
 - [ ] Screen standard met for the plan page in all states
 
 ## Verification

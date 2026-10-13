@@ -7,6 +7,7 @@ export const QLOO = {
   nearbyRadiusMetres: 2_000,
   localPopularityMax: 0.7,
   maxConcurrent: 3,
+  overlapTake: 50,
 } as const
 
 // The entity types the hackathon host answers for a location. Video games return 400 there.

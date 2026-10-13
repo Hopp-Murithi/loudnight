@@ -15,4 +15,8 @@ export const RATE_LIMITS = {
   verification: { name: "auth-verify", max: 5, windowSeconds: HOUR },
   invite: { name: "team-invite", max: 30, windowSeconds: HOUR },
   placesSearch: { name: "places-search", max: 60, windowSeconds: TEN_MINUTES },
+  receipts: { name: "receipts", max: 120, windowSeconds: TEN_MINUTES },
+  chooseConcept: { name: "concept-choose", max: 30, windowSeconds: TEN_MINUTES },
+  runStart: { name: "run-start", max: 10, windowSeconds: HOUR },
+  runStep: { name: "run-step", max: 120, windowSeconds: TEN_MINUTES },
 } as const satisfies Record<string, RateLimitRule>

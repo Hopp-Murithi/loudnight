@@ -1,6 +1,6 @@
 # Plan 05: Competitor gap scan
 
-Status: Not started
+Status: Done (Oct 13), except the Places photo proxy (blocked on the key) and the user's UI review.
 Depends on: 03, 04
 Phase: 2
 Judging criteria: Quality of the Idea (finds what nobody nearby offers), Potential Impact (avoids the four-bars-all-run-trivia trap)
@@ -40,14 +40,24 @@ Out: scoring (plan 06), orchestration (plan 07).
 - Theme extraction: schema rejects extra fields; an instruction hidden in an event name is treated as text (the output stays within the schema).
 - Failure policy: Places down, Ticketmaster down, both down.
 
+## Build notes (Oct 13)
+
+- Places types: `includedTypes` matches secondary types (a bakery with a bar counter came back for "bar"), so nearby search uses `includedPrimaryTypes` with the list in `config/gap.ts`. All twelve types were confirmed live.
+- Google's opening hours contain a long dash and narrow spaces; `tidyHours` turns them into "4:00 PM to 2:00 AM".
+- Ticketmaster returns season passes dated weeks earlier and one listing per timed entry (30 rows for one exhibition in Logan Square). Events are kept only when they start on a target night, and repeats of a name collapse to one row.
+- Themes: one forced tool call to `AI_MODELS.copy`, checked by a schema that refuses extra fields (the injection guard) but clips over-long text instead of failing. The prompt asks for what happens on the night, not venue types; plain bars group as "Drinks, no programme". Version `gap-themes-2026-10-13b`.
+- Live results: Williamsburg 20 venues, 13 events, themes led by live concerts and stand-up; East Austin 20 venues, 10 events, themes include DJ nights and sports on TV; Logan Square 20 venues, 2 events. Each run writes three trace rows (Places, Ticketmaster, planner) under `find_gap`.
+- `withStep` in `modules/runs/runs.steps.ts` is the one way to trace a tool call; the taste service uses it too.
+- Script: `npm run gap:print -- <venueId>`.
+
 ## Deliverables
 
-- [ ] Scout summary for each demo venue shows rating, hours and type from Places
-- [ ] Nearby venues and target-night events listed with sources for each demo venue
-- [ ] Covered themes extracted and validated; an empty area returns an empty list, not an error
-- [ ] Partial and failed upstreams handled as designed, visible in the card
-- [ ] Places photos served through the server without exposing the key
-- [ ] Tests above pass; `GapScanCard` meets the Screen standard
+- [x] Scout summary shows rating, hours and type from Places (verified on Union Pool; the three demo venues have no Places id, so scouting skips them by design)
+- [x] Nearby venues and target-night events listed with sources for each demo venue
+- [x] Covered themes extracted and validated; an empty area returns an empty list, not an error
+- [x] Partial and failed upstreams handled as designed, visible in the card
+- [ ] Places photos served through the server without exposing the key (blocked: this key returns no `photos` field for any place, so there is nothing to serve; enable Place Photos on the key, then add a binary route wrapper)
+- [ ] Tests above pass; `GapScanCard` meets the Screen standard (tests pass; the card is in the gallery under Competitor gap scan, awaiting the user's check at four widths)
 
 ## Verification
 

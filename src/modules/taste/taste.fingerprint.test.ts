@@ -99,6 +99,20 @@ describe("domainResult", () => {
     expect(result.items[0].receipt.path).toEqual(["results", "entities", "1", "query", "affinity"])
   })
 
+  it("leaves out music tags that are really places", () => {
+    const response = {
+      _synthetic: true,
+      success: true,
+      results: {
+        tags: [
+          { tag_id: "urn:tag:genre:music:usa", name: "Usa", query: { affinity: 1 } },
+          { tag_id: "urn:tag:genre:music:synthetic", name: "Synthetic jazz", query: { affinity: 0.99 } },
+        ],
+      },
+    }
+    expect(domainResult(musicStyles, response, CACHE_ID).items.map((item) => item.name)).toEqual(["Synthetic jazz"])
+  })
+
   it("marks a domain with no results as empty, never drops it", () => {
     const result = domainResult(artists, { success: true, results: { entities: [] } }, CACHE_ID)
     expect(result).toMatchObject({ domain: "music", status: "empty", items: [] })

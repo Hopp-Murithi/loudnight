@@ -1,4 +1,5 @@
 import { SITE } from "@/config/site"
+import { BRAND_COLOURS } from "@/config/brand"
 import type { OutgoingEmail } from "./mailer"
 
 type EmailBody = Omit<OutgoingEmail, "to">
@@ -11,14 +12,12 @@ interface EmailContent {
   footnote?: string
 }
 
-const COPPER = "#A4361C"
-const SPOTLIGHT = "#E8A33D"
-const INK = "#1C1411"
+const { copper: COPPER, spotlight: SPOTLIGHT, ink: INK } = BRAND_COLOURS
 
 const escapeHtml = (value: string) =>
   value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;")
 
-const paragraph = (text: string, color = INK) =>
+const paragraph = (text: string, color: string = INK) =>
   `<p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:${color}">${escapeHtml(text)}</p>`
 
 // Every email shares this shell, so the brand lives in one place. Plain text goes with every message.

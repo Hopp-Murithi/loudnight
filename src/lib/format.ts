@@ -21,3 +21,8 @@ export function formatNightTime(iso: string, timeZone: string): string {
 export const formatPercent = (ratio: number) => `${Math.round(ratio * 100)}%`
 
 export const plural = (count: number, one: string, many = `${one}s`) => `${count} ${count === 1 ? one : many}`
+
+// A calendar date with no time, such as an event's local date "2026-10-13". Read at noon UTC so no zone shifts the day.
+export function formatLocalDate(localDate: string, options: Intl.DateTimeFormatOptions): string {
+  return new Intl.DateTimeFormat("en-US", { ...options, timeZone: "UTC" }).format(new Date(`${localDate}T12:00:00Z`))
+}

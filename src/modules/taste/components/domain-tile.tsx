@@ -31,29 +31,24 @@ const DOMAIN_ICONS: Record<TasteDomainId, LucideIcon> = {
   destinations: Plane,
 }
 
-const affinityText = (value: number) => value.toFixed(2)
-
-// One domain of the fingerprint. Empty and failed domains say so; they are never left blank or dropped.
+// One domain of the fingerprint, ranked. Empty and failed domains say so; they are never left blank or dropped.
 export function DomainTile({ result }: { result: TasteDomainResult }) {
   const Icon = DOMAIN_ICONS[result.domain as TasteDomainId] ?? Sparkles
+  const [top, ...rest] = result.status === "ok" ? result.items : []
 
   return (
-    <SectionCard
-      title={result.label}
-      description={result.status === "ok" ? "What people nearby love most" : undefined}
-      action={<Icon aria-hidden className="size-4 text-muted-foreground" />}
-    >
-      {result.status === "ok" && (
-        <ol className="space-y-2">
-          {result.items.map((item) => (
-            <li key={item.id} className="flex min-w-0 items-center justify-between gap-3 text-sm">
-              <span className="min-w-0 truncate" title={item.name}>
-                {item.name}
-              </span>
-              <span className="shrink-0 border border-spotlight/60 bg-spotlight/12 px-1.5 py-0.5 text-xs tabular-nums">
-                <span className="sr-only">Affinity </span>
-                {affinityText(item.affinity)}
-              </span>
+    <SectionCard title={result.label} action={<Icon aria-hidden className="size-4 text-muted-foreground" />}>
+      {top && (
+        <ol className="space-y-1.5">
+          <li
+            className="font-display text-xl leading-tight font-bold text-balance break-words sm:text-2xl"
+            title={top.name}
+          >
+            {top.name}
+          </li>
+          {rest.map((item) => (
+            <li key={item.id} className="truncate text-sm text-muted-foreground" title={item.name}>
+              {item.name}
             </li>
           ))}
         </ol>

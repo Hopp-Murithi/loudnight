@@ -5,6 +5,7 @@ import type { CurrentUser } from "@/modules/auth/types"
 import { AccountMenu } from "./account-menu"
 import { AppSidebar, type ShellVenue } from "./app-sidebar"
 import { Brand } from "./brand"
+import { MobileTabBar } from "./mobile-tab-bar"
 import { SidebarToggle } from "./sidebar-toggle"
 import { SkipLink } from "./skip-link"
 import { ThemeToggle } from "./theme-toggle"
@@ -17,7 +18,7 @@ interface AppShellProps {
   children: ReactNode
 }
 
-// The signed-in frame: a drawer on phones, an icon rail on tablets, a full sidebar from laptop width.
+// The signed-in frame: a tab bar on phones, an icon rail on tablets, a full sidebar from laptop width.
 export function AppShell({ user, defaultOpen, venues, currentVenueId, children }: AppShellProps) {
   return (
     <SidebarProvider defaultOpen={defaultOpen}>
@@ -35,10 +36,11 @@ export function AppShell({ user, defaultOpen, venues, currentVenueId, children }
         <main
           id="content"
           tabIndex={-1}
-          className="mx-auto w-full max-w-7xl flex-1 space-y-8 p-4 outline-none sm:p-6 lg:p-8"
+          className="mx-auto grid w-full max-w-7xl flex-1 content-start gap-8 p-4 pb-24 outline-none sm:p-6 sm:pb-24 md:pb-6 lg:p-8 [&>*]:min-w-0"
         >
           {children}
         </main>
+        <MobileTabBar venues={venues} currentVenueId={currentVenueId} />
       </SidebarInset>
     </SidebarProvider>
   )

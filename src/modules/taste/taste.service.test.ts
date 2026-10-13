@@ -2,13 +2,15 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 import { TASTE_DOMAINS } from "@/config/taste"
 import { qlooInsights } from "@/lib/qloo/client"
 import type { AdminSupabase } from "@/lib/supabase/admin"
-import { recordStep } from "@/modules/runs/runs.steps"
+import { runsRepository } from "@/modules/runs/runs.repository"
 import { tasteRepository } from "./taste.repository"
 import { cachedQloo, readNeighbourhood } from "./taste.service"
 
 vi.mock("@/lib/qloo/client", () => ({ qlooInsights: vi.fn() }))
 vi.mock("./taste.repository", () => ({ tasteRepository: { findCurrent: vi.fn(), store: vi.fn() } }))
-vi.mock("@/modules/runs/runs.steps", () => ({ recordStep: vi.fn() }))
+vi.mock("@/modules/runs/runs.repository", () => ({
+  runsRepository: { insertStep: vi.fn(async () => "step"), finishStep: vi.fn() },
+}))
 
 const admin = {} as AdminSupabase
 const request = { path: "/v2/insights", params: { "filter.type": "urn:tag" } }
@@ -27,7 +29,8 @@ beforeEach(() => {
   vi.mocked(qlooInsights).mockReset()
   vi.mocked(tasteRepository.findCurrent).mockReset()
   vi.mocked(tasteRepository.store).mockReset()
-  vi.mocked(recordStep).mockReset()
+  vi.mocked(runsRepository.insertStep).mockClear()
+  vi.mocked(runsRepository.finishStep).mockClear()
 })
 
 describe("cachedQloo", () => {
@@ -75,11 +78,13 @@ describe("readNeighbourhood", () => {
   })
 
   it("writes a trace row per Qloo call with the cache id when a run is given", async () => {
-    const finish = vi.fn()
-    vi.mocked(recordStep).mockResolvedValue(finish)
     vi.mocked(tasteRepository.findCurrent).mockResolvedValue({ id: "cache-9", response: synthetic, expiresAt: future })
     await readNeighbourhood(admin, area, { admin, runId: "r", venueId: "v", step: "read_neighbourhood" })
-    expect(recordStep).toHaveBeenCalledTimes(TASTE_DOMAINS.length + 1)
-    expect(finish).toHaveBeenCalledWith(expect.objectContaining({ ok: true, cacheId: "cache-9" }))
+    expect(runsRepository.insertStep).toHaveBeenCalledTimes(TASTE_DOMAINS.length + 1)
+    expect(runsRepository.finishStep).toHaveBeenCalledWith(
+      admin,
+      "step",
+      expect.objectContaining({ status: "succeeded", qloo_cache_id: "cache-9" }),
+    )
   })
 })

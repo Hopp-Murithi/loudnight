@@ -64,3 +64,12 @@ The landing page tells Encore's story in one scroll: a quiet night, what a chatb
 ## Verification
 
 `npm run validate`; `npx remotion render` in `video/`; the user reviews the page at the four widths.
+
+## Revision, Oct 13: two slides
+
+The owner's feedback was that the page had too much going on. It is now two screens, always night:
+
+1. The hero with the film.
+2. The use case as five pictures ("From an empty Tuesday to a full room"), a gallery on a laptop and a row to swipe on a phone, with three links to finished demo plans beneath.
+
+The two-answers block, the loop, the receipt explorer and the night-value calculator (with its maths and tests) were removed from the page and the code. The Generic vs Encore contrast and the receipts now live on the demo pages (plan 09), where they are real rather than samples. Blocks rise in as they enter the screen where the browser supports scroll-driven animation, and are simply visible otherwise and under reduced motion. A signed-in visitor sees "Your venues" in the header instead of "Sign in".

@@ -1,15 +1,20 @@
 import "server-only"
 import type { AdminSupabase } from "@/lib/supabase/admin"
-import type { Database, Json } from "@/types/database"
+import type { PipelineStep } from "@/config/runs"
+import type { Json } from "@/types/database"
+import { toToolLine } from "./runs.describe"
 import { runsRepository } from "./runs.repository"
+import type { ToolLine } from "./runs.schemas"
 
-export type PipelineStep = Database["public"]["Enums"]["pipeline_step"]
+export type { PipelineStep }
 
 export interface StepContext {
   admin: AdminSupabase
   runId: string
   venueId: string
   step: PipelineStep
+  // Streams each finished tool call to the viewer as a trace line.
+  emit?: (step: PipelineStep, line: ToolLine) => void
 }
 
 export interface StepOutcome {
@@ -30,12 +35,41 @@ export async function recordStep(context: StepContext, tool: string, input: Json
     tool,
     input,
   })
-  return async ({ ok, summary, cacheId = null }) =>
-    runsRepository.finishStep(context.admin, id, {
-      status: ok ? "succeeded" : "failed",
+  return async ({ ok, summary, cacheId = null }) => {
+    const latency = Date.now() - started
+    const status = ok ? "succeeded" : "failed"
+    await runsRepository.finishStep(context.admin, id, {
+      status,
       output_summary: summary,
       qloo_cache_id: cacheId,
-      latency_ms: Date.now() - started,
+      latency_ms: latency,
       finished_at: new Date().toISOString(),
     })
+    context.emit?.(
+      context.step,
+      toToolLine({ id, tool, status, input, output_summary: summary, qloo_cache_id: cacheId, latency_ms: latency }),
+    )
+  }
 }
+
+// Runs one tool call inside a trace row. Without a run (scripts, demo upkeep) it just runs the call.
+export async function withStep<T>(
+  trace: StepContext | undefined,
+  tool: string,
+  input: Json,
+  call: () => Promise<T>,
+  summarise: (result: T) => Omit<StepOutcome, "ok">,
+): Promise<T> {
+  const finish = trace ? await recordStep(trace, tool, input) : null
+  try {
+    const result = await call()
+    await finish?.({ ok: true, ...summarise(result) })
+    return result
+  } catch (error) {
+    await finish?.({ ok: false, summary: input })
+    throw error
+  }
+}
+
+export const atStep = (trace: StepContext | undefined, step: PipelineStep): StepContext | undefined =>
+  trace ? { ...trace, step } : undefined

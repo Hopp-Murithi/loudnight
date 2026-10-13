@@ -12,6 +12,7 @@ import { ToneBadge } from "@/components/shared/tone-badge"
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { useChangeRole, useInvite, useRemoveMember } from "../hooks/use-team-mutations"
 import { INVITABLE_ROLES, VENUE_ROLE_LABELS, inviteSchema, type InviteInput, type TeamMember } from "../team.schemas"
+import { initials } from "@/lib/text"
 
 const selectClass =
   "h-9 rounded-md border border-input bg-background px-3 text-sm focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
@@ -23,6 +24,12 @@ function MemberRow({ member, venueId, canEdit }: { member: TeamMember; venueId: 
 
   return (
     <li className="flex flex-wrap items-center gap-3 p-4">
+      <span
+        aria-hidden
+        className="grid size-10 shrink-0 place-items-center rounded-full bg-primary/12 text-sm font-semibold text-primary"
+      >
+        {initials(member.name)}
+      </span>
       <div className="min-w-0 flex-1">
         <p className="truncate font-medium">
           {member.name}
@@ -89,8 +96,8 @@ function InviteForm({ venueId }: { venueId: string }) {
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor={roleId}>Role</FieldLabel>
               <select id={roleId} {...field} className={selectClass}>
-                <option value="manager">Manager: plans nights and sees money</option>
-                <option value="door">Door staff: checks guests in, never sees money</option>
+                <option value="manager">Manager</option>
+                <option value="door">Door staff</option>
               </select>
               <FieldError errors={[fieldState.error]} />
             </Field>
@@ -106,17 +113,22 @@ function InviteForm({ venueId }: { venueId: string }) {
 
 export function TeamPanel({ venueId, members, canEdit }: { venueId: string; members: TeamMember[]; canEdit: boolean }) {
   return (
-    <div className="grid gap-6 lg:grid-cols-[1fr_22rem]">
-      <ul className="divide-y border" aria-label="Team">
+    <div className="grid items-start gap-6 lg:grid-cols-[1fr_22rem]">
+      <ul className="divide-y border bg-card" aria-label="Team">
         {members.map((member) => (
           <MemberRow key={member.userId} member={member} venueId={venueId} canEdit={canEdit} />
         ))}
       </ul>
       {canEdit && (
-        <section aria-labelledby="invite-heading" className="space-y-4 border p-4">
-          <h2 id="invite-heading" className="font-semibold">
-            Invite someone
-          </h2>
+        <section aria-labelledby="invite-heading" className="space-y-4 border bg-card p-5">
+          <div className="space-y-1">
+            <h2 id="invite-heading" className="font-semibold">
+              Invite someone
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              Managers plan nights and see the money. Door staff check guests in and never see money.
+            </p>
+          </div>
           <InviteForm venueId={venueId} />
         </section>
       )}

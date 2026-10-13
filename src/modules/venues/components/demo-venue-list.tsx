@@ -1,39 +1,31 @@
-import { CircleCheck, Clock } from "lucide-react"
-import { EmptyState } from "@/components/shared/empty-state"
-import { SectionCard } from "@/components/shared/section-card"
-import { ToneBadge } from "@/components/shared/tone-badge"
-import { VENUE_TYPE_LABELS } from "@/config/venues"
+import { ArrowRight } from "lucide-react"
+import Link from "next/link"
+import { ROUTES } from "@/config/site"
+import { cityOf } from "@/lib/address"
 import type { DemoVenue } from "../venues.schemas"
 
+// Real neighbourhoods a visitor can open without an account, as one quiet row of links.
 export function DemoVenueList({ venues }: { venues: DemoVenue[] }) {
-  if (venues.length === 0) {
-    return <EmptyState title="No demo venues yet" description="Demo venues appear here once they are loaded." />
-  }
+  const ready = venues.filter((venue) => venue.planReady)
+  if (ready.length === 0) return null
 
   return (
-    <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {venues.map((venue) => (
-        <li key={venue.id} className="min-w-0">
-          <SectionCard
-            title={venue.name}
-            description={VENUE_TYPE_LABELS[venue.venueType]}
-            action={
-              venue.planReady ? (
-                <ToneBadge tone="success" icon={CircleCheck} label="Plan ready" />
-              ) : (
-                <ToneBadge tone="neutral" icon={Clock} label="Plan being prepared" />
-              )
-            }
-          >
-            <p className="text-sm">{venue.address}</p>
-            <p className="mt-3 text-sm text-muted-foreground">
-              {venue.planReady
-                ? "Open the plan to see the concepts and the evidence behind them."
-                : "The planner has not finished this venue yet."}
-            </p>
-          </SectionCard>
-        </li>
-      ))}
+    <ul className="flex flex-wrap gap-2">
+      {ready.map((venue) => {
+        const city = cityOf(venue.address)
+        return (
+          <li key={venue.id} className="min-w-0">
+            <Link
+              href={ROUTES.demo(venue.id)}
+              className="group inline-flex min-h-9 items-center gap-2 border px-3 py-1.5 text-sm outline-none hover:border-spotlight focus-visible:ring-3 focus-visible:ring-ring/50"
+            >
+              <span className="font-medium">{venue.name}</span>
+              {city && <span className="text-muted-foreground">{city}</span>}
+              <ArrowRight aria-hidden className="size-4 transition-transform group-hover:translate-x-0.5" />
+            </Link>
+          </li>
+        )
+      })}
     </ul>
   )
 }

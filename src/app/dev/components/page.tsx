@@ -4,10 +4,13 @@ import { SkipLink } from "@/components/layout/skip-link"
 import { devToolsEnabled } from "@/config/dev"
 import { TYPE } from "@/lib/typography"
 import { ActionsSection } from "./_sections/actions-section"
+import { ConceptsSection } from "./_sections/concepts-section"
 import { FoundationsSection } from "./_sections/foundations-section"
+import { GapSection } from "./_sections/gap-section"
 import { OverlaysSection } from "./_sections/overlays-section"
 import { PreviewToolbar } from "./_sections/preview-toolbar"
 import { ProgressSection } from "./_sections/progress-section"
+import { RunsSection } from "./_sections/runs-section"
 import { StatesSection } from "./_sections/states-section"
 import { TasteSection } from "./_sections/taste-section"
 
@@ -36,6 +39,9 @@ export default async function ComponentsGallery({ searchParams }: PageProps<"/de
         <StatesSection />
         <OverlaysSection />
         <TasteSection />
+        <GapSection />
+        <ConceptsSection />
+        <RunsSection />
       </main>
     </>
   )

@@ -20,6 +20,7 @@ export const ROUTES = {
   newVenue: "/venues/new",
   venue: (id: string) => `/venues/${id}`,
   venuePlan: (id: string) => `/venues/${id}/plan`,
+  venueRun: (id: string, runId: string) => `/venues/${id}/plan/${runId}`,
   venueSeries: (id: string) => `/venues/${id}/series`,
   venueDoor: (id: string) => `/venues/${id}/door`,
   venueResults: (id: string) => `/venues/${id}/results`,

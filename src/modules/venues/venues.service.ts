@@ -57,6 +57,7 @@ const loadDetail = cache(async (ctx: RequestContext, venueId: string): Promise<V
       capabilities: settings.capabilities,
       talentBudgetDollars: toDollars(settings.talent_budget_cents),
       averageSpendDollars: toDollars(settings.average_spend_cents),
+      searchRadiusM: settings.search_radius_m,
     },
   }
 })

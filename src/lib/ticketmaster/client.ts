@@ -18,6 +18,7 @@ const eventSchema = z.object({
       }),
     )
     .optional(),
+  _embedded: z.object({ venues: z.array(z.object({ name: z.string().optional() })).optional() }).optional(),
 })
 
 const eventsSchema = z.object({ _embedded: z.object({ events: z.array(eventSchema) }).optional() })
@@ -48,6 +49,7 @@ export async function eventsNear(query: EventsNearQuery): Promise<TicketmasterEv
     url: `${TICKETMASTER.url}/events.json?${params}`,
     timeoutMs: TICKETMASTER.timeoutMs,
     schema: eventsSchema,
+    retryOnRateLimit: true,
   })
   return body._embedded?.events ?? []
 }

@@ -14,7 +14,15 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar"
-import { ADMIN_ITEM, ALL_VENUES_ITEM, venueNavigation, type NavItem, type VenueRole } from "@/config/navigation"
+import {
+  ADMIN_ITEM,
+  ALL_VENUES_ITEM,
+  isActivePath,
+  venueIdFromPath,
+  venueNavigation,
+  type NavItem,
+  type VenueRole,
+} from "@/config/navigation"
 import { ROUTES } from "@/config/site"
 import { Brand } from "./brand"
 import { VenueSwitcher } from "./venue-switcher"
@@ -30,13 +38,6 @@ interface AppSidebarProps {
   isAdministrator: boolean
   currentVenueId?: string
 }
-
-// The venue being worked on comes from the address, so every page under /venues/[id] shares one sidebar.
-const currentVenueId = (pathname: string) => pathname.match(/^\/venues\/([0-9a-f-]{36})(?:\/|$)/)?.[1] ?? null
-
-// An exact match for a section's home, a prefix match for everything below it.
-const activeFor = (pathname: string, href: string, homes: string[]) =>
-  homes.includes(href) ? pathname === href : pathname === href || pathname.startsWith(`${href}/`)
 
 function NavGroup({
   label,
@@ -57,7 +58,7 @@ function NavGroup({
           {items.map(({ label: itemLabel, href, icon: Icon, access }) => (
             <SidebarMenuItem key={href}>
               <SidebarMenuButton
-                isActive={activeFor(pathname, href, homes)}
+                isActive={isActivePath(pathname, href, homes)}
                 tooltip={access === "view" ? `${itemLabel} (view only)` : itemLabel}
                 className="h-9 font-normal data-active:bg-sidebar-accent data-active:font-medium data-active:[&_svg]:text-sidebar-primary"
                 render={<Link href={href} />}
@@ -76,9 +77,11 @@ function NavGroup({
 
 export function AppSidebar({ venues, isAdministrator, currentVenueId: override }: AppSidebarProps) {
   const pathname = usePathname()
-  const currentId = override ?? currentVenueId(pathname)
+  const currentId = override ?? venueIdFromPath(pathname)
   const venue = venues.find((item) => item.id === currentId) ?? null
   const venueItems = venue ? venueNavigation(venue.id, venue.role) : []
+  const journey = venueItems.filter((item) => item.primary)
+  const upkeep = venueItems.filter((item) => !item.primary)
   const homes = [ROUTES.venues, ROUTES.admin, ...(venue ? [ROUTES.venue(venue.id)] : [])]
   const general = isAdministrator ? [ALL_VENUES_ITEM, ADMIN_ITEM] : [ALL_VENUES_ITEM]
 
@@ -97,7 +100,8 @@ export function AppSidebar({ venues, isAdministrator, currentVenueId: override }
         )}
       </SidebarHeader>
       <SidebarContent className="px-2">
-        {venue && <NavGroup label={venue.name} items={venueItems} pathname={pathname} homes={homes} />}
+        {venue && <NavGroup label={venue.name} items={journey} pathname={pathname} homes={homes} />}
+        {upkeep.length > 0 && <NavGroup label="Manage" items={upkeep} pathname={pathname} homes={homes} />}
         <NavGroup label="Encore" items={general} pathname={pathname} homes={homes} />
       </SidebarContent>
       <SidebarRail />

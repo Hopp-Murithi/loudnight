@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { formatMoney, formatNightDate, formatNightTime, formatPercent, plural } from "./format"
+import { formatLocalDate, formatMoney, formatNightDate, formatNightTime, formatPercent, plural } from "./format"
 
 describe("format", () => {
   it("shows money in whole dollars", () => {
@@ -21,5 +21,11 @@ describe("format", () => {
   it("pluralises counts", () => {
     expect(plural(1, "guest")).toBe("1 guest")
     expect(plural(3, "guest")).toBe("3 guests")
+  })
+})
+
+describe("formatLocalDate", () => {
+  it("keeps the calendar day whatever the server's zone", () => {
+    expect(formatLocalDate("2026-10-13", { weekday: "short", month: "short", day: "numeric" })).toBe("Tue, Oct 13")
   })
 })

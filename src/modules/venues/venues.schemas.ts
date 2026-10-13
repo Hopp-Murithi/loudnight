@@ -82,6 +82,7 @@ export interface VenueSettingsView {
   capabilities: VenueCapability[]
   talentBudgetDollars: number
   averageSpendDollars: number
+  searchRadiusM: number
 }
 
 export interface VenueDetail extends MyVenue {

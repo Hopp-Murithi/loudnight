@@ -1,57 +1,97 @@
 import "server-only"
-import { z } from "zod"
+import { z, type ZodType } from "zod"
 import { GOOGLE_PLACES } from "@/config/integrations"
 import { placesEnv } from "@/lib/env/server"
 import { fetchUpstream } from "@/lib/http/upstream"
 
+const text = z.object({ text: z.string() })
+
 const placeSchema = z.object({
   id: z.string(),
-  displayName: z.object({ text: z.string() }).optional(),
+  displayName: text.optional(),
   formattedAddress: z.string().optional(),
   location: z.object({ latitude: z.number(), longitude: z.number() }).optional(),
   types: z.array(z.string()).optional(),
   primaryType: z.string().optional(),
+  primaryTypeDisplayName: text.optional(),
   rating: z.number().optional(),
+  userRatingCount: z.number().optional(),
 })
 
 const placesSchema = z.object({ places: z.array(placeSchema).default([]) })
 
-export type Place = z.infer<typeof placeSchema>
+const detailsSchema = placeSchema.extend({
+  regularOpeningHours: z.object({ weekdayDescriptions: z.array(z.string()).default([]) }).optional(),
+  priceLevel: z.string().optional(),
+  websiteUri: z.string().optional(),
+})
 
-const FIELDS = ["id", "displayName", "formattedAddress", "location", "types", "primaryType", "rating"]
+export type Place = z.infer<typeof placeSchema>
+export type PlaceDetails = z.infer<typeof detailsSchema>
+
+const LIST_FIELDS = [
+  "id",
+  "displayName",
+  "formattedAddress",
+  "location",
+  "types",
+  "primaryType",
+  "primaryTypeDisplayName",
+  "rating",
+  "userRatingCount",
+]
+const DETAIL_FIELDS = [
+  "id",
+  "displayName",
+  "primaryType",
+  "primaryTypeDisplayName",
+  "rating",
+  "userRatingCount",
+  "regularOpeningHours.weekdayDescriptions",
+  "priceLevel",
+  "websiteUri",
+]
 
 // Places API (New) bills by the fields requested, so every call names exactly what it needs.
-function placesRequest(path: string, body: unknown) {
+function placesCall<T>(path: string, fieldMask: string, schema: ZodType<T>, body?: unknown): Promise<T> {
   return fetchUpstream({
     service: "Google Places",
     url: `${GOOGLE_PLACES.url}${path}`,
     init: {
-      method: "POST",
+      method: body === undefined ? "GET" : "POST",
       headers: {
         "Content-Type": "application/json",
         "X-Goog-Api-Key": placesEnv().GOOGLE_PLACES_API_KEY,
-        "X-Goog-FieldMask": FIELDS.map((field) => `places.${field}`).join(","),
+        "X-Goog-FieldMask": fieldMask,
       },
-      body: JSON.stringify(body),
+      body: body === undefined ? undefined : JSON.stringify(body),
     },
     timeoutMs: GOOGLE_PLACES.timeoutMs,
-    schema: placesSchema,
+    schema,
   })
 }
 
+const listMask = LIST_FIELDS.map((field) => `places.${field}`).join(",")
+
 export async function searchPlaces(query: string): Promise<Place[]> {
-  return (await placesRequest("/places:searchText", { textQuery: query, maxResultCount: 5 })).places
+  return (await placesCall("/places:searchText", listMask, placesSchema, { textQuery: query, maxResultCount: 5 }))
+    .places
 }
 
+// Matches on the primary type only. `includedTypes` also matches secondary types, which pulled in bakeries for "bar".
 export async function placesNearby(
   center: { latitude: number; longitude: number },
   radiusM: number,
-  includedTypes: string[],
+  primaryTypes: readonly string[],
 ): Promise<Place[]> {
   const body = {
-    includedTypes,
+    includedPrimaryTypes: primaryTypes,
     maxResultCount: 20,
     locationRestriction: { circle: { center, radius: radiusM } },
   }
-  return (await placesRequest("/places:searchNearby", body)).places
+  return (await placesCall("/places:searchNearby", listMask, placesSchema, body)).places
+}
+
+export async function placeDetails(placeId: string): Promise<PlaceDetails> {
+  return placesCall(`/places/${encodeURIComponent(placeId)}`, DETAIL_FIELDS.join(","), detailsSchema)
 }

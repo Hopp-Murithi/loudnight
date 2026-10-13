@@ -9,7 +9,7 @@ type SettingsUpdate = Database["public"]["Tables"]["venue_settings"]["Update"]
 
 const VENUE_COLUMNS = "id, name, address, venue_type, google_place_id, latitude, longitude, time_zone"
 const SETTINGS_COLUMNS =
-  "slow_night, break_even_headcount, capacity, capabilities, talent_budget_cents, average_spend_cents"
+  "slow_night, break_even_headcount, capacity, capabilities, talent_budget_cents, average_spend_cents, search_radius_m"
 
 const check = ({ error }: { error: { code?: string } | null }) => {
   if (error) throw fromDatabaseError(error)

@@ -1,5 +1,5 @@
 import { isPresentableName } from "@/config/content"
-import { AGE_BAND_LABELS, FINGERPRINT_TOP_ITEMS, type TasteDomain } from "@/config/taste"
+import { AGE_BAND_LABELS, FINGERPRINT_TOP_ITEMS, PLACE_LIKE_TAGS, type TasteDomain } from "@/config/taste"
 import type { QlooInsights } from "@/lib/qloo/schemas"
 import type { AudienceSkew, Lean, TasteDomainResult, TasteItem } from "./taste.schemas"
 
@@ -57,6 +57,7 @@ function rawItems(domain: TasteDomain, response: QlooInsights): RawItem[] {
 export function domainResult(domain: TasteDomain, response: QlooInsights, cacheId: string): TasteDomainResult {
   const top = rawItems(domain, response)
     .filter((item) => isPresentableName(item.name))
+    .filter((item) => domain.source.kind !== "tags" || !PLACE_LIKE_TAGS.includes(item.name.toLowerCase()))
     .slice(0, FINGERPRINT_TOP_ITEMS)
   const scores = normaliseScores(top.map((_, index) => top.length - index))
   const items: TasteItem[] = top.map((item, index) => ({
