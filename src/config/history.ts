@@ -12,6 +12,7 @@ export const HISTORY_ACTIONS: Record<string, string> = {
   "series.update": "changed a series",
   "event_nights.insert": "added an event night",
   "event_nights.update": "changed an event night",
+  "talent_candidates.update": "reworded a message to a performer",
 }
 
 // Column names in the change list, said the way an owner would.
@@ -28,4 +29,7 @@ export const HISTORY_FIELDS: Record<string, string> = {
   time_zone: "time zone",
   role: "role",
   chosen_at: "chosen night",
+  starts_at: "date and time",
+  variation: "the week's twist",
+  outreach_edited: "message",
 }

@@ -1,6 +1,7 @@
 import type { Weekday, VenueType } from "@/config/venues"
 import type { ConceptView } from "@/modules/concepts/concepts.schemas"
 import type { RunView } from "@/modules/runs/runs.schemas"
+import type { SeriesView, TalentView } from "@/modules/series/series.schemas"
 
 export interface DemoVenueView {
   id: string
@@ -18,6 +19,9 @@ export interface DemoPlan {
   venue: DemoVenueView
   run: RunView | null
   concepts: ConceptView[]
+  series: SeriesView | null
+  talent: TalentView[]
+  references: TalentView[]
 }
 
 export interface PrecomputeSummary {
@@ -25,5 +29,6 @@ export interface PrecomputeSummary {
   name: string
   runId: string
   concepts: number
+  performers: number
   seconds: number
 }

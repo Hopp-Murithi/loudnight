@@ -181,6 +181,9 @@ begin
   begin insert into public.agent_runs (venue_id, target_weekday) values (v_mine, 'tuesday'); exception when insufficient_privilege then failed := true; end;
   assert failed, 'guests cannot start a run';
   failed := false;
+  begin perform public.create_series(concept_two, date '2029-12-31', four_nights); exception when insufficient_privilege then failed := true; end;
+  assert failed, 'guests cannot make a series';
+  failed := false;
   begin insert into public.rsvps (event_night_id, venue_id, guest_name) values (night_draft, v_mine, 'Early'); exception when insufficient_privilege then failed := true; end;
   assert failed, 'guests cannot RSVP to a draft night';
   failed := false;

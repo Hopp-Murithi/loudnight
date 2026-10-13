@@ -1,6 +1,6 @@
 # Plan 10: Series planner and talent finder
 
-Status: Not started
+Status: Built and live, verified on a real venue (Oct 13)
 Depends on: 06
 Phase: 4
 Judging criteria: Design (every step ends in something to approve, edit or send), Potential Impact (paid gigs for local performers), Technological Implementation (Qloo entity search and popularity)
@@ -66,12 +66,24 @@ A migration adds `talent_candidates.outreach_edited` (text, nullable) and `event
 
 ## Deliverables
 
-- [ ] Choosing a concept creates a four-night series atomically with distinct variations
-- [ ] Dates and times correct in the venue's time zone, editable before publishing
-- [ ] Talent shortlist of 5 to 8 bookable acts (or style references), each with tier, overlap and receipt
-- [ ] Outreach draft per act, editable and copyable, never sent automatically
+- [x] Choosing a concept creates a four-night series atomically with distinct variations
+- [x] Dates and times correct in the venue's time zone, editable before publishing
+- [x] Talent shortlist of 5 to 8 bookable acts (or style references), each with tier, overlap and receipt
+- [x] Outreach draft per act, editable and copyable, never sent automatically
 - [ ] Door staff see the series read only
 - [ ] Screen standard met for the series page and sheets
+
+## What changed while building
+
+- The series is made with one button on the Series page ("Make it four weeks") after a night is chosen, not at the moment of choosing. Choosing stays instant, and the copy call happens when the owner asks for it.
+- `create_series(concept, starts_on, nights)` takes the four nights as JSON. Slugs end in four characters of the concept's own id, so they are unique without a lookup: `low-light-tuesdays-tue-oct-20-3fa9`.
+- Start time is 20:00 in the venue's zone and is edited per night; there is no series-wide start time setting.
+- Numbers in copy: the variation writer may use no digits at all. The outreach writer may use none either and marks where the date, time and fee go; Encore fills those from the first night and the talent budget. A draft that breaks either rule is replaced by a plain fallback, so a series or a shortlist is never blocked by the copywriter.
+- Talent comes from one `/v2/insights` call anchored on the tastes the chosen night cites (falling back to the area's leading music styles), with `filter.popularity.max` 0.8, and a second call with `filter.popularity.min` 0.8 for style references. `/search` was not needed. Music formats look for artists; other formats look for people.
+- `POST /series/[id]/talent` is a plain request (about 30 seconds on a cold cache), not a stream. `GET /venues/[id]/series/current` was not built: the page is rendered on the server and refreshed after each change. `GET /talent/[id]/receipt` was added so the overlap opens its receipt.
+- The migration also adds `talent_candidates.response_path` and `fit_signals`, so every overlap has a receipt and a reason.
+- Demo venues (plan 09) now get their series and performers from the same services during the precompute.
+- Docker was not running, so the new rules were asserted against the hosted project (setup plus the new assertions, rolled back) rather than with `npm run db:test`, and `src/types/database.ts` was updated by hand for the three columns and the function. Run `npm run db:test` and `npm run db:types` when the local stack is up.
 
 ## Verification
 

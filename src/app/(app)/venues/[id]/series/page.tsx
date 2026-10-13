@@ -5,10 +5,13 @@ import { ROUTES } from "@/config/site"
 import { WEEKDAY_LABELS } from "@/config/venues"
 import { getPageContext } from "@/modules/auth/server/context"
 import { listShortlist } from "@/modules/concepts/concepts.read"
-import { nextEvenings } from "@/modules/gap/gap.weekdays"
 import { planStatuses } from "@/modules/runs/runs.status"
-import { SeriesWeeks } from "@/modules/series/components/series-weeks"
+import { NightStrip } from "@/modules/series/components/night-strip"
+import { SeriesPoster } from "@/modules/series/components/series-poster"
 import { StageEmpty } from "@/modules/series/components/stage-empty"
+import { readSeries } from "@/modules/series/series.service"
+import { TalentShortlist } from "@/modules/talent/components/talent-shortlist"
+import { readTalent } from "@/modules/talent/talent.service"
 import { venueForPage } from "@/modules/venues/venues.page"
 
 export const metadata: Metadata = { title: "Series" }
@@ -25,15 +28,22 @@ export default async function VenueSeriesPage({ params }: PageProps<"/venues/[id
       ? (await listShortlist(ctx.supabase, status.runId)).find((concept) => concept.chosen)
       : undefined
 
+  const [series, acts] = chosen
+    ? await Promise.all([readSeries(ctx.supabase, chosen.id, venue.timeZone), readTalent(ctx.supabase, chosen.id)])
+    : [null, { talent: [], references: [] }]
+  const canEdit = venue.role !== "door"
+
   return (
     <>
       <PageHeader title="Series" description={`One good ${night} becomes four, with a twist each week.`} />
       {chosen ? (
-        <SeriesWeeks
-          venueId={id}
-          concept={chosen}
-          nights={nextEvenings(weekday, venue.timeZone, new Date()).map((evening) => evening.localDate)}
-        />
+        <>
+          <SeriesPoster venueId={id} concept={chosen} night={night} hasSeries={series !== null} canEdit={canEdit} />
+          {series && <NightStrip nights={series.nights} timeZone={venue.timeZone} canEdit={canEdit} />}
+          {series && (
+            <TalentShortlist seriesId={series.id} talent={acts.talent} references={acts.references} canEdit={canEdit} />
+          )}
+        </>
       ) : (
         <StageEmpty
           icon={CalendarDays}

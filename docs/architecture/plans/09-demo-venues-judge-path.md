@@ -49,7 +49,7 @@ Out: changes to the pipeline itself.
 
 ## Deliverables
 
-- [ ] All three demo venues precomputed by the real pipeline, including series and launch kit (the three plans are precomputed on the hosted project, Oct 13; series and launch kit pending plans 10 and 11)
+- [ ] All three demo venues precomputed by the real pipeline, including series and launch kit (plans, series and performers are precomputed on the hosted project, Oct 13; the launch kit waits for plan 11)
 - [ ] `/demo/[venueId]` loads for a logged-out visitor in under 3 seconds on a phone profile
 - [ ] Generic answer shown first; toggle, receipts, trace replay and launch kit preview all work
 - [x] Landing links open ready demos; "Try your own venue" leads to onboarding

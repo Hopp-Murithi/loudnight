@@ -8,6 +8,9 @@ import { runAndStoreStep, storeGenericAnswer } from "@/modules/runs/runs.execute
 import type { RunVenue } from "@/modules/runs/runs.pipeline"
 import { readRun } from "@/modules/runs/runs.read"
 import { runsRepository } from "@/modules/runs/runs.repository"
+import { seriesRepository } from "@/modules/series/series.repository"
+import { createSeries, readSeries } from "@/modules/series/series.service"
+import { findTalent, readTalent } from "@/modules/talent/talent.service"
 import type { RunContext } from "@/modules/runs/runs.schemas"
 import { demoRepository } from "./demo.repository"
 import type { DemoPlan, PrecomputeSummary } from "./demo.schemas"
@@ -54,9 +57,42 @@ export async function readDemoPlan(supabase: ServerSupabase, venueId: string): P
     radiusMetres: settings.search_radius_m,
   }
   const plan = await demoRepository.latestPlan(supabase, venueId)
-  if (!plan) return { venue, run: null, concepts: [] }
+  const nothing = { series: null, talent: [], references: [] }
+  if (!plan) return { venue, run: null, concepts: [], ...nothing }
   const [run, concepts] = await Promise.all([readRun(supabase, plan.id), listShortlist(supabase, plan.id)])
-  return { venue, run, concepts }
+  const chosen = concepts.find((concept) => concept.chosen)
+  if (!chosen) return { venue, run, concepts, ...nothing }
+  const [series, acts] = await Promise.all([
+    readSeries(supabase, chosen.id, venue.timeZone),
+    readTalent(supabase, chosen.id),
+  ])
+  return { venue, run, concepts, series, ...acts }
+}
+
+// The rest of the journey for the chosen night: its four weeks, then who could play them.
+async function planTheNights(admin: AdminSupabase, row: UpkeepVenue, venue: RunVenue, conceptId: string) {
+  const concept = await seriesRepository.findConcept(admin, conceptId)
+  if (!concept) throw upstreamFailed("the planner")
+  await createSeries(admin, { timeZone: venue.timeZone, capabilities: venue.brief.capabilities }, concept)
+  const first = (await readSeries(admin, conceptId, venue.timeZone))?.nights[0]
+  if (!first) throw upstreamFailed("the planner")
+  return findTalent(
+    admin,
+    {
+      id: row.id,
+      name: row.name,
+      point: venue.point,
+      timeZone: venue.timeZone,
+      talentBudgetCents: venue.brief.talentBudgetCents,
+    },
+    {
+      conceptId,
+      conceptName: concept.name,
+      format: concept.format,
+      runId: concept.run_id,
+      firstNight: first.startsAt,
+    },
+  )
 }
 
 export const listDemoVenueIds = (admin: AdminSupabase) => demoRepository.listDemoIds(admin)
@@ -71,6 +107,7 @@ export async function precomputeDemoVenue(admin: AdminSupabase, venueId: string)
   const { encoreId, genericId } = await runsRepository.createPair(admin, venueId, null, venue.weekday)
 
   let context: RunContext = {}
+  let performers = 0
   try {
     for (const [index, step] of PIPELINE_STEPS.entries()) {
       if (!(await runsRepository.claimStep(admin, encoreId, step, index === 0))) throw upstreamFailed("the planner")
@@ -86,6 +123,7 @@ export async function precomputeDemoVenue(admin: AdminSupabase, venueId: string)
     const top = await demoRepository.topConceptId(admin, encoreId)
     if (!top) throw upstreamFailed("the planner")
     await demoRepository.markChosen(admin, top)
+    performers = await planTheNights(admin, row, venue, top)
   } catch (error) {
     await demoRepository.deleteRuns(admin, [encoreId])
     throw error
@@ -97,6 +135,7 @@ export async function precomputeDemoVenue(admin: AdminSupabase, venueId: string)
     name: row.name,
     runId: encoreId,
     concepts: context.summary?.shortlisted ?? 0,
+    performers,
     seconds: Math.round((Date.now() - started) / 1000),
   }
 }

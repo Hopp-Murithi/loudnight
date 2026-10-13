@@ -42,7 +42,7 @@ If the day-one Qloo probe fails (thin location data), switch neighbourhoods or l
 | 07  | [Pipeline runs, live trace and generic toggle](07-runs-live-trace-generic.md)     | 3     | Built, live       | 06         |
 | 08  | [Administrator console and Preview as](08-admin-console-and-preview.md)           | 5     | Not started       | 03, 13     |
 | 09  | [Demo venues and the judge path](09-demo-venues-judge-path.md)                    | 3     | First pass live   | 07         |
-| 10  | [Series planner and talent finder](10-series-and-talent.md)                       | 4     | Not started       | 06         |
+| 10  | [Series planner and talent finder](10-series-and-talent.md)                       | 4     | Built, live       | 06         |
 | 11  | [Launch kit and distribution](11-launch-kit-and-distribution.md)                  | 4     | Not started       | 10         |
 | 12  | [Event pages, RSVP and QR](12-event-pages-rsvp-qr.md)                             | 4     | Not started       | 11         |
 | 13  | [Door check-in, live dashboard and measurement](13-door-dashboard-measurement.md) | 4     | Not started       | 12         |

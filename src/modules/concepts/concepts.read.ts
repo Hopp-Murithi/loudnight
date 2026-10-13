@@ -34,20 +34,29 @@ export async function listShortlist(supabase: ServerSupabase, runId: string): Pr
 const at = (value: unknown, path: string[]): unknown =>
   path.reduce<unknown>((node, key) => (node as Record<string, unknown> | null | undefined)?.[key], value)
 
-export async function readReceipt(supabase: ServerSupabase, evidenceId: string): Promise<ReceiptView> {
-  const evidence = await conceptsRepository.findEvidence(supabase, evidenceId)
-  const cache = await conceptsRepository.cacheForReceipt(createAdminSupabase(), evidence.qloo_cache_id)
-  const path = evidence.response_path
+// One stored value's receipt. Call it only after the caller's own client found the row citing the cache (RLS first).
+export async function receiptAt(
+  cacheId: string,
+  path: string[],
+  claim: string,
+  value: number | null,
+): Promise<ReceiptView> {
+  const cache = await conceptsRepository.cacheForReceipt(createAdminSupabase(), cacheId)
   const request = cache.request as { params?: Record<string, unknown> }
   return {
-    claim: evidence.claim,
-    value: Number(evidence.value),
+    claim,
+    value,
     endpoint: cache.endpoint,
     params: request.params ?? {},
     fetchedAt: cache.fetched_at,
     slice: at(cache.response, path.slice(0, SLICE_DEPTH)) ?? null,
     highlight: path.slice(SLICE_DEPTH),
   }
+}
+
+export async function readReceipt(supabase: ServerSupabase, evidenceId: string): Promise<ReceiptView> {
+  const evidence = await conceptsRepository.findEvidence(supabase, evidenceId)
+  return receiptAt(evidence.qloo_cache_id, evidence.response_path, evidence.claim, Number(evidence.value))
 }
 
 export async function chooseConcept(ctx: RequestContext, conceptId: string): Promise<void> {

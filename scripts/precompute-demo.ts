@@ -10,7 +10,9 @@ async function main() {
   for (const venueId of venueIds) {
     try {
       const summary = await precomputeDemoVenue(admin, venueId)
-      console.log(`Ready: ${summary.name}, ${summary.concepts} nights, ${summary.seconds} s, run ${summary.runId}`)
+      console.log(
+        `Ready: ${summary.name}, ${summary.concepts} nights, ${summary.performers} performers, ${summary.seconds} s, run ${summary.runId}`,
+      )
     } catch (error) {
       failed += 1
       console.error(`Kept the previous plan for ${venueId}: ${error instanceof Error ? error.message : "failed"}`)

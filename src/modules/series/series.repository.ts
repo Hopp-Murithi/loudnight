@@ -54,6 +54,16 @@ export const seriesRepository = {
     return data
   },
 
+  async findById(supabase: ServerSupabase, seriesId: string) {
+    const { data, error } = await supabase
+      .from("series")
+      .select("id, concept_id, venue_id, event_nights(sequence, starts_at)")
+      .eq("id", seriesId)
+      .maybeSingle()
+    check(error)
+    return data
+  },
+
   async findNight(supabase: ServerSupabase, nightId: string) {
     const { data, error } = await supabase
       .from("event_nights")

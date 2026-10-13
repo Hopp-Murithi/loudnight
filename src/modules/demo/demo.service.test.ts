@@ -18,7 +18,16 @@ const storeGenericAnswer = vi.fn()
 const readRun = vi.fn()
 const listShortlist = vi.fn()
 
+const findConcept = vi.fn()
+const createSeries = vi.fn()
+const readSeries = vi.fn()
+const findTalent = vi.fn()
+const readTalent = vi.fn()
+
 vi.mock("./demo.repository", () => ({ demoRepository: repo }))
+vi.mock("@/modules/series/series.repository", () => ({ seriesRepository: { findConcept } }))
+vi.mock("@/modules/series/series.service", () => ({ createSeries, readSeries }))
+vi.mock("@/modules/talent/talent.service", () => ({ findTalent, readTalent }))
 vi.mock("@/modules/runs/runs.repository", () => ({ runsRepository: runs }))
 vi.mock("@/modules/runs/runs.execute", () => ({ runAndStoreStep, storeGenericAnswer }))
 vi.mock("@/modules/runs/runs.read", () => ({ readRun }))
@@ -57,6 +66,10 @@ beforeEach(() => {
   repo.topConceptId.mockResolvedValue("c1")
   runs.createPair.mockResolvedValue({ encoreId: "new-encore", genericId: "new-generic" })
   runs.claimStep.mockResolvedValue(true)
+  findConcept.mockResolvedValue({ id: "c1", name: "Sample Night", format: "live_music", run_id: "new-encore" })
+  readSeries.mockResolvedValue({ id: "s1", nights: [{ startsAt: "2026-10-21T00:00:00Z" }] })
+  findTalent.mockResolvedValue(6)
+  readTalent.mockResolvedValue({ talent: [{ id: "t1" }], references: [] })
   runAndStoreStep.mockImplementation(async (trace: { step: string }, _venue: unknown, context: object) => ({
     context: { ...context, summary: { shortlisted: 3 } },
     findings: [],
@@ -88,9 +101,11 @@ describe("precomputeDemoVenue", () => {
       expect.objectContaining({ name: "Sample Room" }),
     )
     expect(repo.markChosen).toHaveBeenCalledWith(admin, "c1")
+    expect(createSeries.mock.calls[0][1]).toEqual({ timeZone: "America/New_York", capabilities: ["stage"] })
+    expect(findTalent.mock.calls[0][2]).toMatchObject({ conceptId: "c1", firstNight: "2026-10-21T00:00:00Z" })
     expect(repo.deleteRuns).toHaveBeenCalledTimes(1)
     expect(repo.deleteRuns).toHaveBeenCalledWith(admin, ["old-encore", "old-generic"])
-    expect(summary).toMatchObject({ runId: "new-encore", concepts: 3 })
+    expect(summary).toMatchObject({ runId: "new-encore", concepts: 3, performers: 6 })
   })
 
   it("keeps the previous plan when a step fails, and removes only the half-made one", async () => {
@@ -99,6 +114,13 @@ describe("precomputeDemoVenue", () => {
     expect(repo.deleteRuns).toHaveBeenCalledTimes(1)
     expect(repo.deleteRuns).toHaveBeenCalledWith(admin, ["new-encore"])
     expect(repo.markChosen).not.toHaveBeenCalled()
+  })
+
+  it("keeps the previous plan when the series or the performers cannot be made", async () => {
+    findTalent.mockRejectedValueOnce(new Error("qloo"))
+    await expect(precomputeDemoVenue(admin, "v1")).rejects.toThrow("qloo")
+    expect(repo.deleteRuns).toHaveBeenCalledTimes(1)
+    expect(repo.deleteRuns).toHaveBeenCalledWith(admin, ["new-encore"])
   })
 
   it("keeps the previous plan when no night passed the evidence check", async () => {
@@ -128,10 +150,13 @@ describe("readDemoPlan", () => {
     repo.findVenue.mockResolvedValue(row)
     repo.latestPlan.mockResolvedValue({ id: "r1", created_at: "2026-10-13T09:00:00Z" })
     readRun.mockResolvedValue({ id: "r1" })
-    listShortlist.mockResolvedValue([{ id: "c1" }])
+    listShortlist.mockResolvedValue([{ id: "c1", chosen: true }])
     const plan = await readDemoPlan(visitor, "v1")
     expect(readRun).toHaveBeenCalledWith(visitor, "r1")
     expect(listShortlist).toHaveBeenCalledWith(visitor, "r1")
+    expect(readSeries).toHaveBeenCalledWith(visitor, "c1", "America/New_York")
+    expect(readTalent).toHaveBeenCalledWith(visitor, "c1")
     expect(plan.concepts).toHaveLength(1)
+    expect(plan.talent).toHaveLength(1)
   })
 })

@@ -11,7 +11,7 @@ interface TextFieldProps<T extends FieldValues> {
   control: Control<T>
   name: Path<T>
   label: string
-  type?: "text" | "email" | "password" | "tel" | "number"
+  type?: "text" | "email" | "password" | "tel" | "number" | "date" | "time"
   autoComplete?: string
   placeholder?: string
   description?: string

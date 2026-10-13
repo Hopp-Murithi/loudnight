@@ -19,4 +19,7 @@ export const RATE_LIMITS = {
   chooseConcept: { name: "concept-choose", max: 30, windowSeconds: TEN_MINUTES },
   runStart: { name: "run-start", max: 10, windowSeconds: HOUR },
   runStep: { name: "run-step", max: 120, windowSeconds: TEN_MINUTES },
+  seriesCreate: { name: "series-create", max: 10, windowSeconds: HOUR },
+  seriesEdit: { name: "series-edit", max: 120, windowSeconds: TEN_MINUTES },
+  talentFind: { name: "talent-find", max: 10, windowSeconds: HOUR },
 } as const satisfies Record<string, RateLimitRule>

@@ -7,7 +7,7 @@ import { useDismissed } from "../hooks/use-dismissed"
 const HINTS = [
   { href: "#answers", text: "See what a normal AI says, then switch to Encore" },
   { href: "#answers", text: "Open any number to see the Qloo answer behind it" },
-  { href: "#details", text: "Open Steps to replay how the plan was made" },
+  { href: "#series", text: "See the four weeks and who could play them" },
 ]
 
 // Three things worth trying, in order, for someone seeing Encore for the first time.

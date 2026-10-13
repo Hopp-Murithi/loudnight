@@ -115,3 +115,20 @@ export function overlapRequest(anchor: QlooSignalRef, target: QlooSignalRef, poi
   if (target.kind === "tag") params["filter.tag.types"] = target.qlooType
   return { path: "/v2/insights", params }
 }
+
+// Acts that fans of these tastes follow near the point, kept inside a popularity band so they are bookable.
+export function talentRequest(
+  anchors: readonly QlooSignalRef[],
+  type: QlooEntityType,
+  point: GeoPoint,
+  band: PopularityBand,
+): QlooRequest {
+  const params: QlooParams = { "filter.type": type, "signal.location": wktPoint(point), take: QLOO.take }
+  const tags = anchors.filter((anchor) => anchor.kind === "tag").map((anchor) => anchor.qlooId)
+  const entities = anchors.filter((anchor) => anchor.kind === "entity").map((anchor) => anchor.qlooId)
+  if (tags.length > 0) params["signal.interests.tags"] = tags
+  if (entities.length > 0) params["signal.interests.entities"] = entities
+  if (band.min !== undefined) params["filter.popularity.min"] = band.min
+  if (band.max !== undefined && band.max !== null) params["filter.popularity.max"] = band.max
+  return { path: "/v2/insights", params }
+}

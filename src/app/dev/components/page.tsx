@@ -11,6 +11,7 @@ import { OverlaysSection } from "./_sections/overlays-section"
 import { PreviewToolbar } from "./_sections/preview-toolbar"
 import { ProgressSection } from "./_sections/progress-section"
 import { RunsSection } from "./_sections/runs-section"
+import { SeriesSection } from "./_sections/series-section"
 import { StatesSection } from "./_sections/states-section"
 import { TasteSection } from "./_sections/taste-section"
 
@@ -42,6 +43,7 @@ export default async function ComponentsGallery({ searchParams }: PageProps<"/de
         <GapSection />
         <ConceptsSection />
         <RunsSection />
+        <SeriesSection />
       </main>
     </>
   )

@@ -5,5 +5,6 @@ export const conceptsApi = {
   shortlist: (runId: string) => apiFetch<ConceptView[]>(`/runs/${runId}/concepts`),
   receipt: (evidenceId: string) => apiFetch<ReceiptView>(`/receipts/${evidenceId}`),
   callReceipt: (stepId: string) => apiFetch<ReceiptView>(`/run-steps/${stepId}/receipt`),
+  talentReceipt: (talentId: string) => apiFetch<ReceiptView>(`/talent/${talentId}/receipt`),
   choose: (conceptId: string) => apiFetch<{ chosen: true }>(`/concepts/${conceptId}/choose`, { method: "POST" }),
 }
