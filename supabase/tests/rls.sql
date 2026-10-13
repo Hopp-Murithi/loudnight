@@ -9,7 +9,8 @@ declare
   u_other uuid := gen_random_uuid(); u_admin uuid := gen_random_uuid();
   v_mine uuid; v_other uuid; v_demo uuid := gen_random_uuid();
   run_id uuid; concept_id uuid; cache_id uuid; series_id uuid; night_draft uuid; night_live uuid; v_rsvp uuid; i int;
-  n int; failed boolean; new_venue uuid; before_count int; cache_old uuid; cache_new uuid; concept_two uuid; concept_out uuid; started_run uuid;
+  n int; failed boolean; new_venue uuid; before_count int; cache_old uuid; cache_new uuid; concept_two uuid; concept_out uuid; started_run uuid; made_series uuid; talent_id uuid;
+  four_nights jsonb := '[{"starts_at":"2030-01-01T01:00:00Z","variation":"Opening night","slug":"made-night-one"},{"starts_at":"2030-01-08T01:00:00Z","variation":"Week two","slug":"made-night-two"},{"starts_at":"2030-01-15T01:00:00Z","variation":"Week three","slug":"made-night-three"},{"starts_at":"2030-01-22T01:00:00Z","variation":"Finale","slug":"made-night-four"}]';
   demo_count int := (select count(*) from public.venues where is_demo);
 begin
   insert into auth.users (id, instance_id, aud, role, email, raw_app_meta_data, raw_user_meta_data, is_anonymous, created_at, updated_at) values
@@ -131,6 +132,22 @@ begin
   failed := false;
   begin update public.concepts set name = 'renamed' where id = concept_id; exception when insufficient_privilege then failed := true; end;
   assert failed, 'sessions change nothing on a concept but the choice';
+
+  -- a chosen night becomes a series and four nights together, or nothing at all
+  failed := false;
+  begin perform public.create_series(concept_id, date '2029-12-31', four_nights); exception when sqlstate 'P0002' then failed := true; end;
+  assert failed, 'a night that is not chosen cannot become a series';
+  failed := false;
+  begin perform public.create_series(concept_two, date '2029-12-31', four_nights - 3); exception when sqlstate '22023' then failed := true; end;
+  assert failed, 'a series needs exactly four nights';
+  failed := false;
+  begin perform public.create_series(concept_two, date '2029-12-31', jsonb_set(four_nights, '{3,slug}', '"made-night-one"')); exception when unique_violation then failed := true; end;
+  assert failed, 'a clashing night is refused';
+  select count(*) into n from public.series where concept_id = concept_two; assert n = 0, 'and leaves no half-made series behind';
+  made_series := public.create_series(concept_two, date '2029-12-31', four_nights);
+  select count(*) into n from public.event_nights e where e.series_id = made_series and e.status = 'draft'; assert n = 4, 'managers get four draft nights';
+  assert (select weekday from public.series where id = made_series) = 'tuesday', 'on the weekday the plan was made for';
+  delete from public.series where id = made_series;
   insert into public.agent_runs (venue_id, requested_by, mode, target_weekday) values (v_mine, u_manager, 'encore', 'tuesday')
     returning id into started_run;
   insert into public.agent_runs (venue_id, mode, target_weekday, pair_id) values (v_mine, 'generic', 'tuesday', started_run);
@@ -177,6 +194,17 @@ begin
   begin insert into public.checkins (event_night_id, venue_id, spend_cents) values (night_live, v_mine, 5000); exception when insufficient_privilege then failed := true; end;
   assert failed, 'guests cannot log spend';
   reset role;
+  -- a talent candidate is server-written; owners and managers may only reword the message
+  insert into public.talent_candidates (concept_id, venue_id, qloo_entity_id, qloo_cache_id, name, popularity_tier, overlap_score)
+    values (concept_two, v_mine, 'entity-1', cache_id, 'Sample Act', 'local', 0.9) returning id into talent_id;
+  perform set_config('request.jwt.claims', json_build_object('sub', u_manager, 'role', 'authenticated')::text, true);
+  set local role authenticated;
+  update public.talent_candidates set outreach_edited = 'Hello there' where id = talent_id; get diagnostics n = row_count;
+  assert n = 1, 'managers reword an outreach message';
+  failed := false;
+  begin update public.talent_candidates set name = 'Renamed' where id = talent_id; exception when insufficient_privilege then failed := true; end;
+  assert failed, 'sessions change nothing else on a candidate';
+  reset role;
 
   -- door staff: guest list and check-ins, no money, no planning
   perform set_config('request.jwt.claims', json_build_object('sub', u_door, 'role', 'authenticated')::text, true);
@@ -192,6 +220,11 @@ begin
   failed := false;
   begin perform public.choose_concept(concept_id); exception when insufficient_privilege then failed := true; end;
   assert failed, 'door staff cannot choose a night';
+  failed := false;
+  begin perform public.create_series(concept_two, date '2029-12-31', four_nights); exception when insufficient_privilege then failed := true; end;
+  assert failed, 'door staff cannot make a series';
+  update public.talent_candidates set outreach_edited = 'hi' where id = talent_id; get diagnostics n = row_count;
+  assert n = 0, 'door staff cannot reword outreach';
   failed := false;
   begin insert into public.agent_runs (venue_id, requested_by, target_weekday) values (v_mine, u_door, 'tuesday'); exception when insufficient_privilege then failed := true; end;
   assert failed, 'door staff cannot start a run';

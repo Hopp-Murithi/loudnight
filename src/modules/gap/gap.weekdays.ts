@@ -48,8 +48,15 @@ function zoneOffset(instant: Date, timeZone: string): number {
 }
 
 // A local wall-clock time in the zone as a real instant. Checked twice so a DST change between guesses is caught.
-export function zonedInstant(year: number, month: number, day: number, hour: number, timeZone: string): Date {
-  const guess = Date.UTC(year, month - 1, day, hour)
+export function zonedInstant(
+  year: number,
+  month: number,
+  day: number,
+  hour: number,
+  timeZone: string,
+  minute = 0,
+): Date {
+  const guess = Date.UTC(year, month - 1, day, hour, minute)
   const first = guess - zoneOffset(new Date(guess), timeZone)
   return new Date(guess - zoneOffset(new Date(first), timeZone))
 }

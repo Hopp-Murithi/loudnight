@@ -578,37 +578,46 @@ export type Database = {
         Row: {
           concept_id: string
           created_at: string
+          fit_signals: string[]
           id: string
           name: string
           outreach_draft: string | null
+          outreach_edited: string | null
           overlap_score: number
           popularity_tier: Database["public"]["Enums"]["popularity_tier"]
           qloo_cache_id: string | null
           qloo_entity_id: string
+          response_path: string[]
           venue_id: string
         }
         Insert: {
           concept_id: string
           created_at?: string
+          fit_signals?: string[]
           id?: string
           name: string
           outreach_draft?: string | null
+          outreach_edited?: string | null
           overlap_score: number
           popularity_tier: Database["public"]["Enums"]["popularity_tier"]
           qloo_cache_id?: string | null
           qloo_entity_id: string
+          response_path?: string[]
           venue_id: string
         }
         Update: {
           concept_id?: string
           created_at?: string
+          fit_signals?: string[]
           id?: string
           name?: string
           outreach_draft?: string | null
+          outreach_edited?: string | null
           overlap_score?: number
           popularity_tier?: Database["public"]["Enums"]["popularity_tier"]
           qloo_cache_id?: string | null
           qloo_entity_id?: string
+          response_path?: string[]
           venue_id?: string
         }
         Relationships: [
@@ -783,6 +792,10 @@ export type Database = {
       consume_rate_limit: {
         Args: { bucket: string; max_hits: number; window_seconds: number }
         Returns: boolean
+      }
+      create_series: {
+        Args: { p_concept_id: string; p_nights: Json; p_starts_on: string }
+        Returns: string
       }
       create_venue: {
         Args: {

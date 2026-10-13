@@ -1,12 +1,11 @@
 import "server-only"
 import { PIPELINE_STEPS, STEP_MAX_SECONDS, type PipelineStep } from "@/config/runs"
 import { keepAlive } from "@/lib/http/background"
-import { AppError, conflict, forbidden, notFound } from "@/lib/http/errors"
+import { AppError, conflict, notFound } from "@/lib/http/errors"
 import { createEventStream } from "@/lib/http/stream"
 import { createAdminSupabase } from "@/lib/supabase/admin"
 import type { RequestContext } from "@/modules/auth/types"
-import { venuesService } from "@/modules/venues/venues.service"
-import type { VenueDetail } from "@/modules/venues/venues.schemas"
+import { managedVenue, type ManagedVenue } from "@/modules/venues/venues.access"
 import { runAndStoreStep, storeGenericAnswer } from "./runs.execute"
 import type { RunVenue } from "./runs.pipeline"
 import { runsRepository } from "./runs.repository"
@@ -15,16 +14,7 @@ import { toToolLine } from "./runs.describe"
 import { startMessage } from "./runs.limits"
 import type { StepContext } from "./runs.steps"
 
-async function managedVenue(
-  ctx: RequestContext,
-  venueId: string,
-): Promise<VenueDetail & { settings: NonNullable<VenueDetail["settings"]> }> {
-  const venue = await venuesService.getDetail(ctx, venueId)
-  if (venue.role === "door" || !venue.settings) throw forbidden("Only owners and managers plan nights.")
-  return { ...venue, settings: venue.settings }
-}
-
-function toRunVenue(venue: Awaited<ReturnType<typeof managedVenue>>): RunVenue {
+function toRunVenue(venue: ManagedVenue): RunVenue {
   return {
     id: venue.id,
     placeId: venue.googlePlaceId,
