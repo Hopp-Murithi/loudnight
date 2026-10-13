@@ -4,6 +4,8 @@ Fill your quiet nights. Encore is a programming director for bars, cafes, restau
 
 > Qloo knows what a neighbourhood loves. Encore turns that into people through the door on a Tuesday.
 
+Live: https://encore-seven-dusky.vercel.app
+
 Built for the Qloo hackathon (submissions close Oct 30, 2026). The full brief is in [`docs/reference/encore-system-brief.pdf`](docs/reference/encore-system-brief.pdf).
 
 ## Contents

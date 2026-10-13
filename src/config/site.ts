@@ -8,7 +8,12 @@ export const SITE = {
 
 export const ROUTES = {
   home: "/",
-  start: "/start",
+  login: "/login",
+  signup: "/signup",
+  forgotPassword: "/forgot-password",
+  checkEmail: "/check-email",
+  authConfirm: "/auth/confirm",
+  setPassword: "/set-password",
   account: "/account",
   admin: "/admin",
   venues: "/venues",
@@ -25,7 +30,21 @@ export const ROUTES = {
   eventPage: (slug: string) => `/e/${slug}`,
 } as const
 
+// Where a signed-in person lands when nothing else was asked for.
+export const SIGNED_IN_HOME = ROUTES.venues
+
 // Paths that need a session. Everything else, demo venues and event pages included, is public.
-export const SIGNED_IN_PREFIXES = [ROUTES.venues, ROUTES.account, ROUTES.admin] as const
+export const SIGNED_IN_PREFIXES = [ROUTES.venues, ROUTES.account, ROUTES.admin, ROUTES.setPassword] as const
+
+// Pages for people who are not signed in. A signed-in person is sent on to their venues.
+export const SIGNED_OUT_PAGES = [ROUTES.login, ROUTES.signup, ROUTES.forgotPassword, ROUTES.checkEmail] as const
 
 export const API_BASE = "/api/v1"
+
+// Set when a reset or invite link is accepted; until a password is saved, every page leads to the password form.
+export const PASSWORD_PENDING_COOKIE = "encore_password_pending"
+
+// Only same-site paths, so a crafted link cannot send anyone elsewhere.
+export function safeNextPath(next: string | null | undefined): string | null {
+  return next && next.startsWith("/") && !next.startsWith("//") && !next.startsWith("/\\") ? next : null
+}

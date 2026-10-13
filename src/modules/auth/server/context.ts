@@ -16,16 +16,17 @@ const loadContext = cache(async (): Promise<RequestContext | null> => {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("id, display_name, role, is_anonymous")
+    .select("id, display_name, email, role, is_anonymous, is_active")
     .eq("id", userId)
     .maybeSingle()
-  if (!profile) return null
+  if (!profile?.is_active) return null
 
   return {
     supabase,
     user: {
       id: profile.id,
       displayName: profile.display_name,
+      email: profile.email,
       role: profile.role,
       isAnonymous: profile.is_anonymous,
     },
@@ -45,7 +46,7 @@ export async function getApiContext(roles?: AppRole[]): Promise<RequestContext> 
 // For pages and layouts: redirects instead of throwing.
 export async function getPageContext(...roles: AppRole[]): Promise<RequestContext> {
   const ctx = await loadContext()
-  if (!ctx) redirect(ROUTES.start)
+  if (!ctx) redirect(ROUTES.login)
   if (!allows(roles.length > 0 ? roles : undefined, ctx.user.role)) redirect(ROUTES.home)
   return ctx
 }

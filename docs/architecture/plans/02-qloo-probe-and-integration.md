@@ -1,6 +1,6 @@
 # Plan 02: Qloo probe and integration correctness
 
-Status: Not started
+Status: Done (Oct 13)
 Depends on: 00
 Phase: 1 (the day-one gate)
 Judging criteria: Technological Implementation (how thoroughly and skilfully the project uses Qloo)
@@ -59,15 +59,44 @@ From the Qloo hackathon developer guide and docs.qloo.com (read Oct 12):
 
 ## Findings
 
-To be filled in by the probe run: one row per domain and location form, then the chosen recipe.
+Probe run Oct 13 (`scripts/qloo-probe.ts`, then `--refine`): 151 calls against Williamsburg, East Austin and Logan Square. p50 712ms, p95 4.5s. No 429 seen. Full responses stayed in `.probe/`.
 
-| Domain | Request recipe | Areas with 10+ results | Affinity path | Latency p50 |
-| ------ | -------------- | ---------------------- | ------------- | ----------- |
-|        |                |                        |               |             |
+| Domain                       | Request recipe                                                                                              | Areas with 10+ results                   | Affinity path                                | Latency p50               |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------------- | ---------------------------------------- | -------------------------------------------- | ------------------------- |
+| Music                        | `filter.type=urn:entity:artist`, `signal.location=POINT(lng lat)`                                           | 3 of 3                                   | `$.results.entities[i].query.affinity`       | 0.8s                      |
+| Books                        | `urn:entity:book`, same                                                                                     | 3 of 3                                   | same                                         | 0.7s                      |
+| Brands (food, drink, retail) | `urn:entity:brand`, same                                                                                    | 3 of 3                                   | same                                         | 1.0s                      |
+| Destinations                 | `urn:entity:destination`, same                                                                              | 3 of 3                                   | same                                         | 0.6s                      |
+| Film                         | `urn:entity:movie`, same                                                                                    | 3 of 3 (Logan Square 7 without radius)   | same                                         | 0.7s                      |
+| People                       | `urn:entity:person`, same                                                                                   | 3 of 3                                   | same                                         | 1.1s                      |
+| Places (taste)               | `urn:entity:place`, `signal.location` alone                                                                 | 3 of 3                                   | same                                         | 1 to 21s, too slow        |
+| Places (nearby)              | `urn:entity:place`, `filter.location=POINT(lng lat)`, `filter.location.radius=2000`, plus `signal.location` | 3 of 3, every result inside 2 km         | same                                         | 0.6s (3s with the signal) |
+| Podcasts                     | `urn:entity:podcast`, same                                                                                  | 3 of 3                                   | same                                         | 0.6s                      |
+| TV                           | `urn:entity:tv_show`, same                                                                                  | 3 of 3                                   | same                                         | 0.7s                      |
+| Tags (area's tastes)         | `filter.type=urn:tag`, `filter.tag.types=urn:tag:genre:music` (or `urn:tag:genre:place`), `signal.location` | 3 of 3                                   | `$.results.tags[i].query.affinity`           | 0.9s                      |
+| Who loves a taste            | `filter.type=urn:demographics`, `signal.interests.tags=<tag id>`                                            | 1 row, age bands and gender from -1 to 1 | `$.results.demographics[0].query.age.<band>` | 0.6s                      |
+| Where in the area            | `filter.type=urn:heatmap`, `filter.location=POINT(...)`, `signal.interests.tags=<tag id>`                   | 139 to 448 cells                         | `$.results.heatmap[i].query.affinity_rank`   | 1.1s                      |
+| Search                       | `/search?query=&types=`                                                                                     | 5 of 5                                   | none                                         | 0.9s                      |
+| Tag lookup                   | `/v2/tags?filter.query=` (optionally `filter.tag.types`)                                                    | 4 to 5                                   | none                                         | 0.6s                      |
+| Audiences                    | `/v2/audiences?filter.audience.types=urn:audience:<type>`; types from `/v2/audiences/types`                 | 4 to 10                                  | none                                         | 0.6s                      |
 
-Gate decision: (pass, or which areas or signals to switch to)
+What the live calls showed, against the docs:
 
-Eligibility: (Kenya, prizes, start date, licence)
+- `signal.location` with a WKT point works for every supported type. `signal.location.query` (locality name) is unreliable: 0 entities for artist, brand and place in Williamsburg, and for almost every type in East Austin. Encore uses the WKT point only.
+- `signal.location.radius` changed nothing: identical results with and without it. Encore leaves it out, as the docs advise.
+- `filter.location` needs WKT. `lat,lng` returns 400 "WKT format is invalid".
+- `urn:entity:video_game` is not supported on the hackathon host (400). `urn:demographics` needs `signal.interests.tags` or `.entities` (400 without).
+- Affinity saturates. The top results all sit at 1.0, and the most popular ones are the same in every city (global stars). Two fixes: `filter.popularity.max=0.7` brings up the local names (East Austin: Walker Lukens, Mobley, Jackie Venson), and tags differ clearly by area (East Austin: alt-country, americana, blues; Williamsburg: indie, experimental; Logan Square: chicago, comedy). So the fingerprint reads tags plus popularity-capped entities, and ranks by position. Receipts still point at the stored affinity value.
+- `bias.trends=high` lowers every affinity to the same 0.76 without changing the order much, so it is not useful here.
+- `filter.tags=urn:tag:genre:place:bar` returned 0 results. Tag ids must come from `/v2/tags`, never be guessed.
+- Places carry what the gap scan needs: `properties.live_music`, `good_for`, `event_spaces`, `hours`, `price_level`, plus tags for ambience, time of day and category.
+- Place insights with only `signal.location` took 10 to 21 seconds, longer than the 15 second client timeout. With `filter.location` they take under a second.
+
+Gate decision: **pass**. Nine domains (artist, book, brand, destination, movie, person, place, podcast, TV) plus tags return 20 results in all three areas. No neighbourhood switch needed.
+
+Demographic skew method: `urn:demographics` for each of the concept's driving tags gives age and gender lean. Location does not change it, so it describes a taste's audience, not the area. The area's own taste comes from tags and capped entities around the point.
+
+Eligibility (qloo.devpost.com/rules, read Oct 13): open to individuals of the age of majority. Excluded: Brazil, Quebec, Russia, Crimea, Cuba, Iran, North Korea and countries comprehensively sanctioned by OFAC. Kenya is not excluded. Prizes are paid to the entrant within 60 days of the winner forms, and the winner pays any fees. Projects must be new or significantly updated after Sep 30, 2026 9:00 am ET. Encore was started Oct 12. Licence: the repository must be public with an open source licence file visible in the About section (MIT). Submissions close Oct 30, 2026 11:45 pm ET. Judging Nov 2 to 16, winners around Nov 23. Required: a working demo link, a public repository and a text description. The rules set no video length.
 
 ## Tests
 
@@ -78,13 +107,13 @@ Eligibility: (Kenya, prizes, start date, licence)
 
 ## Deliverables
 
-- [ ] `.probe/` ignored by git and Prettier
-- [ ] Probe run against all three neighbourhoods; Findings table filled in
-- [ ] Gate decision recorded: at least 8 domains with 10 or more results in at least two areas, or the switch decided with the user
-- [ ] Demographic skew method chosen and recorded
-- [ ] `lib/qloo` hardened as designed, with tests; `check:connections` uses the proven recipe
-- [ ] Eligibility, prize payment, start-date rule and licence recorded from the official rules
-- [ ] No real Qloo response committed anywhere (`git grep` for a known entity id from the probe returns nothing tracked)
+- [x] `.probe/` ignored by git and Prettier
+- [x] Probe run against all three neighbourhoods; Findings table filled in
+- [x] Gate decision recorded: at least 8 domains with 10 or more results in at least two areas, or the switch decided with the user
+- [x] Demographic skew method chosen and recorded
+- [x] `lib/qloo` hardened as designed, with tests; `check:connections` uses the proven recipe
+- [x] Eligibility, prize payment, start-date rule and licence recorded from the official rules
+- [x] No real Qloo response committed anywhere (`git grep` for a known entity id from the probe returns nothing tracked)
 
 ## Verification
 

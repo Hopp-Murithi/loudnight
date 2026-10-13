@@ -1,97 +1,116 @@
-# Plan 03: Sessions, venue onboarding and team
+# Plan 03: Accounts, venue onboarding and team
 
-Status: Not started
+Status: Done, verified end to end against the hosted project on Oct 13. The UI pass is the user's (they review screens and report fixes).
 Depends on: 01
 Phase: 2
-Judging criteria: Design (two-minute onboarding), Potential Impact (break-even comes from the owner)
+Judging criteria: Design (onboarding in about two minutes), Potential Impact (break-even comes from the owner)
+
+Changed on Oct 12 at the user's request: owners sign up and sign in with email and password, with email verification and password reset, every email sent through Resend. Anonymous sessions stay supported by the database but are not offered in the interface. Judges still need no account: demo venues are public (plan 09).
 
 ## Goal
 
-An owner goes from the landing page to a saved venue in about two minutes, without creating an account. One tap starts an anonymous session. An address autocomplete fills the venue's name, coordinates, type and time zone from Google Places. A short stepped form captures the slow night, break-even headcount, what the space can host, capacity, talent budget and average spend. The owner can later add an email to keep the venue, change settings, and invite a manager or door staff.
+An owner signs up with name, email and password, verifies the email from a branded Resend email, signs in, and saves a venue in about two minutes: an address search fills the venue's name, coordinates, type and time zone from Google Places, and a short stepped form captures the quiet night, break-even headcount, what the space can host, capacity, talent budget and average spend. Owners can reset a forgotten password, change their details, and invite a manager or door staff by email.
 
 ## Brief coverage
 
-"Set up (2 minutes). The owner gives the address, the slow night, a break-even headcount, what the space can host (stage, screen, sound, kitchen) and a talent budget. Google Places fills in type, hours and photos automatically." Feature table: "Venue onboarding: address autocomplete, slow night, break-even, capabilities, budget". "Judge gets a full plan without signing up."
+"Set up (2 minutes). The owner gives the address, the slow night, a break-even headcount, what the space can host and a talent budget. Google Places fills in type, hours and photos automatically." Feature table: "Venue onboarding". Abuse and cost control: rate limits.
 
 ## Scope
 
-In: `/start`, anonymous sign-in, `/venues`, `/venues/new` (stepped onboarding), `/venues/[id]` overview frame, `/venues/[id]/settings`, `/venues/[id]/team`, `/account` (display name, add email, sign out), `/auth/confirm`, the venue switcher, per-IP limit on session starts, Places autocomplete and details (hours and one photo reference).
-Out: planning runs (plans 04 to 07), Preview as (plan 08), venue history page (plan 08).
+In: sign up, email verification, resend verification, sign in, sign out, forgot and reset password, set password, account page (name, password), the rate limiter (built here, plan 16 extends it), `/venues` list, `/venues/new` onboarding, `/venues/[id]` overview frame, `/venues/[id]/settings`, `/venues/[id]/team` with email invites, the venue switcher wired to real memberships, Places search, the sidebar focus fix from plan 01.
+Out: planning runs (plans 04 to 07), Preview as (plan 08), venue history page (plan 08), changing the sign-in email (later).
 
 ## Design
 
-### Modules
+### Authentication (following UNoN: our own links, our own emails, a confirm page with a button)
 
-- `modules/auth`: `auth.schemas.ts` (email upgrade, display name), `auth.service.ts` (`startSession`, `upgradeWithEmail`, `confirmEmail`, `signOut`), `api.ts`, `hooks/use-session.ts`, `components/start-card.tsx`, `components/add-email-form.tsx`.
-- `modules/venues`: `venues.schemas.ts` (`venueOnboardingSchema` shared by form and API; dollars in the form, cents on the wire after a transform), `venues.repository.ts`, `venues.service.ts` (`create`, `list`, `get`, `updateSettings`, `delete`), `venues.places.ts` (maps a Place to name, coordinates, `VenueType`, time zone; pure, tested), `api.ts`, hooks, components (`onboarding-steps`, `place-autocomplete`, `capability-picker`, `night-picker`, `money-field`, `venue-card`, `venue-switcher`).
-- `modules/team`: `team.schemas.ts`, `team.repository.ts`, `team.service.ts` (`list`, `invite`, `changeRole`, `remove`), `api.ts`, hooks, components (`member-list`, `invite-form`).
+| Flow                | Route                                                       | What happens                                                                                                                                                                                                                                                              |
+| ------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Sign up             | `POST /api/v1/auth/signup` (public)                         | `auth.admin.generateLink({ type: "signup" })` creates the unconfirmed user without any Supabase email; we send "Verify your email" through Resend. An address that already has an account gets "You already have an account" instead. The response is the same either way |
+| Verify              | `/auth/confirm` page, then `POST /api/v1/auth/confirm`      | The page shows a button that posts the token, so a mail scanner opening the link cannot use it. `verifyOtp` signs the person in; signup links go to `/venues`                                                                                                             |
+| Resend verification | `POST /api/v1/auth/verification` (public)                   | A magic link (which also confirms the email) through Resend, only for unconfirmed accounts; same response for every address                                                                                                                                               |
+| Sign in             | `POST /api/v1/auth/login` (public)                          | `signInWithPassword`. Wrong password: "Incorrect email or password." Unverified: a clear message with "Send the link again"                                                                                                                                               |
+| Forgot password     | `POST /api/v1/auth/forgot-password` (public)                | Recovery link through Resend, sent after the response (`after()`), so timing never reveals an account                                                                                                                                                                     |
+| Set password        | `/set-password`, `POST /api/v1/auth/set-password` (session) | Recovery and invite links set a password-pending cookie; until a password is saved every page leads back here                                                                                                                                                             |
+| Sign out            | `POST /api/v1/auth/logout` (public)                         | Ends the session and clears the pending cookie                                                                                                                                                                                                                            |
 
-### API
+- Links are built from `NEXT_PUBLIC_APP_URL`: `/auth/confirm?token_hash=...&type=signup|magiclink|recovery|invite`. They work once and expire with Supabase's OTP lifetime (one hour).
+- Passwords: at least 10 characters, a letter and a number (the UNoN schema), also enforced by Supabase's minimum length.
+- `next` redirects are same-site paths only.
+- The proxy sends signed-in people away from `/login` and `/signup`, and signed-out people from `/venues`, `/account` and `/admin` to `/login?next=...`.
 
-| Method and path                                           | Access                     | Body                      | Notes                                                                  |
-| --------------------------------------------------------- | -------------------------- | ------------------------- | ---------------------------------------------------------------------- |
-| `POST /api/v1/session`                                    | Public, rate limited by IP | none                      | Anonymous sign-in; cookies set by `@supabase/ssr`                      |
-| `DELETE /api/v1/session`                                  | Session                    | none                      | Sign out                                                               |
-| `POST /api/v1/account/email`                              | Session (anonymous)        | `{ email }`               | Supabase `updateUser({ email })`; confirmation through `/auth/confirm` |
-| `PATCH /api/v1/account`                                   | Session                    | `{ displayName }`         |                                                                        |
-| `POST /api/v1/places/search`                              | Session                    | `{ query }`               | Max 5 results, debounced on the client; key never leaves the server    |
-| `POST /api/v1/venues`                                     | Session                    | onboarding schema         | Venue then settings; owner row by trigger                              |
-| `GET /api/v1/venues`                                      | Session                    | none                      | RLS decides; capped at 50                                              |
-| `GET /api/v1/venues/[id]`                                 | Session                    | none                      | 404 when RLS hides it                                                  |
-| `PATCH /api/v1/venues/[id]`                               | Session                    | partial onboarding schema | Settings need owner or manager (RLS)                                   |
-| `DELETE /api/v1/venues/[id]`                              | Session                    | none                      | Owner only (RLS); confirm dialog with the venue name typed             |
-| `GET /api/v1/venues/[id]/members`                         | Session                    | none                      | Team sees itself                                                       |
-| `POST /api/v1/venues/[id]/members`                        | Session                    | `{ email, role }`         | Owner only; see invites below                                          |
-| `PATCH` and `DELETE /api/v1/venues/[id]/members/[userId]` | Session                    | `{ role }` / none         | Owner only; never the owner row                                        |
+### Email (`lib/email`)
 
-Invites: the invitee needs a non-anonymous account. If none exists, the service creates it with the service role and sends the Supabase invite email (add "creating invited users" to the allowed service-role list in `CLAUDE.md` first). The member row is then inserted under the owner's session so RLS decides. Every invite is audited.
+- `mailer.ts`: the only file that knows Resend (pinned `resend` package, as UNoN). `emailEnv()` validates `RESEND_API_KEY` and `EMAIL_FROM` on their own, so a missing email key never breaks a database write.
+- `templates.ts`: one branded shell (copper header, plain text alternative, escaped content) and the templates `verifyEmail`, `accountExists`, `passwordReset`, `teamInvite` (new person: set your password), `addedToTeam` (existing account).
+- Failures are logged with the reason and never reveal anything to the requester.
 
-### Time zone
+### Rate limiting (built here, extended in plan 16)
 
-Derived from the venue's coordinates using the Places response (`utcOffsetMinutes` is not a zone), so: map the US state from the address to an IANA zone with a small pure table (`config/time-zones.ts`), tested, with a manual override select in settings.
+- Migration: `private.rate_limit_hits (bucket, hit_at)` and `private.consume_rate_limit(bucket, max_hits, window_seconds)`, with a `public.consume_rate_limit` wrapper executable by the service role only.
+- `lib/http/rate-limit.ts`: `RateLimiter` interface, the database implementation, `clientIp(request)`; the bucket is the route plus a SHA-256 of the IP (raw IPs are never stored).
+- Limits (`config/limits.ts`): sign up 5 per hour per IP, sign in 20 per 10 minutes, forgot password and resend verification 5 per hour, invites 30 per hour, Places search 60 per 10 minutes.
+
+### Data
+
+- Migration `accounts_and_venue_creation`:
+  - `profiles.email` kept in step with `auth.users` by the existing triggers (insert and email change), so the team page can show who is who.
+  - `public.create_venue(...)` (`security invoker`, so RLS applies) inserts the venue and its settings in one transaction and returns the id; the owner row still comes from the trigger.
+  - The rate limiter above.
+  - `rls.sql` assertions for all three.
+- `CLAUDE.md` allowed service-role uses gain: creating auth users and generating auth links (sign-up, verification, recovery, invite), finding an account by email for invites, and consuming rate limits.
+
+### Venues and team
+
+- `modules/venues`: `venues.schemas.ts` (`venueOnboardingSchema`, dollars in the form, cents to the database), `venues.places.ts` (Place to name, coordinates, type and time zone; pure, tested), `venues.repository.ts`, `venues.service.ts` (`listMine`, `create`, `get`, `update`, `delete`), `api.ts`, hooks, components.
+- `config/time-zones.ts`: US state code to IANA zone, with a select to correct it.
+- `modules/team`: list (team sees itself), invite by email (owner only), change role, remove. Inviting an existing account adds the member and sends `addedToTeam`; a new address gets an account through an invite link and `teamInvite`.
+- `POST /api/v1/places/search` (session): Places text search through the server; the key never reaches the browser.
+- The `(app)` layout loads the person's memberships once; the sidebar picks the current venue from the address and the switcher lists them all.
 
 ## Screens
 
-- **`/start`:** one card: "Plan your quiet night. No account needed." Primary "Start" and a line about keeping it later with an email. Honours a same-site `next`. Loading state while the session starts; error with retry.
-- **`/venues/new`:** four steps with a `Stepper` header: 1. Find your venue (autocomplete, map-free; shows the matched address), 2. Your quiet night (weekday chips, break-even number with a helper "how many guests pay for the night"), 3. Your space (capability chips with icons and labels, capacity), 4. Money (talent budget, average spend per guest). A review screen before saving. At 390px one step per screen with `StickyActionBar` (Back, Continue). At 1280px the review shows two columns. Validation inline. Leaving mid-way keeps the draft in `sessionStorage` (per-viewer convenience only).
-- **`/venues`:** venue cards with name, address, quiet night, plan status badge; "Add a venue". Empty state leads to onboarding.
-- **`/venues/[id]`:** frame with the venue header and placeholders filled by later plans (next night, KPIs, plan status). Door staff are redirected to the door screen.
-- **`/venues/[id]/settings`:** the onboarding fields in cards, saved per card; delete venue in a danger card for owners.
-- **`/venues/[id]/team`:** members with role badges; owners see invite form and role changes; managers see the list read only.
-- **`/account`:** display name; anonymous sessions see "Keep your venues: add your email"; sign out.
-
-All screens meet the Screen standard.
+- `(auth)` frame: brand panel on desktop, single column on phones.
+- `/signup`, `/login`, `/forgot-password`, `/check-email` (after sign up or reset, with "Send it again"), `/auth/confirm` (button, or a clear expired-link message), `/set-password`.
+- `/venues`: venue cards with role and quiet night, "Add a venue", empty state leading to onboarding.
+- `/venues/new`: four steps with a `Stepper`: find your venue, your quiet night, your space, money; a review step; `StickyActionBar` on phones.
+- `/venues/[id]`: overview frame with the venue's facts (later plans fill it).
+- `/venues/[id]/settings`: the same fields in cards; owners can delete the venue after typing its name.
+- `/venues/[id]/team`: members with role badges; owners invite, change roles and remove.
+- `/account`: display name, change password, sign out.
 
 ## Tests
 
-- Schemas: every boundary (break-even 1 to 100000, money transforms, required capabilities array, time zone in the table).
-- `venues.places.ts`: Places types mapped to `VenueType` (bar, cafe, restaurant, night club to music venue, other).
-- Services: create writes venue then settings and returns the venue; a settings failure surfaces as a validation error; list returns what RLS gives.
-- Team service: invite of an existing account, of a new email, of an anonymous account (refused), role change, owner row protected.
-- Routes through the wrappers: 401 without a session, 422 on bad bodies, 404 for a hidden venue.
-- Database: extend `rls.sql` for invites (owner only), and settings updates by door staff refused.
-- Rate limit on `POST /api/v1/session`: the route calls a `RateLimiter` interface; tested with a fake here, backed by plan 16's database store later.
+- Schemas: sign up, sign in, password rules, onboarding boundaries, money transforms.
+- `venues.places.ts` and time zone mapping.
+- Auth service: sign up sends `verifyEmail`; an existing address gets `accountExists`; unverified sign in returns the verification error; reset and resend send nothing to unknown or already verified addresses and answer the same.
+- Email templates escape content and include the link in HTML and text.
+- Rate limiter: allows up to the limit, refuses after, keys by hashed IP.
+- Routes: 401, 422 and 429 behaviour through the wrappers; proxy redirects for signed-in and signed-out people.
+- Database: `create_venue` is atomic and refused for other owners; `profiles.email` stays in step; sessions cannot call the limiter.
 
 ## Deliverables
 
-- [ ] "Plan my quiet night" on the landing page starts a session and opens onboarding
-- [ ] Autocomplete fills name, coordinates, type and time zone; the Places key never reaches the browser
-- [ ] Onboarding saves venue and settings in about two minutes (timed with a fresh browser)
-- [ ] `/venues` lists only the caller's venues; a stranger's venue id returns 404
-- [ ] Settings editable by owner and manager, refused for door staff at the API and by RLS
-- [ ] An anonymous owner adds an email, confirms it, and keeps their venues
-- [ ] Owner invites a manager and a door person; door staff land on the door screen and never see money
-- [ ] Session starts limited per IP with a plain message
-- [ ] All tests above pass; Screen standard met for every screen
+- [x] Sidebar focus visible for keyboard users (plan 01 finding): a solid inset outline on every focusable element in the sidebar; the user checks it visually
+- [x] Sign up sends a branded verification email through Resend; the link signs the person in (real email read back from Resend, link followed, `/api/v1/me` returned the new account; the same link used twice is refused)
+- [x] Unverified sign in is refused with a way to send the link again (`email_not_verified`; resend delivered "Your new Encore confirmation link"; nothing sent to an already verified address)
+- [x] Forgot password sends a reset email; the link leads to the set-password form; the new password works (every page redirects to the form while pending; old password refused afterwards)
+- [x] Responses never reveal whether an email has an account (same answer for unknown, existing and verified addresses; emails sent after the response); auth endpoints are rate limited per IP (unit tests and the database limiter assertions)
+- [x] Onboarding saves venue and settings in one transaction; the creator is the owner (`create_venue`, asserted in `rls.sql`; Union Pool created from a live Places search)
+- [x] `/venues` lists only the person's venues; a stranger's venue id renders the not-found page
+- [x] Settings editable by owner and manager; door staff refused at the API and by RLS, and the settings page does not exist for them
+- [x] Owner invites a manager and a door person by email; both can set a password and sign in (new address: invite email, set password, sign in as door staff; existing account: added with "You now work at")
+- [x] Account page: change name and password, sign out (API verified; the user reviews the screen)
+- [x] Tests above pass (128 unit tests); `npm run validate` and `npm run db:test` pass; migration applied to the hosted project. Security advisor: one intentional note (the limiter table has no policies because only the server function may touch it) and "anonymous access" warnings that clear when the user turns anonymous sign-ins off. Test accounts and the test venue were removed afterwards
 
 ## Verification
 
-`npm run validate`, `npm run db:test`. In a private window: landing, Start, onboard The Copper Room's real address, reload, see it in `/venues`. A second private window cannot open it. Invite a door account and sign in as it.
+`npm run validate`, `npm run db:test`. Sign up with a real inbox, verify, sign in, add The Copper Room, invite a second inbox as door staff, set its password, sign in as door staff, then reset the owner's password.
 
 ## Prompt
 
 ---
 
-You are working on Encore. Follow `CLAUDE.md` exactly. Read `CLAUDE.md`, `ARCHITECTURE.md` sections 4 to 6, the plans README (Screen and Test standards), plan 01's route map and components, this plan, and the existing `modules/venues` and `modules/auth`. Read the Next.js guide in `node_modules/next/dist/docs/` for any API you use, and the `supabase` skill for anonymous sign-in and `updateUser`.
+You are working on Encore. Follow `CLAUDE.md` exactly. Read `CLAUDE.md`, `ARCHITECTURE.md` sections 4 to 6, the plans README, plan 01, this plan, and the UNoN reference for auth and email: `../UNoN-hackathon/src/modules/auth`, `../UNoN-hackathon/src/lib/email`, `../UNoN-hackathon/src/app/api/v1/auth` and `../UNoN-hackathon/src/app/(auth)`.
 
-Order: schemas and tests, pure helpers and tests, repositories, services and tests, routes, `api.ts` and hooks, components, pages. Ask the user before adding service-role invites, and update `CLAUDE.md` first if approved. Run `npm run validate` and `npm run db:test`, then check every screen at four widths in both themes. Tick boxes only when verified. No long dashes. Do not commit unless asked.
+Order: migration with assertions, email layer with tests, rate limiter with tests, auth schemas, service and routes with tests, proxy, auth pages, then venues and team. Apply the migration to the hosted project only after local tests pass. Run `npm run validate` and `npm run db:test`. No long dashes. Commit only when the user asks, as the user alone.

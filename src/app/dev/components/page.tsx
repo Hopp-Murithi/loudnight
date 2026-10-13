@@ -9,6 +9,7 @@ import { OverlaysSection } from "./_sections/overlays-section"
 import { PreviewToolbar } from "./_sections/preview-toolbar"
 import { ProgressSection } from "./_sections/progress-section"
 import { StatesSection } from "./_sections/states-section"
+import { TasteSection } from "./_sections/taste-section"
 
 export const metadata: Metadata = { title: "Components", robots: { index: false } }
 
@@ -34,6 +35,7 @@ export default async function ComponentsGallery({ searchParams }: PageProps<"/de
         <ProgressSection />
         <StatesSection />
         <OverlaysSection />
+        <TasteSection />
       </main>
     </>
   )

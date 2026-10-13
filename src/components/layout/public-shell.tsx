@@ -1,22 +1,36 @@
+import Link from "next/link"
 import type { ReactNode } from "react"
-import { SITE } from "@/config/site"
+import { Button } from "@/components/ui/button"
+import { ROUTES, SITE } from "@/config/site"
+import { cn } from "@/lib/utils"
 import { Brand } from "./brand"
 import { SkipLink } from "./skip-link"
 import { ThemeToggle } from "./theme-toggle"
 
 // The frame for everything a guest or judge sees without an account: landing, demo, event and door pages.
-export function PublicShell({ children }: { children: ReactNode }) {
+// `bleed` lets a page run full-width bands under a night header; it then sets its own widths.
+export function PublicShell({ children, bleed = false }: { children: ReactNode; bleed?: boolean }) {
   return (
     <div className="flex min-h-dvh flex-col">
       <SkipLink />
-      <header className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
-        <Brand />
-        <ThemeToggle />
-      </header>
+      <div className={cn(bleed && "dark bg-background text-foreground")}>
+        <header className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
+          <Brand />
+          <nav aria-label="Account" className="flex items-center gap-1 sm:gap-2">
+            <ThemeToggle />
+            <Button variant="ghost" nativeButton={false} render={<Link href={ROUTES.login} />}>
+              Sign in
+            </Button>
+            <Button nativeButton={false} render={<Link href={ROUTES.signup} />} className="hidden sm:inline-flex">
+              Create an account
+            </Button>
+          </nav>
+        </header>
+      </div>
       <main
         id="content"
         tabIndex={-1}
-        className="mx-auto w-full max-w-6xl flex-1 px-4 pt-8 pb-20 outline-none sm:px-6 sm:pt-14"
+        className={cn("flex-1 outline-none", !bleed && "mx-auto w-full max-w-6xl px-4 pt-8 pb-20 sm:px-6 sm:pt-14")}
       >
         {children}
       </main>

@@ -9,7 +9,7 @@ declare
   u_other uuid := gen_random_uuid(); u_admin uuid := gen_random_uuid();
   v_mine uuid; v_other uuid; v_demo uuid := gen_random_uuid();
   run_id uuid; concept_id uuid; cache_id uuid; series_id uuid; night_draft uuid; night_live uuid; v_rsvp uuid; i int;
-  n int; failed boolean;
+  n int; failed boolean; new_venue uuid; before_count int; cache_old uuid; cache_new uuid;
   demo_count int := (select count(*) from public.venues where is_demo);
 begin
   insert into auth.users (id, instance_id, aud, role, email, raw_app_meta_data, raw_user_meta_data, is_anonymous, created_at, updated_at) values
@@ -196,6 +196,57 @@ begin
   begin delete from public.venue_members where venue_id = v_mine and user_id = u_owner; get diagnostics n = row_count; failed := n = 0; end;
   assert failed, 'the owner row cannot be removed';
   reset role;
+
+  -- accounts: the sign-in email follows auth.users
+  assert (select email from public.profiles where id = u_manager) = 'm@t.test', 'profiles carry the sign-in email';
+  update auth.users set email = 'm2@t.test' where id = u_manager;
+  assert (select email from public.profiles where id = u_manager) = 'm2@t.test', 'an email change reaches the profile';
+
+  -- create_venue: venue, settings and owner row in one transaction, under the caller's own rights
+  perform set_config('request.jwt.claims', json_build_object('sub', u_other, 'role', 'authenticated')::text, true);
+  set local role authenticated;
+  select public.create_venue('Made in one go', '3 Main St', null, 40.73, -73.97, 'bar', 'America/New_York',
+    80, '{stage}', 'wednesday', 30, 20000, 1800) into new_venue;
+  assert (select role from public.venue_members where venue_id = new_venue and user_id = u_other) = 'owner', 'create_venue makes the caller the owner';
+  assert (select break_even_headcount from public.venue_settings where venue_id = new_venue) = 30, 'and saves the settings with it';
+  select count(*) into before_count from public.venues where created_by = u_other;
+  failed := false;
+  begin
+    perform public.create_venue('Broken', '4 Main St', null, 40.73, -73.97, 'bar', 'America/New_York',
+      80, '{}', 'wednesday', 0, 20000, 1800);
+  exception when check_violation then failed := true; end;
+  assert failed, 'invalid settings are refused';
+  select count(*) into n from public.venues where created_by = u_other;
+  assert n = before_count, 'and no venue is left behind without its settings';
+  failed := false;
+  begin perform public.consume_rate_limit('x', 1, 60); exception when insufficient_privilege then failed := true; end;
+  assert failed, 'sessions cannot touch the rate limiter';
+  failed := false;
+  begin perform public.store_qloo_answer(repeat('d', 64), '/x', '{}', '{}', 7); exception when insufficient_privilege then failed := true; end;
+  assert failed, 'sessions cannot store Qloo answers';
+  reset role;
+
+  -- the rate limiter itself, as the server calls it
+  assert private.consume_rate_limit('test:bucket', 2, 60), 'first hit allowed';
+  assert private.consume_rate_limit('test:bucket', 2, 60), 'second hit allowed';
+  assert not private.consume_rate_limit('test:bucket', 2, 60), 'third hit refused';
+  assert private.consume_rate_limit('test:other', 2, 60), 'buckets are separate';
+
+  -- a refreshed Qloo answer keeps the old row, so existing receipts still resolve
+  cache_old := public.store_qloo_answer(repeat('c', 64), '/v2/insights', '{}', '{"results":{"tags":[{"query":{"affinity":0.9}}]}}', 7);
+  cache_new := public.store_qloo_answer(repeat('c', 64), '/v2/insights', '{}', '{"results":{"tags":[{"query":{"affinity":0.5}}]}}', 7);
+  assert cache_old <> cache_new, 'a refresh is a new row';
+  select count(*) into n from public.qloo_cache where request_hash = repeat('c', 64) and superseded_at is null;
+  assert n = 1, 'only one answer per request is current';
+  assert (select superseded_at is not null from public.qloo_cache where id = cache_old), 'the old answer is kept as history';
+  assert (select response #>> '{results,tags,0,query,affinity}' from public.qloo_cache where id = cache_old) = '0.9',
+    'and still holds the value its receipts quoted';
+  failed := false;
+  begin
+    insert into public.qloo_cache (request_hash, endpoint, request, response, expires_at)
+      values (repeat('c', 64), '/v2/insights', '{}', '{}', now() + interval '1 day');
+  exception when unique_violation then failed := true; end;
+  assert failed, 'two current answers for one request are refused';
 
   -- fresh runs are capped per person
   failed := false;

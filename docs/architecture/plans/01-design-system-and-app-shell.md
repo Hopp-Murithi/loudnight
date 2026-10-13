@@ -1,6 +1,6 @@
 # Plan 01: Design system, app shell and screen map
 
-Status: Done except one item: visible keyboard focus inside the dark sidebar (see Deliverables)
+Status: Done. The sidebar focus finding was fixed in plan 03 (solid inset outline); the user reviews the UI by hand.
 Depends on: 00
 Phase: 1
 Judging criteria: Design (a complete, coherent product, not a proof of concept)
@@ -117,7 +117,7 @@ Short sentences, second person, venue words ("night", "regulars", "door", "break
 - [x] Segment `loading.tsx`, `error.tsx` and `not-found.tsx` for `(public)`, `(app)` and `admin`
 - [x] Route map above checked against the brief; no changes needed
 - [x] Gallery reachable in development only (production build returns 404 for `/dev/components` and `/dev/components/shell`)
-- [ ] Screen standard met for the shell and gallery. All met except: in the dark sidebar, the venue switcher and nav links match `:focus-visible` but show no visible ring (computed shadow transparent). Fix before plan 03 ships the real sidebar; the user will review the UI by hand
+- [x] Screen standard met for the shell and gallery. The one finding (no visible focus ring in the dark sidebar) was fixed in plan 03 with a solid inset outline on every focusable element in the sidebar
 
 ## Verification
 

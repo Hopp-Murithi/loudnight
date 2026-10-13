@@ -7,40 +7,34 @@ vi.mock("@/lib/supabase/proxy", () => ({ refreshSession: () => refreshSession() 
 const { proxy, config } = await import("./proxy")
 
 const signedIn = () =>
-  refreshSession.mockResolvedValue({
-    claims: { sub: "u1", is_anonymous: true },
-    getResponse: () => NextResponse.next(),
-  })
+  refreshSession.mockResolvedValue({ claims: { sub: "u1" }, getResponse: () => NextResponse.next() })
 
 const signedOut = () => refreshSession.mockResolvedValue({ claims: null, getResponse: () => NextResponse.next() })
 
-const visit = async (path: string) => {
-  const response = await proxy(new NextRequest(new URL(path, "http://localhost:3000")))
-  return response.headers.get("location")
+const visit = async (path: string, cookie?: string) => {
+  const request = new NextRequest(new URL(path, "http://localhost:3000"), cookie ? { headers: { cookie } } : undefined)
+  return (await proxy(request)).headers.get("location")
 }
 
 beforeEach(() => {
   refreshSession.mockReset()
 })
 
-describe("proxy", () => {
-  it("sends visitors without a session to the start page and remembers where they were going", async () => {
+describe("proxy, signed out", () => {
+  it("sends people to sign in and remembers where they were going", async () => {
     signedOut()
-    expect(await visit("/venues/abc")).toBe("http://localhost:3000/start?next=%2Fvenues%2Fabc")
+    expect(await visit("/venues/abc")).toBe("http://localhost:3000/login?next=%2Fvenues%2Fabc")
+    expect(await visit("/account")).toBe("http://localhost:3000/login?next=%2Faccount")
+    expect(await visit("/admin/audit")).toBe("http://localhost:3000/login?next=%2Fadmin%2Faudit")
+    expect(await visit("/set-password")).toBe("http://localhost:3000/login?next=%2Fset-password")
   })
 
-  it("gates the account and admin areas the same way", async () => {
+  // Judges and guests never need an account: demo venues, event pages and the sign-in pages stay open.
+  it("lets anyone reach the public and sign-in pages", async () => {
     signedOut()
-    expect(await visit("/account")).toBe("http://localhost:3000/start?next=%2Faccount")
-    expect(await visit("/admin/audit")).toBe("http://localhost:3000/start?next=%2Fadmin%2Faudit")
-  })
-
-  // Judges and guests never need an account: demo venues and event pages stay open.
-  it("lets anyone reach the public pages", async () => {
-    signedOut()
-    expect(await visit("/")).toBeNull()
-    expect(await visit("/demo/copper-room")).toBeNull()
-    expect(await visit("/e/afrobeats-tuesday-1")).toBeNull()
+    for (const path of ["/", "/demo/copper-room", "/e/afrobeats-tuesday-1", "/login", "/signup", "/auth/confirm"]) {
+      expect(await visit(path)).toBeNull()
+    }
     expect(await visit("/venuesque")).toBeNull()
   })
 
@@ -48,12 +42,30 @@ describe("proxy", () => {
     signedOut()
     expect(await visit("/api/v1/me")).toBeNull()
   })
+})
 
-  it("lets an anonymous session into the owner area", async () => {
+describe("proxy, signed in", () => {
+  it("lets people into their venues", async () => {
     signedIn()
     expect(await visit("/venues")).toBeNull()
   })
 
+  it("moves people off the sign-in pages", async () => {
+    signedIn()
+    expect(await visit("/login")).toBe("http://localhost:3000/venues")
+    expect(await visit("/signup")).toBe("http://localhost:3000/venues")
+  })
+
+  it("keeps someone with a pending reset on the password form until it is saved", async () => {
+    signedIn()
+    const pending = "encore_password_pending=1"
+    expect(await visit("/venues", pending)).toBe("http://localhost:3000/set-password")
+    expect(await visit("/set-password", pending)).toBeNull()
+    expect(await visit("/auth/confirm", pending)).toBeNull()
+  })
+})
+
+describe("proxy matcher", () => {
   it("skips static files", () => {
     const runsOn = (path: string) => config.matcher.some((pattern) => new RegExp(`^${pattern}$`).test(path))
     expect(runsOn("/icon.svg")).toBe(false)

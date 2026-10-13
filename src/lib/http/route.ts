@@ -1,11 +1,13 @@
 import "server-only"
 import { NextResponse, type NextRequest } from "next/server"
 import type { ZodType } from "zod"
+import type { RateLimitRule } from "@/config/limits"
 import type { AppRole } from "@/config/roles"
 import { createServerSupabase, type ServerSupabase } from "@/lib/supabase/server"
 import { getApiContext } from "@/modules/auth/server/context"
 import type { RequestContext } from "@/modules/auth/types"
 import { AppError, validationFailed } from "./errors"
+import { enforceRateLimit } from "./rate-limit"
 import { NDJSON } from "./stream"
 
 interface HandlerArgs<TBody, TParams> {
@@ -25,10 +27,12 @@ interface PublicHandlerArgs<TBody, TParams> {
 interface RouteOptions<TBody> {
   roles?: AppRole[]
   body?: ZodType<TBody>
+  rateLimit?: RateLimitRule
 }
 
 interface PublicRouteOptions<TBody> {
   body?: ZodType<TBody>
+  rateLimit?: RateLimitRule
 }
 
 type RouteParams<TParams> = { params: Promise<TParams> }
@@ -57,6 +61,7 @@ export function apiRoute<TBody = undefined, TParams = Record<string, never>>(
   return async (request: NextRequest, route: RouteParams<TParams>) => {
     try {
       const ctx = await getApiContext(options.roles)
+      if (options.rateLimit) await enforceRateLimit(request.headers, options.rateLimit)
       const body = await parseBody(request, options.body)
       const data = await handler({ ctx, body, params: await route.params, request })
       return NextResponse.json({ data })
@@ -90,6 +95,7 @@ export function publicApiRoute<TBody = undefined, TParams = Record<string, never
 ) {
   return async (request: NextRequest, route: RouteParams<TParams>) => {
     try {
+      if (options.rateLimit) await enforceRateLimit(request.headers, options.rateLimit)
       const body = await parseBody(request, options.body)
       const supabase = await createServerSupabase()
       const data = await handler({ supabase, body, params: await route.params, request })

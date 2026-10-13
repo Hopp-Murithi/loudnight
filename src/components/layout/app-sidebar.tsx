@@ -2,7 +2,6 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import type { ReactNode } from "react"
 import {
   Sidebar,
   SidebarContent,
@@ -18,6 +17,7 @@ import {
 import { ADMIN_ITEM, ALL_VENUES_ITEM, venueNavigation, type NavItem, type VenueRole } from "@/config/navigation"
 import { ROUTES } from "@/config/site"
 import { Brand } from "./brand"
+import { VenueSwitcher } from "./venue-switcher"
 
 export interface ShellVenue {
   id: string
@@ -26,10 +26,13 @@ export interface ShellVenue {
 }
 
 interface AppSidebarProps {
-  venue: ShellVenue | null
+  venues: ShellVenue[]
   isAdministrator: boolean
-  venueSwitcher?: ReactNode
+  currentVenueId?: string
 }
+
+// The venue being worked on comes from the address, so every page under /venues/[id] shares one sidebar.
+const currentVenueId = (pathname: string) => pathname.match(/^\/venues\/([0-9a-f-]{36})(?:\/|$)/)?.[1] ?? null
 
 // An exact match for a section's home, a prefix match for everything below it.
 const activeFor = (pathname: string, href: string, homes: string[]) =>
@@ -71,8 +74,10 @@ function NavGroup({
   )
 }
 
-export function AppSidebar({ venue, isAdministrator, venueSwitcher }: AppSidebarProps) {
+export function AppSidebar({ venues, isAdministrator, currentVenueId: override }: AppSidebarProps) {
   const pathname = usePathname()
+  const currentId = override ?? currentVenueId(pathname)
+  const venue = venues.find((item) => item.id === currentId) ?? null
   const venueItems = venue ? venueNavigation(venue.id, venue.role) : []
   const homes = [ROUTES.venues, ROUTES.admin, ...(venue ? [ROUTES.venue(venue.id)] : [])]
   const general = isAdministrator ? [ALL_VENUES_ITEM, ADMIN_ITEM] : [ALL_VENUES_ITEM]
@@ -85,7 +90,11 @@ export function AppSidebar({ venue, isAdministrator, venueSwitcher }: AppSidebar
           className="text-sidebar-foreground focus-visible:ring-sidebar-ring focus-visible:ring-offset-sidebar"
           nameClassName="group-data-[collapsible=icon]:hidden"
         />
-        {venueSwitcher && <div className="group-data-[collapsible=icon]:hidden">{venueSwitcher}</div>}
+        {venues.length > 0 && (
+          <div className="group-data-[collapsible=icon]:hidden">
+            <VenueSwitcher venues={venues} currentId={venue?.id ?? null} />
+          </div>
+        )}
       </SidebarHeader>
       <SidebarContent className="px-2">
         {venue && <NavGroup label={venue.name} items={venueItems} pathname={pathname} homes={homes} />}

@@ -12,17 +12,17 @@ import { ThemeToggle } from "./theme-toggle"
 interface AppShellProps {
   user: CurrentUser
   defaultOpen: boolean
-  venue?: ShellVenue | null
-  venueSwitcher?: ReactNode
+  venues: ShellVenue[]
+  currentVenueId?: string
   children: ReactNode
 }
 
 // The signed-in frame: a drawer on phones, an icon rail on tablets, a full sidebar from laptop width.
-export function AppShell({ user, defaultOpen, venue = null, venueSwitcher, children }: AppShellProps) {
+export function AppShell({ user, defaultOpen, venues, currentVenueId, children }: AppShellProps) {
   return (
     <SidebarProvider defaultOpen={defaultOpen}>
       <SkipLink />
-      <AppSidebar venue={venue} isAdministrator={user.role === ROLES.administrator} venueSwitcher={venueSwitcher} />
+      <AppSidebar venues={venues} isAdministrator={user.role === ROLES.administrator} currentVenueId={currentVenueId} />
       <SidebarInset className="min-w-0">
         <header className="sticky top-0 z-20 flex h-14 items-center gap-2 border-b bg-background/90 px-3 backdrop-blur sm:px-4">
           <SidebarToggle />

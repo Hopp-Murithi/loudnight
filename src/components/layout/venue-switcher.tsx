@@ -31,7 +31,7 @@ export function VenueSwitcher({ venues, currentId }: VenueSwitcherProps) {
         render={
           <Button
             variant="outline"
-            className="h-10 w-full justify-between border-sidebar-border bg-sidebar-accent text-sidebar-accent-foreground hover:bg-sidebar-accent/80 focus-visible:border-sidebar-ring focus-visible:ring-2 focus-visible:ring-sidebar-ring"
+            className="h-10 w-full justify-between border-sidebar-border bg-sidebar-accent text-sidebar-accent-foreground hover:bg-sidebar-accent/80"
           />
         }
       >

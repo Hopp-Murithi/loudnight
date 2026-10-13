@@ -1,0 +1,10 @@
+.env*
+!.env.example
+.probe
+supabase/.temp
+supabase/.branches
+node_modules
+.next
+coverage
+*.tsbuildinfo
+video

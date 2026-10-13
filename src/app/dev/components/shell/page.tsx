@@ -3,14 +3,19 @@ import { notFound } from "next/navigation"
 import { AppShell } from "@/components/layout/app-shell"
 import type { ShellVenue } from "@/components/layout/app-sidebar"
 import { PageHeader } from "@/components/layout/page-header"
-import { VenueSwitcher } from "@/components/layout/venue-switcher"
 import { EmptyState } from "@/components/shared/empty-state"
 import { devToolsEnabled } from "@/config/dev"
 import type { CurrentUser } from "@/modules/auth/types"
 
 export const metadata: Metadata = { title: "Shell preview", robots: { index: false } }
 
-const USER: CurrentUser = { id: "preview", displayName: null, role: "owner", isAnonymous: true }
+const USER: CurrentUser = {
+  id: "preview",
+  displayName: "Ada",
+  email: "ada@example.com",
+  role: "owner",
+  isAnonymous: false,
+}
 
 const VENUES: ShellVenue[] = [
   { id: "copper", name: "The Copper Room", role: "owner" },
@@ -24,12 +29,7 @@ export default async function ShellPreview({ searchParams }: PageProps<"/dev/com
   const venue = VENUES[role]
 
   return (
-    <AppShell
-      user={USER}
-      defaultOpen
-      venue={venue}
-      venueSwitcher={<VenueSwitcher venues={VENUES} currentId={venue.id} />}
-    >
+    <AppShell user={USER} defaultOpen venues={VENUES} currentVenueId={venue.id}>
       <PageHeader
         title={venue.name}
         description={`Previewing the shell as ${venue.role === "door" ? "door staff" : "the owner"}.`}

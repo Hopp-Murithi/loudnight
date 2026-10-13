@@ -30,29 +30,30 @@ If the day-one Qloo probe fails (thin location data), switch neighbourhoods or l
 
 ## Index
 
-| #   | Plan                                                                              | Phase | Status                         | Depends on |
-| --- | --------------------------------------------------------------------------------- | ----- | ------------------------------ | ---------- |
-| 00  | [Setup and configuration](00-setup-and-configuration.md)                          | 1     | Done except the Qloo key       | none       |
-| 01  | [Design system, app shell and screen map](01-design-system-and-app-shell.md)      | 1     | Done except sidebar focus ring | 00         |
-| 02  | [Qloo probe and integration correctness](02-qloo-probe-and-integration.md)        | 1     | Not started                    | 00         |
-| 03  | [Sessions, venue onboarding and team](03-sessions-onboarding-and-team.md)         | 2     | Not started                    | 01         |
-| 04  | [Neighbourhood taste fingerprint](04-taste-fingerprint.md)                        | 2     | Not started                    | 02         |
-| 05  | [Competitor gap scan](05-competitor-gap-scan.md)                                  | 2     | Not started                    | 03, 04     |
-| 06  | [Concepts, scoring and grounding](06-concepts-scoring-grounding.md)               | 3     | Not started                    | 04, 05     |
-| 07  | [Pipeline runs, live trace and generic toggle](07-runs-live-trace-generic.md)     | 3     | Not started                    | 06         |
-| 08  | [Administrator console and Preview as](08-admin-console-and-preview.md)           | 5     | Not started                    | 03, 13     |
-| 09  | [Demo venues and the judge path](09-demo-venues-judge-path.md)                    | 3     | Not started                    | 07         |
-| 10  | [Series planner and talent finder](10-series-and-talent.md)                       | 4     | Not started                    | 06         |
-| 11  | [Launch kit and distribution](11-launch-kit-and-distribution.md)                  | 4     | Not started                    | 10         |
-| 12  | [Event pages, RSVP and QR](12-event-pages-rsvp-qr.md)                             | 4     | Not started                    | 11         |
-| 13  | [Door check-in, live dashboard and measurement](13-door-dashboard-measurement.md) | 4     | Not started                    | 12         |
-| 14  | [Learning loop](14-learning-loop.md)                                              | 4     | Not started                    | 13         |
-| 15  | [Installable app for door staff](15-installable-app.md)                           | 5     | Not started                    | 13         |
-| 16  | [Security hardening and Qloo data compliance](16-security-and-compliance.md)      | 5     | Not started                    | 12, 13     |
-| 17  | [Quality: end-to-end, accessibility, performance, observability](17-quality.md)   | 5     | Not started                    | 09, 13     |
-| 18  | [Deployment and environments](18-deployment.md)                                   | 2, 5  | Not started                    | 00         |
-| 19  | [Submission: write-up, screenshots, video, pilot](19-submission.md)               | 5     | Not started                    | all core   |
-| 20  | [Roadmap write-ups and stretch enhancements](20-roadmap-and-enhancements.md)      | 5     | Not started                    | 19         |
+| #   | Plan                                                                              | Phase | Status            | Depends on |
+| --- | --------------------------------------------------------------------------------- | ----- | ----------------- | ---------- |
+| 00  | [Setup and configuration](00-setup-and-configuration.md)                          | 1     | Done              | none       |
+| 01  | [Design system, app shell and screen map](01-design-system-and-app-shell.md)      | 1     | Done              | 00         |
+| 02  | [Qloo probe and integration correctness](02-qloo-probe-and-integration.md)        | 1     | Done              | 00         |
+| 03  | [Accounts, venue onboarding and team](03-sessions-onboarding-and-team.md)         | 2     | Done              | 01         |
+| 04  | [Neighbourhood taste fingerprint](04-taste-fingerprint.md)                        | 2     | Built, local      | 02         |
+| 05  | [Competitor gap scan](05-competitor-gap-scan.md)                                  | 2     | Not started       | 03, 04     |
+| 06  | [Concepts, scoring and grounding](06-concepts-scoring-grounding.md)               | 3     | Not started       | 04, 05     |
+| 07  | [Pipeline runs, live trace and generic toggle](07-runs-live-trace-generic.md)     | 3     | Not started       | 06         |
+| 08  | [Administrator console and Preview as](08-admin-console-and-preview.md)           | 5     | Not started       | 03, 13     |
+| 09  | [Demo venues and the judge path](09-demo-venues-judge-path.md)                    | 3     | Not started       | 07         |
+| 10  | [Series planner and talent finder](10-series-and-talent.md)                       | 4     | Not started       | 06         |
+| 11  | [Launch kit and distribution](11-launch-kit-and-distribution.md)                  | 4     | Not started       | 10         |
+| 12  | [Event pages, RSVP and QR](12-event-pages-rsvp-qr.md)                             | 4     | Not started       | 11         |
+| 13  | [Door check-in, live dashboard and measurement](13-door-dashboard-measurement.md) | 4     | Not started       | 12         |
+| 14  | [Learning loop](14-learning-loop.md)                                              | 4     | Not started       | 13         |
+| 15  | [Installable app for door staff](15-installable-app.md)                           | 5     | Not started       | 13         |
+| 16  | [Security hardening and Qloo data compliance](16-security-and-compliance.md)      | 5     | Not started       | 12, 13     |
+| 17  | [Quality: end-to-end, accessibility, performance, observability](17-quality.md)   | 5     | Not started       | 09, 13     |
+| 18  | [Deployment and environments](18-deployment.md)                                   | 2, 5  | Live, in progress | 00         |
+| 19  | [Submission: write-up, screenshots, video, pilot](19-submission.md)               | 5     | Not started       | all core   |
+| 20  | [Roadmap write-ups and stretch enhancements](20-roadmap-and-enhancements.md)      | 5     | Not started       | 19         |
+| 21  | [Landing page and product film](21-landing-page-and-film.md)                      | 2     | In progress       | 01, 03     |
 
 ## Official judging criteria and how the plans answer them
 

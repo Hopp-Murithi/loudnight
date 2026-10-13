@@ -342,6 +342,7 @@ export type Database = {
         Row: {
           created_at: string
           display_name: string | null
+          email: string | null
           id: string
           is_active: boolean
           is_anonymous: boolean
@@ -351,6 +352,7 @@ export type Database = {
         Insert: {
           created_at?: string
           display_name?: string | null
+          email?: string | null
           id: string
           is_active?: boolean
           is_anonymous?: boolean
@@ -360,6 +362,7 @@ export type Database = {
         Update: {
           created_at?: string
           display_name?: string | null
+          email?: string | null
           id?: string
           is_active?: boolean
           is_anonymous?: boolean
@@ -377,6 +380,7 @@ export type Database = {
           request: Json
           request_hash: string
           response: Json
+          superseded_at: string | null
         }
         Insert: {
           endpoint: string
@@ -386,6 +390,7 @@ export type Database = {
           request: Json
           request_hash: string
           response: Json
+          superseded_at?: string | null
         }
         Update: {
           endpoint?: string
@@ -395,6 +400,7 @@ export type Database = {
           request?: Json
           request_hash?: string
           response?: Json
+          superseded_at?: string | null
         }
         Relationships: []
       }
@@ -745,7 +751,38 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      consume_rate_limit: {
+        Args: { bucket: string; max_hits: number; window_seconds: number }
+        Returns: boolean
+      }
+      create_venue: {
+        Args: {
+          p_address: string
+          p_average_spend_cents: number
+          p_break_even_headcount: number
+          p_capabilities: Database["public"]["Enums"]["venue_capability"][]
+          p_capacity: number
+          p_google_place_id: string
+          p_latitude: number
+          p_longitude: number
+          p_name: string
+          p_slow_night: Database["public"]["Enums"]["weekday"]
+          p_talent_budget_cents: number
+          p_time_zone: string
+          p_venue_type: Database["public"]["Enums"]["venue_type"]
+        }
+        Returns: string
+      }
+      store_qloo_answer: {
+        Args: {
+          p_endpoint: string
+          p_request: Json
+          p_request_hash: string
+          p_response: Json
+          p_ttl_days: number
+        }
+        Returns: string
+      }
     }
     Enums: {
       app_role: "owner" | "administrator"

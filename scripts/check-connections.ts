@@ -44,11 +44,12 @@ const checks: Check[] = [
       const base = env("QLOO_API_URL") || "https://hackathon.api.qloo.com"
       const params = new URLSearchParams({
         "filter.type": "urn:entity:artist",
-        "signal.location.query": "Brooklyn",
+        "signal.location": "POINT(-73.9575 40.7174)",
+        "filter.popularity.max": "0.7",
         take: "3",
       })
       const response = await fetch(`${base}/v2/insights?${params}`, { headers: { "X-Api-Key": env("QLOO_API_KEY") } })
-      return expectOk(response, () => "insights answered for Brooklyn")
+      return expectOk(response, () => "insights answered for Williamsburg (WKT point, the recipe plan 02 proved)")
     },
   },
   {

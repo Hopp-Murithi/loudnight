@@ -173,8 +173,8 @@ The client drives the steps in order and renders the stream; the server never ho
 
 The MCP tools cannot change Auth settings. Do these once for the hosted project (Authentication section):
 
-1. Turn on **Allow anonymous sign-ins**.
-2. Keep the anonymous sign-in rate limit at 30 per hour per IP (the default).
+1. Keep **Allow new users to sign up** and **Confirm email** on; Encore sends the confirmation itself through Resend, so Supabase's own email templates are never used.
+2. Turn **Allow anonymous sign-ins** off. Owners have email accounts (plan 03); judges use the public demo pages, which need no session.
 3. Set **Site URL** to the deployed URL, and add `http://localhost:3000` as a redirect for development.
 4. Password minimum length 10; turn on leaked password protection if the plan allows it.
 5. JWT expiry 3600 seconds or less.

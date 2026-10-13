@@ -1,9 +1,9 @@
 import { NextResponse, type NextRequest } from "next/server"
-import { ROUTES, SIGNED_IN_PREFIXES } from "@/config/site"
+import { PASSWORD_PENDING_COOKIE, ROUTES, SIGNED_IN_HOME, SIGNED_IN_PREFIXES, SIGNED_OUT_PAGES } from "@/config/site"
 import { refreshSession } from "@/lib/supabase/proxy"
 
-const needsSession = (pathname: string) =>
-  SIGNED_IN_PREFIXES.some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`))
+const matches = (pathname: string, prefixes: readonly string[]) =>
+  prefixes.some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`))
 
 // Cookies refreshed during this request must survive a redirect.
 function redirectTo(url: URL, source: NextResponse) {
@@ -18,11 +18,24 @@ export async function proxy(request: NextRequest) {
   const response = getResponse()
   const { pathname } = request.nextUrl
 
-  if (pathname.startsWith("/api/") || claims || !needsSession(pathname)) return response
+  if (pathname.startsWith("/api/")) return response
 
-  const start = new URL(ROUTES.start, request.url)
-  start.searchParams.set("next", pathname)
-  return redirectTo(start, response)
+  if (!claims) {
+    if (!matches(pathname, SIGNED_IN_PREFIXES)) return response
+    const login = new URL(ROUTES.login, request.url)
+    login.searchParams.set("next", pathname)
+    return redirectTo(login, response)
+  }
+
+  // Someone who opened a reset or invite link saves a password before going anywhere else.
+  const passwordPending = request.cookies.has(PASSWORD_PENDING_COOKIE)
+  if (passwordPending && pathname !== ROUTES.setPassword && pathname !== ROUTES.authConfirm) {
+    return redirectTo(new URL(ROUTES.setPassword, request.url), response)
+  }
+
+  if (matches(pathname, SIGNED_OUT_PAGES)) return redirectTo(new URL(SIGNED_IN_HOME, request.url), response)
+
+  return response
 }
 
 export const config = {

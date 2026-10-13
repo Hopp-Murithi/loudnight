@@ -24,6 +24,8 @@ export default defineConfig({
       NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "sb_publishable_test",
       NEXT_PUBLIC_APP_URL: "http://localhost:3000",
       SUPABASE_SERVICE_ROLE_KEY: "test-service-key",
+      RESEND_API_KEY: "re_test",
+      EMAIL_FROM: "Encore <no-reply@example.com>",
     },
     coverage: { provider: "v8", include: ["src/lib/**", "src/modules/**", "src/config/**"], exclude: ["**/*.test.*"] },
   },

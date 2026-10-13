@@ -19,7 +19,8 @@
     "check:connections": "node --env-file=.env.local scripts/check-connections.ts",
     "db:types": "supabase gen types typescript --local > src/types/database.ts && prettier --write src/types/database.ts",
     "db:types:linked": "supabase gen types typescript --linked > src/types/database.ts && prettier --write src/types/database.ts",
-    "db:test": "node scripts/run-db-tests.mjs"
+    "db:test": "node scripts/run-db-tests.mjs",
+    "taste:print": "tsx --conditions=react-server --env-file=.env.local scripts/print-fingerprint.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "0.131.0",
@@ -36,6 +37,7 @@
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "react-hook-form": "7.89.0",
+    "resend": "6.30.0",
     "server-only": "0.0.1",
     "shadcn": "4.21.0",
     "sonner": "2.0.8",
@@ -58,6 +60,7 @@
     "prettier": "3.9.9",
     "prettier-plugin-tailwindcss": "0.8.1",
     "tailwindcss": "4.3.3",
+    "tsx": "4.23.15",
     "typescript": "5.9.3",
     "vitest": "5.0.2"
   },

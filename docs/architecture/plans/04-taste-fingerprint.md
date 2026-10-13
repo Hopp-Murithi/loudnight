@@ -1,6 +1,6 @@
 # Plan 04: Neighbourhood taste fingerprint
 
-Status: Not started
+Status: Built and verified locally (Oct 13). Waiting on the hosted migration and the UI review.
 Depends on: 02
 Phase: 2
 Judging criteria: Technological Implementation (depth of Qloo use), Quality of the Idea (cross-domain taste for the supply side)
@@ -44,14 +44,28 @@ Out: run orchestration and streaming (plan 07), concept generation (plan 06).
 - Step writer records latency and the cache id.
 - Card renders values as text and keeps meters accessible (`role="meter"` with `aria-valuenow`).
 
+## Build notes (Oct 13)
+
+- Receipts are `text[]` key paths, the same form the evidence trigger reads with `#>>`, so a fingerprint value becomes evidence without conversion.
+- Cache history: refreshing an answer in place would have changed values that older evidence quotes. Migration `20261013103000_qloo_cache_history` keeps superseded rows (`superseded_at`), allows one current row per request, and stores answers through `store_qloo_answer` (service role only). Asserted in `rls.sql`. **Applied locally only**: the Supabase MCP has no permission on hack2026 and the CLI is not linked, so the hosted apply, advisors and hosted `rls.sql` run are pending.
+- Rate limit: 11 parallel calls hit 429 on the hackathon key. Calls run 3 at a time (`QLOO.maxConcurrent`); no 429 since.
+- Schema: some artist tags arrive with only a `type`; tag `id` and `name` are optional so one odd tag cannot fail a domain.
+- Quality: artists use a popularity band of 0.3 to 0.7. Below 0.3 was noise (novelty acts, a sports team). Podcasts are uncapped (the cap emptied them). Films and TV keep the cap only, because a floor starved them.
+- Names pass `isPresentableName` (`config/content.ts`) before display. One live artist name carried a racial slur. The filter is narrow and tested against real names it must not hide (Niger, Donald Fagen, Kike Pavon).
+- Scores come from Qloo's rank, not the affinity value, because affinities cluster at 0.97 to 1.0. The raw affinity stays the receipt and is shown as text.
+- The card shows affinity as a value chip, not a `MeterBar`: with every value near 1 the bars would all be full and say nothing. The audience lean is a diverging meter from -1 to 1.
+- Opening a chip's receipt arrives with plan 06 (evidence chips). Retrying a failed domain arrives with plan 07 (runs); until then the tile says it is retried on the next run.
+- For plan 06: music tags are the sharper signal for concepts. Qloo's artist type also includes visual artists, models and comedians.
+- Script runner: `npm run taste:print -- <venueId>` (tsx, pinned).
+
 ## Deliverables
 
-- [ ] Fingerprint for each demo venue returns 8 or more domains with results, each value with a receipt that resolves
-- [ ] A repeat fingerprint within the freshness window makes no Qloo call (seen in logs and `run_steps`)
-- [ ] Demographic skew present with receipts, or a recorded reason from plan 02 why not
-- [ ] `read_neighbourhood` writes one `run_steps` row per Qloo call, with latency and cache id
-- [ ] `TasteFingerprintCard` meets the Screen standard, including empty and partial domains
-- [ ] Tests above pass with synthetic fixtures only
+- [x] Fingerprint for each demo venue returns 8 or more domains with results, each value with a receipt that resolves (11 of 11 for all three, local database, live Qloo)
+- [x] A repeat fingerprint within the freshness window makes no Qloo call (seen in logs and `run_steps`): 12 of 12 from cache in 215 ms, no new cache rows
+- [x] Demographic skew present with receipts, or a recorded reason from plan 02 why not
+- [x] `read_neighbourhood` writes one `run_steps` row per Qloo call, with latency and cache id
+- [ ] `TasteFingerprintCard` meets the Screen standard, including empty and partial domains (built, tested and in the gallery under Taste fingerprint; awaiting the user's check at the four widths)
+- [x] Tests above pass with synthetic fixtures only
 
 ## Verification
 

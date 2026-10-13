@@ -1,6 +1,6 @@
 # Plan 18: Deployment and environments
 
-Status: Not started
+Status: In progress. Production live on Oct 13 at https://encore-seven-dusky.vercel.app (project `hoppmurithis-projects/encore`).
 Depends on: 00
 Phase: 2 (first preview deploy) and 5 (production and the final deploy)
 Judging criteria: all four depend on a working, publicly accessible app
@@ -29,14 +29,19 @@ Out: CI on GitHub Actions beyond what Vercel provides (optional enhancement in p
 - Domain: optional custom domain (ask the user); otherwise `encore-<team>.vercel.app`.
 - Judging-period watch: before Nov 2, confirm the Qloo key stays active through judging (it does, per the guide), check the monthly Qloo quota with the expected judge traffic (demo pages make no Qloo calls because they are precomputed), and the Anthropic, Places and Ticketmaster quotas and billing caps. Freeze deploys during judging except for fixes.
 
+## Findings
+
+- The team-scoped addresses (`encore-hoppmurithis-projects.vercel.app` and each deployment URL) sit behind Vercel Authentication. Only the production alias `encore-seven-dusky.vercel.app` is public, so `NEXT_PUBLIC_APP_URL` is set to it; emailed links built from anything else would land on a Vercel sign-in page.
+- Preview deployments use the same `NEXT_PUBLIC_APP_URL`, so emails sent from a preview point at production.
+
 ## Deliverables
 
-- [ ] Vercel project created with the user's approval; repository connected if the user wants push-to-deploy
+- [x] Vercel project created with the user's approval (`hoppmurithis-projects/encore`); repository not connected yet (deploys go out with `vercel deploy --prod`)
 - [ ] Preview deploy live by the end of phase 2 against the hosted database
-- [ ] All variables set per environment as sensitive; none printed or committed
+- [x] All variables set for Production and Preview, secrets marked sensitive, read from `.env.local` by script and never printed; `.vercelignore` keeps `.env*` out of every upload. `QLOO_API_KEY` added Oct 13 when the organisers sent it
 - [ ] Supabase Auth URLs set for production, previews and localhost
 - [ ] Step routes measured on Vercel and within their duration limit
-- [ ] Production deploy follows the procedure; smoke checklist passes
+- [x] Production deploy after `npm run validate`; smoke test passed: health OK, demo venues render, sign-in pages load, signed-in pages redirect, `/api/v1/me` 401, dev gallery 404, security headers present, and a real sign-up email linked to the public URL and signed the account in
 - [ ] Rollback tried once on a preview
 - [ ] Quotas and billing caps checked for the judging period; freeze date recorded
 

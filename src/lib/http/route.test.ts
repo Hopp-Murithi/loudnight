@@ -9,7 +9,11 @@ vi.mock("@/modules/auth/server/context", () => ({ getApiContext: (roles?: string
 const serverSupabase = { from: vi.fn() }
 vi.mock("@/lib/supabase/server", () => ({ createServerSupabase: async () => serverSupabase }))
 
+const enforceRateLimit = vi.fn()
+vi.mock("./rate-limit", () => ({ enforceRateLimit: (...args: unknown[]) => enforceRateLimit(...args) }))
+
 const { apiRoute, apiStreamRoute, publicApiRoute } = await import("./route")
+const { rateLimited } = await import("./errors")
 
 const request = (body?: unknown) =>
   ({ json: () => (body === undefined ? Promise.reject(new Error("no body")) : Promise.resolve(body)) }) as NextRequest
@@ -17,6 +21,7 @@ const route = { params: Promise.resolve({}) }
 
 beforeEach(() => {
   getApiContext.mockReset()
+  enforceRateLimit.mockReset()
 })
 
 describe("apiRoute", () => {
@@ -118,5 +123,28 @@ describe("publicApiRoute", () => {
 
     expect(response.status).toBe(422)
     expect(handler).not.toHaveBeenCalled()
+  })
+})
+
+describe("rate limits on the wrappers", () => {
+  const RULE = { name: "auth-login", max: 1, windowSeconds: 60 }
+  const withHeaders = (body?: unknown) => ({ ...request(body), headers: new Headers() }) as NextRequest
+
+  it("refuses a public request over its limit with a 429 before running the handler", async () => {
+    enforceRateLimit.mockRejectedValue(rateLimited())
+    const handler = vi.fn()
+    const response = await publicApiRoute({ rateLimit: RULE }, handler)(withHeaders(), route)
+
+    expect(response.status).toBe(429)
+    expect(handler).not.toHaveBeenCalled()
+  })
+
+  it("checks the limit only when the route declares one", async () => {
+    getApiContext.mockResolvedValue({ user: { id: "u1" } })
+    await apiRoute({}, async () => "ok")(withHeaders(), route)
+    expect(enforceRateLimit).not.toHaveBeenCalled()
+
+    await apiRoute({ rateLimit: RULE }, async () => "ok")(withHeaders(), route)
+    expect(enforceRateLimit).toHaveBeenCalledWith(expect.any(Headers), RULE)
   })
 })

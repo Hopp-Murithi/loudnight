@@ -11,6 +11,7 @@ const schemas = {
   }),
   places: z.object({ GOOGLE_PLACES_API_KEY: z.string().min(1) }),
   ticketmaster: z.object({ TICKETMASTER_API_KEY: z.string().min(1) }),
+  email: z.object({ RESEND_API_KEY: z.string().startsWith("re_"), EMAIL_FROM: z.string().min(3) }),
 }
 
 type Concern = keyof typeof schemas
@@ -29,6 +30,7 @@ export const aiEnv = () => read("ai")
 export const qlooEnv = () => read("qloo")
 export const placesEnv = () => read("places")
 export const ticketmasterEnv = () => read("ticketmaster")
+export const emailEnv = () => read("email")
 
 // Lets a caller report "not set up" instead of throwing.
 export function isConfigured(concern: Concern): boolean {

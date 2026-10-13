@@ -157,6 +157,42 @@
   }
 }
 
+/* Sidebar keyboard focus: a solid inset outline the scroll area cannot clip, visible in forced-colour modes too. */
+[data-sidebar="sidebar"] :focus-visible {
+  outline: 2px solid var(--sidebar-ring);
+  outline-offset: -2px;
+}
+
+/* The sign-in gallery: each photo holds for a slide, cross-fades out, and drifts gently while it shows. */
+.night-slide {
+  opacity: 0;
+  animation: night-fade var(--night-cycle) linear var(--night-delay) infinite;
+}
+.night-slide img {
+  animation: night-drift var(--night-cycle) linear var(--night-delay) infinite;
+}
+@keyframes night-fade {
+  0% {
+    opacity: 0;
+  }
+  4%,
+  20% {
+    opacity: 1;
+  }
+  24%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes night-drift {
+  0% {
+    transform: scale(1.1);
+  }
+  24%,
+  100% {
+    transform: scale(1);
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   *,
   ::before,
@@ -165,5 +201,13 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+  /* Under reduced motion the gallery is one still photo, never a blank panel. */
+  .night-slide,
+  .night-slide img {
+    animation: none !important;
+  }
+  .night-slide:first-child {
+    opacity: 1;
   }
 }

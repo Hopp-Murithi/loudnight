@@ -1,6 +1,6 @@
 "use client"
 
-import { Mail, UserRound } from "lucide-react"
+import { LogOut, UserRound } from "lucide-react"
 import Link from "next/link"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
@@ -15,15 +15,16 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { ROUTES } from "@/config/site"
+import { useLogout } from "@/modules/auth/hooks/use-auth-mutations"
 import type { CurrentUser } from "@/modules/auth/types"
 
-export const accountName = (user: Pick<CurrentUser, "displayName" | "isAnonymous">) =>
-  user.displayName ?? (user.isAnonymous ? "Guest owner" : "Your account")
+export const accountName = (user: Pick<CurrentUser, "displayName" | "email">) =>
+  user.displayName ?? user.email ?? "Your account"
 
 const initial = (name: string) => name.trim().charAt(0).toUpperCase() || "E"
 
-// Sign out arrives with the session endpoints in plan 03; until then the menu only offers what works.
 export function AccountMenu({ user }: { user: CurrentUser }) {
+  const logout = useLogout()
   const name = accountName(user)
 
   return (
@@ -41,8 +42,8 @@ export function AccountMenu({ user }: { user: CurrentUser }) {
       <DropdownMenuContent align="end" className="w-64">
         <DropdownMenuGroup>
           <DropdownMenuLabel className="space-y-0.5">
-            <p className="text-sm font-medium text-foreground">{name}</p>
-            {user.isAnonymous && <p className="text-xs font-normal">Not saved to an email yet</p>}
+            <p className="truncate text-sm font-medium text-foreground">{name}</p>
+            {user.email && user.email !== name && <p className="truncate text-xs font-normal">{user.email}</p>}
           </DropdownMenuLabel>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
@@ -50,12 +51,10 @@ export function AccountMenu({ user }: { user: CurrentUser }) {
           <UserRound className="size-4" aria-hidden />
           Account
         </DropdownMenuItem>
-        {user.isAnonymous && (
-          <DropdownMenuItem render={<Link href={ROUTES.account} />}>
-            <Mail className="size-4" aria-hidden />
-            Keep your venues: add your email
-          </DropdownMenuItem>
-        )}
+        <DropdownMenuItem disabled={logout.isPending} onClick={() => logout.mutate()}>
+          <LogOut className="size-4" aria-hidden />
+          Sign out
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )
