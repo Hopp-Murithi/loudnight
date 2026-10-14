@@ -102,6 +102,17 @@ All of these already exist as rows (runs, steps, series, bookings, assets, RSVPs
 
 A React Native app (Expo, iOS and Android) for door staff: sign in once, pick tonight, scan tickets with the camera. A valid ticket turns the screen green with the guest's name and is used up on the spot; a used, cancelled or wrong-night ticket turns it red and says why. Counts update live on every phone, and scans made without a connection sync exactly once. It reuses the web app's rules: tickets are single use in the database, door staff never see money or contacts. The one server change is accepting the app's session as a bearer token. Full plan: [plan 15](architecture/plans/15-installable-app.md).
 
+## The door control room
+
+Built on the door app. The owner, wherever they are, runs the door from the same app:
+
+- **Messages to the door in real time**: "VIP list at 9", "hold the queue", "we are at capacity". Door staff see them at once on every phone at the door and confirm with a tap.
+- **Live updates**: every arrival, walk-in and refused ticket as it happens, with the count against break-even and capacity.
+- **The till**: a point-of-sale link sends each night's takings into results automatically (see Point-of-sale integration below), so the owner sees money per guest without typing it in.
+- **Gate cameras**: a venue's existing CCTV cameras at the entrance can be viewed in the app beside the live count, through the camera maker's own streaming link. The stream is shown, never stored by Loudnight; venues keep their signage and consent duties under local law (Kenya's Data Protection Act, GDPR).
+
+First slice: messages and live updates over Supabase Realtime. Then the till. Then cameras, one camera brand at a time.
+
 ## Point-of-sale integration
 
 **The problem.** Loudnight counts who came (check-ins at the door) and asks the owner for an average spend per guest. The till knows the truth: what the room actually took on an event night against a normal night. Until Loudnight reads the till, "this night earned you $X more" is an estimate.

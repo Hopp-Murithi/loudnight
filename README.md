@@ -18,8 +18,77 @@ For the owner of a bar, cafe or restaurant, in plain words:
 4. **Promote it.** Posters, stories and short videos with the performers' photos, captions for each network, and an event page where guests save a place.
 5. **Run the door and see who came.** Scan tickets or tap names on any phone. The count updates live on every screen, against the number you need to break even.
 
+## For investors: what $25,000 does
+
+**The problem.** Most bars, cafes and restaurants are half empty two or three nights a week, and those nights still pay rent, staff and stock. Owners know they should run "something", but not what their neighbourhood would come for, who could play it, or how to fill the room.
+
+**What Loudnight is.** One app that takes a venue from "Tuesday is dead" to a planned, promoted, ticketed and measured weekly night: it reads what the neighbourhood loves through Qloo, finds what nobody nearby runs, books local acts the budget can afford, makes the ads, takes the RSVPs, runs the door, and shows who came against break-even. It is built and live, and works in any country and currency.
+
+### Proof it works: one venue, start to finish (the Austin run, Oct 14)
+
+| Step                | What happened                                                                                        | Owner's time                 |
+| ------------------- | ---------------------------------------------------------------------------------------------------- | ---------------------------- |
+| Set up the venue    | Address, two quiet nights, budget $400, what the room hosts                                          | 2 minutes                    |
+| Plan                | 35 Qloo calls, nearby venues and events checked, 3 nights scored with evidence                       | About 3 minutes, automatic   |
+| Choose and schedule | "Cider & Alt-Country Wednesdays" (score 100) became 4 dated nights                                   | 1 click                      |
+| Book performers     | 10 local acts suggested with budget labels; 2 booked, each with a ready message                      | A few minutes                |
+| Promote             | Poster, story and video with both acts' photos, captions for each network                            | Automatic                    |
+| Fill the room       | Event page live; a guest saved a place from a signed-out phone                                       | Under a minute for the guest |
+| Run the door        | The ticket QR was scanned on a second phone; the door screen on a third went from 0 to 2 of 35, live | Seconds per guest            |
+
+**Under 10 minutes of the owner's time from an address to a promoted night with a guest list and a working door**, and every number on screen can be traced to its source.
+
+### What one venue is worth
+
+|                             | Amount                                                                                                                                       |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Price to the venue          | $49 a month (KES 2,500, £39); groups of up to five venues $199                                                                               |
+| Our cost to serve one venue | Under $1 a month at one plan a month: about $0.30 of AI calls a plan, and Qloo answers are cached and shared by area                         |
+| Gross margin                | Above 95% before Qloo's commercial price, which is the number that sets the real margin                                                      |
+| Value to the venue          | Juniper's break-even is 35 guests at $38 each, about $1,330 of sales a night. One extra full night pays for more than two years of Loudnight |
+| Later, on paid tickets      | A 3% booking fee paid by the guest, capped at $1; the venue pays nothing extra for a full room                                               |
+
+### Where the $25,000 goes
+
+| Use                                | Amount      | What it buys                                                                                                                                                                      |
+| ---------------------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Meeting venues in person           | $7,000      | Travel to meet promoters, club, bar and restaurant owners and event organisers, starting in Nairobi and Mombasa, then Kampala and Lagos; onboarding the first 100 venues hands on |
+| Advertising to owners              | $6,000      | Instagram, TikTok and Google campaigns aimed at venue owners, tested city by city                                                                                                 |
+| The door app and payments          | $5,000      | The React Native app for door staff (scan, use up tickets, live counts, offline), M-Pesa and card ticketing, payouts to venues                                                    |
+| Running the platform for 12 months | $4,000      | Qloo, Claude, Supabase, Vercel, Google Places and SMS                                                                                                                             |
+| Legal, compliance and buffer       | $3,000      | Company set-up, data protection (Kenya's Data Protection Act, GDPR), terms, payment provider checks                                                                               |
+| **Total**                          | **$25,000** |                                                                                                                                                                                   |
+
+### Targets for the next twelve months (targets, not results)
+
+| By       | Target                                        | Monthly subscription revenue                       |
+| -------- | --------------------------------------------- | -------------------------------------------------- |
+| Month 3  | 30 paying venues in Nairobi                   | $1,470                                             |
+| Month 6  | 100 venues in two cities, paid ticketing live | $4,900, plus booking fees                          |
+| Month 12 | 300 venues                                    | $14,700 (about $176,000 a year), plus booking fees |
+
+Booking fees at month 12, as an illustration: 300 venues x 4 nights a month x 40 tickets x $0.30 (3% of a $10 ticket) = $14,400 a month, about as much again as subscriptions.
+
+**Assumptions, stated so they can be checked:** 4 in 10 venue meetings start a free trial; 1 in 4 trials pays; winning a paying venue costs under $60 (in person plus ads), so its margin pays that back in about six weeks; fewer than 1 in 20 venues leave each month. The administrator console tracks the inputs from the first month: venues, plans, published nights, RSVPs and check-ins.
+
+### What the money builds next
+
+- **The door app** (React Native): scan and use up tickets with the camera, live counts on every phone, works offline ([plan 15](docs/architecture/plans/15-installable-app.md)).
+- **The door control room**: the owner messages door staff in real time and sees every arrival as it happens; the till (point of sale) sends each night's takings straight into results; the venue's gate cameras can be viewed in the same app beside the live count.
+- **Paid tickets and payouts**: M-Pesa and cards, a wallet for each venue, withdrawals, and tickets that cannot be used twice.
+
+Details and the order of work: [`docs/roadmap.md`](docs/roadmap.md).
+
+### Why it can win
+
+- **A working product, not slides**: live at https://encore-seven-dusky.vercel.app and run end to end in Austin and Nairobi.
+- **Data nobody else uses this way**: Qloo's taste data turned into nights a venue can run, with every number backed by a stored receipt.
+- **Local first**: a venue in Kenya gets Kenyan performers first, prices in shillings and its own time zone; the same code serves Austin in dollars.
+- **Built to be trusted with money**: every venue's data walled off by the database itself, an audited administrator console, venue suspension, and read-only "preview as" for support.
+
 ## Contents
 
+1. [For investors](#for-investors-what-25000-does)
 1. [See it work](#see-it-work-a-wednesday-in-austin)
 1. [How Loudnight uses Qloo](#how-loudnight-uses-qloo)
 1. [Why it can be a business](#why-it-can-be-a-business)
@@ -37,23 +106,75 @@ For the owner of a bar, cafe or restaurant, in plain words:
 
 A full run on Oct 14 with a made-up restaurant, Juniper Supper Club on South Congress, Austin. Its quiet nights are Wednesday and Tuesday, it hosts live music and comedy, and its performer budget is $400. Loudnight planned the Wednesday in about three minutes. Its pick, **Cider & Alt-Country Wednesdays**, scored 100. Two local bands were booked, the poster and captions named them, and the first night went live. A guest saved a place from a signed-out phone, and their ticket was scanned on a second phone. The door screen on a third went from 0 to 2 of 35 without a reload.
 
+<h3>1. Plan the night</h3>
 <table>
   <tr>
-    <td align="center"><img src="docs/screenshots/01-landing.jpg" width="230" alt="The landing page: every venue has a quiet night"><br><sub>The story, in the visitor's own country</sub></td>
-    <td align="center"><img src="docs/screenshots/02-home.jpg" width="230" alt="Home: the chosen Wednesday night and what to do next"><br><sub>Home: two quiet nights, one chosen</sub></td>
-    <td align="center"><img src="docs/screenshots/03-plan.jpg" width="230" alt="The planner's pick with its score and evidence"><br><sub>The pick, its score and its evidence</sub></td>
-  </tr>
-  <tr>
-    <td align="center"><img src="docs/screenshots/05-performers.jpg" width="230" alt="Local performers with a budget label and crowd match"><br><sub>Local acts, booked, sized to the budget</sub></td>
-    <td align="center"><img src="docs/screenshots/06-poster.jpg" width="230" alt="The poster with both booked acts and a ticket QR"><br><sub>The poster names and shows both acts</sub></td>
-    <td align="center"><img src="docs/screenshots/07-event.jpg" width="230" alt="The public event page"><br><sub>The event page a guest opens</sub></td>
-  </tr>
-  <tr>
-    <td align="center"><img src="docs/screenshots/08-ticket.jpg" width="230" alt="A guest's ticket with its QR code"><br><sub>The guest's ticket: any camera opens it</sub></td>
-    <td align="center"><img src="docs/screenshots/09-door.jpg" width="230" alt="The door screen after a check-in"><br><sub>The door, updated live: 2 of 35</sub></td>
-    <td align="center"><img src="docs/screenshots/10-results.jpg" width="230" alt="Results updating live during the night"><br><sub>Results while the night is on</sub></td>
+    <td align="center" valign="top" width="33%">
+      <img src="docs/screenshots/01-landing.jpg" width="270" alt="The landing page: every venue has a quiet night"><br>
+      <b>The story</b><br>
+      The landing page zooms into the visitor's own country
+    </td>
+    <td align="center" valign="top" width="33%">
+      <img src="docs/screenshots/02-home.jpg" width="270" alt="Home: the chosen Wednesday night and what to do next"><br>
+      <b>Home</b><br>
+      Two quiet nights, one chosen, and the next step
+    </td>
+    <td align="center" valign="top" width="33%">
+      <img src="docs/screenshots/03-plan.jpg" width="270" alt="The planner's pick with its score and evidence"><br>
+      <b>The pick</b><br>
+      Scored 100, with each piece of evidence one tap from its source
+    </td>
   </tr>
 </table>
+
+<h3>2. Book and promote</h3>
+<table>
+  <tr>
+    <td align="center" valign="top" width="33%">
+      <img src="docs/screenshots/05-performers.jpg" width="270" alt="Local performers with a budget label and crowd match"><br>
+      <b>Local performers</b><br>
+      Booked acts first, each labelled for the budget
+    </td>
+    <td align="center" valign="top" width="33%">
+      <img src="docs/screenshots/06-poster.jpg" width="270" alt="The poster with both booked acts and a ticket QR"><br>
+      <b>The poster</b><br>
+      Both booked acts, the date, and a QR to the tickets
+    </td>
+    <td align="center" valign="top" width="33%">
+      <img src="docs/screenshots/07-event.jpg" width="270" alt="The public event page"><br>
+      <b>The event page</b><br>
+      What a guest opens to save a place
+    </td>
+  </tr>
+</table>
+
+<h3>3. Run the night</h3>
+<table>
+  <tr>
+    <td align="center" valign="top" width="33%">
+      <img src="docs/screenshots/08-ticket.jpg" width="270" alt="A guest's ticket with its QR code"><br>
+      <b>The ticket</b><br>
+      Any phone camera opens it; staff check the guest in from it
+    </td>
+    <td align="center" valign="top" width="33%">
+      <img src="docs/screenshots/09-door.jpg" width="270" alt="The door screen after a check-in"><br>
+      <b>The door</b><br>
+      Updated live on every phone: 2 of 35 to break even
+    </td>
+    <td align="center" valign="top" width="33%">
+      <img src="docs/screenshots/10-results.jpg" width="270" alt="Results updating live during the night"><br>
+      <b>Results</b><br>
+      Tonight's count while the night is on, then each night's takings
+    </td>
+  </tr>
+</table>
+
+<h3>4. Run the platform</h3>
+<p align="center">
+  <img src="docs/screenshots/11-admin.jpg" width="820" alt="The administrator console listing venues with their status"><br>
+  <b>The administrator console</b><br>
+  Every venue and person with a detail panel each, suspension, deactivation, every plan, the audit log, and read-only preview
+</p>
 
 ## How Loudnight uses Qloo
 
