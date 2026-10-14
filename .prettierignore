@@ -9,3 +9,5 @@ supabase/.branches
 src/components/ui
 .probe
 video
+apps/door/.expo
+apps/door/package-lock.json

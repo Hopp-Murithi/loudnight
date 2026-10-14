@@ -38,6 +38,7 @@ src/
     hooks/                    React hooks: data, mutations, realtime. The only callers of api.ts.
     components/               UI only. Calls hooks. Nothing else.
   types/database.ts       Generated from Supabase. Never edit by hand.
+apps/door/                The React Native (Expo) door app: its own package.json and tooling; calls /api/v1 with a bearer token.
 supabase/migrations/      Every schema change, in order. seed.sql = demo venues. tests/*.sql = database rule tests.
 scripts/                  check-dashes, check-connections (day-one API gate), run-db-tests
 tests/                    Test setup and stubs. Unit tests sit beside the code as `*.test.ts`.

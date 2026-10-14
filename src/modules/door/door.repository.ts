@@ -84,7 +84,7 @@ export const doorRepository = {
   // The error code, if any, is the caller's to read: a second scan of one ticket is a unique violation.
   async addArrival(
     supabase: ServerSupabase,
-    row: { event_night_id: string; venue_id: string; rsvp_id?: string; party_size: number },
+    row: { event_night_id: string; venue_id: string; rsvp_id?: string; party_size: number; client_key?: string },
   ): Promise<{ at: string | null; failure: string | null }> {
     const { data, error } = await supabase.from("checkins").insert(row).select("created_at").maybeSingle()
     return { at: data?.created_at ?? null, failure: error?.code ?? null }
@@ -153,5 +153,17 @@ export const doorRepository = {
     check(arrivals.error)
     check(spend.error)
     return { rsvps: rsvps.data ?? [], arrivals: arrivals.data ?? [], spend: spend.data ?? [] }
+  },
+
+  // The arrival a door app already recorded under this key, when it sends the same walk-in again.
+  async arrivalByKey(supabase: ServerSupabase, nightId: string, clientKey: string) {
+    const { data, error } = await supabase
+      .from("checkins")
+      .select("created_at, party_size")
+      .eq("event_night_id", nightId)
+      .eq("client_key", clientKey)
+      .maybeSingle()
+    check(error)
+    return data
   },
 }

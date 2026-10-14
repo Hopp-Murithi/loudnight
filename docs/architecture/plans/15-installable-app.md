@@ -1,6 +1,6 @@
 # Plan 15: The door app (React Native)
 
-Status: Plan written (revised Oct 14 at the owner's request: a native app instead of an installable web app). Not started.
+Status: First version built (Oct 14): the server changes and the Expo app in `apps/door`. Not yet run on a real phone or built for the stores.
 Depends on: 12, 13
 Phase: after the hackathon core (the web door screen already works on any phone)
 Judging criteria: Design (a complete product on the device the venue actually uses), Potential Impact (a door that never stops)
@@ -59,6 +59,14 @@ Out: planning, ads, money, settings (owners use the web app); push notifications
 - [ ] Offline scans sync exactly once; nothing personal is stored on the device
 - [ ] Route wrappers accept bearer tokens with the same rules as cookies; idempotent check-ins tested
 - [ ] Builds for iOS and Android through EAS; tested on one real phone of each
+
+## Built (Oct 14)
+
+- **Server**: the route wrappers accept `Authorization: Bearer <token>` (`createServerSupabase` and `loadContext` read it; cookies are ignored for that request), so the app uses the same routes, roles and RLS as the web. `GET /api/v1/venues/:id/door` returns the venue's current night at the door. Walk-ins carry an optional `clientKey`; migration `20261014193707_checkin_client_key` adds a unique key per night, so a replayed walk-in returns the first arrival instead of counting again (tested). Ticket arrivals were already one per RSVP.
+- **The app** (`apps/door`, Expo SDK 57, Expo Router): sign in (session in the secure keychain, stored in parts), your venues, the door (live count against break-even, waiting arrivals, walk-in stepper, find a name, keep awake), and a full-screen scanner (QR only, a typed code too, a result card with its own vibration for in, already in, refused and saved offline). The phone sends the raw scanned text; the server reads the code from it, so no ticket rules live on the phone.
+- **Offline**: arrivals that cannot reach the server wait in app storage (scanned text, guest id or walk-in count only), are sent oldest first every 30 seconds and when the app reopens, and leave the list once recorded or refused. Tested with Node's test runner (`npm test` in `apps/door`).
+- **Live**: the door subscribes to the night's check-ins over Realtime with the user's token and refreshes on each arrival; it never polls.
+- Changes from the design above: the waiting list uses app storage rather than SQLite (it holds nothing personal); no sound yet, vibration only.
 
 ## Verification
 

@@ -3,6 +3,7 @@ import { forbidden } from "@/lib/http/errors"
 import type { RequestContext } from "@/modules/auth/types"
 
 const repo = {
+  arrivalByKey: vi.fn(),
   findNight: vi.fn(),
   rsvpByCode: vi.fn(),
   rsvpById: vi.fn(),
@@ -76,8 +77,22 @@ describe("doorService.checkIn", () => {
 
   it("counts walk-ins with no ticket", async () => {
     const result = await doorService.checkIn(ctx, "n1", { walkIn: true, partySize: 3 })
-    expect(repo.addArrival).toHaveBeenCalledWith(ctx.supabase, { event_night_id: "n1", venue_id: "v1", party_size: 3 })
+    expect(repo.addArrival).toHaveBeenCalledWith(ctx.supabase, {
+      event_night_id: "n1",
+      venue_id: "v1",
+      party_size: 3,
+      client_key: undefined,
+    })
     expect(result).toMatchObject({ status: "in", name: "Walk-in", partySize: 3 })
+  })
+
+  it("counts a walk-in the door app sends twice only once", async () => {
+    repo.addArrival.mockResolvedValueOnce({ at: null, failure: "23505" })
+    repo.arrivalByKey.mockResolvedValueOnce({ created_at: "2026-10-20T20:05:00Z", party_size: 2 })
+    const key = "00000000-0000-4000-8000-0000000000aa"
+    const result = await doorService.checkIn(ctx, "n1", { walkIn: true, partySize: 2, clientKey: key })
+    expect(repo.arrivalByKey).toHaveBeenCalledWith(ctx.supabase, "n1", key)
+    expect(result).toMatchObject({ status: "in", at: "2026-10-20T20:05:00Z" })
   })
 })
 

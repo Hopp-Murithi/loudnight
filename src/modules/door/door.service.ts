@@ -88,7 +88,17 @@ async function checkIn(ctx: RequestContext, nightId: string, input: CheckinInput
       event_night_id: night.id,
       venue_id: night.venue_id,
       party_size: input.partySize,
+      client_key: input.clientKey,
     })
+    if (failure === "23505" && input.clientKey) {
+      const first = await doorRepository.arrivalByKey(ctx.supabase, night.id, input.clientKey)
+      return {
+        status: "in",
+        name: "Walk-in",
+        partySize: input.partySize,
+        at: first?.created_at ?? new Date().toISOString(),
+      }
+    }
     if (failure || !at) throw fromDatabaseError({ code: failure ?? undefined })
     return { status: "in", name: "Walk-in", partySize: input.partySize, at }
   }

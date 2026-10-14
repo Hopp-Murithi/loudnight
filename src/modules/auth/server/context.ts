@@ -4,14 +4,15 @@ import { redirect } from "next/navigation"
 import { ROLES, type AppRole } from "@/config/roles"
 import { ROUTES } from "@/config/site"
 import { forbidden, unauthorized } from "@/lib/http/errors"
-import { createServerSupabase } from "@/lib/supabase/server"
+import { bearerToken, createServerSupabase } from "@/lib/supabase/server"
 import { previewTarget } from "@/modules/preview/preview.cookie"
 import type { RequestContext } from "../types"
 
 // Verifies the token, then reads the profile so the role is always fresh.
 const loadContext = cache(async (): Promise<RequestContext | null> => {
-  const supabase = await createServerSupabase()
-  const { data } = await supabase.auth.getClaims()
+  const [supabase, token] = await Promise.all([createServerSupabase(), bearerToken()])
+  // A native app's token is verified the same way as a browser's cookie session.
+  const { data } = await supabase.auth.getClaims(token ?? undefined)
   const userId = data?.claims.sub
   if (!userId) return null
 

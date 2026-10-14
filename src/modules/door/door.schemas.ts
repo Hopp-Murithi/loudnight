@@ -11,7 +11,8 @@ const partySize = z
 export const checkinSchema = z.union([
   z.object({ code: z.string().trim().min(1).max(300) }),
   z.object({ rsvpId: z.uuid() }),
-  z.object({ walkIn: z.literal(true), partySize }),
+  // The door app sends a key with each walk-in, so one synced twice after being offline is counted once.
+  z.object({ walkIn: z.literal(true), partySize, clientKey: z.uuid().optional() }),
 ])
 export type CheckinInput = z.infer<typeof checkinSchema>
 

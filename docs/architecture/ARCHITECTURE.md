@@ -34,6 +34,7 @@ Why it wins for this project: it is the smallest design that is still correct fo
 | Learning loop and dashboard                 | Check-ins against break-even set the next night's decision (keep, tweak, swap). Plans 13, 14.                                                                                 |
 | Abuse and cost control                      | Per-person run cap in the database, per-IP limits on public endpoints, Qloo cache reuse. Plans 07, 16.                                                                        |
 | Open source, keys only in env               | MIT licence, `lib/env/server.ts` behind `server-only`.                                                                                                                        |
+| The door on a phone                         | `apps/door`: an Expo (React Native) app for door staff that calls the same `/api/v1` routes with a bearer token. Plan 15.                                                     |
 | Running the platform                        | `/admin`: overview, venues (suspend with a reason), people (deactivate), plans, audit log, Preview as. Plan 08.                                                               |
 
 Carried over from the UNoN portal because they earned their place there: administrator **Preview as** (plan 08), the **audit log** page (plan 08), an app for door staff (plan 15, now planned as a React Native app), and the three-gate authorization model (section 4).
@@ -108,7 +109,7 @@ Every policy is built from these, wrapped as `(select ...)` so Postgres evaluate
 ### Three gates, each independent
 
 1. `proxy.ts`: redirects visitors without a session away from `/venues`. Convenience only.
-2. Route wrappers: verify the token, read the profile, check the platform role, validate the body.
+2. Route wrappers: verify the token (a browser's cookie session, or the door app's `Authorization: Bearer` token), read the profile, check the platform role, validate the body.
 3. RLS: the last word. Even a bug in the two above cannot leak data.
 
 ### Suspending a venue
@@ -151,7 +152,7 @@ An administrator can open Loudnight exactly as any owner, manager or door person
 | `rsvps`             | Guest name, party size, server-generated check-in code (the ticket)                                                                                                                                                                                          |
 | `rsvp_contacts`     | A guest's optional email or phone, kept apart so door staff never see it; owners and managers only                                                                                                                                                           |
 | `night_spend`       | What a night took at the till, logged by an owner or manager                                                                                                                                                                                                 |
-| `checkins`          | One row per arrival, optionally linked to an RSVP, spend logged later by a manager                                                                                                                                                                           |
+| `checkins`          | One row per arrival, optionally linked to an RSVP (one per RSVP: a ticket is used once), with the door app's key for walk-ins so a replay counts once                                                                                                        |
 | `audit_log`         | Append only. Venue, team, settings, series and night changes, written by trigger in the same transaction                                                                                                                                                     |
 
 ## 7. The planning pipeline

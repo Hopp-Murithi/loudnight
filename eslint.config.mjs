@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "coverage/**",
     "next-env.d.ts",
     "src/types/database.ts",
+    // The door app is React Native with its own tooling (apps/door).
+    "apps/**",
     "video/**",
   ]),
 ])

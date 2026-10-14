@@ -142,6 +142,7 @@ export type Database = {
       }
       checkins: {
         Row: {
+          client_key: string | null
           created_at: string
           event_night_id: string
           id: string
@@ -151,6 +152,7 @@ export type Database = {
           venue_id: string
         }
         Insert: {
+          client_key?: string | null
           created_at?: string
           event_night_id: string
           id?: string
@@ -160,6 +162,7 @@ export type Database = {
           venue_id: string
         }
         Update: {
+          client_key?: string | null
           created_at?: string
           event_night_id?: string
           id?: string

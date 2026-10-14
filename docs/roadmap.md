@@ -100,7 +100,7 @@ All of these already exist as rows (runs, steps, series, bookings, assets, RSVPs
 
 ## The door app
 
-A React Native app (Expo, iOS and Android) for door staff: sign in once, pick tonight, scan tickets with the camera. A valid ticket turns the screen green with the guest's name and is used up on the spot; a used, cancelled or wrong-night ticket turns it red and says why. Counts update live on every phone, and scans made without a connection sync exactly once. It reuses the web app's rules: tickets are single use in the database, door staff never see money or contacts. The one server change is accepting the app's session as a bearer token. Full plan: [plan 15](architecture/plans/15-installable-app.md).
+A React Native app (Expo, iOS and Android) for door staff: sign in once, pick tonight, scan tickets with the camera. A valid ticket turns the screen green with the guest's name and is used up on the spot; a used, cancelled or wrong-night ticket turns it red and says why. Counts update live on every phone, and scans made without a connection sync exactly once. It reuses the web app's rules: tickets are single use in the database, door staff never see money or contacts. The first version is built in `apps/door` (the server accepts the app's bearer token, and walk-ins carry a key so an offline replay counts once); next is real phones and the app stores. Full plan: [plan 15](architecture/plans/15-installable-app.md).
 
 ## The door control room
 

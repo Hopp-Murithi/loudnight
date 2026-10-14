@@ -73,7 +73,7 @@ Booking fees at month 12, as an illustration: 300 venues x 4 nights a month x 40
 
 ### What the money builds next
 
-- **The door app** (React Native): scan and use up tickets with the camera, live counts on every phone, works offline ([plan 15](docs/architecture/plans/15-installable-app.md)).
+- **The door app** (React Native, first version built in `apps/door`): scan and use up tickets with the camera, live counts on every phone, works offline. The money takes it onto real phones and into the app stores ([plan 15](docs/architecture/plans/15-installable-app.md)).
 - **The door control room**: the owner messages door staff in real time and sees every arrival as it happens; the till (point of sale) sends each night's takings straight into results; the venue's gate cameras can be viewed in the same app beside the live count.
 - **Paid tickets and payouts**: M-Pesa and cards, a wallet for each venue, withdrawals, and tickets that cannot be used twice.
 
@@ -230,7 +230,9 @@ Built and live (Oct 14), in the order an owner meets them:
 - **Demo venues**: finished plans anyone can open without an account.
 - **Running the platform**: an administrator console with venues and people as tables with detail panels, plans, the audit log, venue suspension, deactivation, and Preview as (read only, audited, one hour).
 
-Next: the door app in React Native for scanning and using up tickets at the door (plan 15), and the learning loop (plan 14). Every plan, its status and its gate: [`docs/architecture/plans/README.md`](docs/architecture/plans/README.md).
+- **The door app** (first version, `apps/door`): a React Native app for door staff that scans tickets with the camera and uses them up, shows the live count against break-even, takes walk-ins and finds names, and keeps arrivals made offline until they sync once. It talks to the same API with the signed-in person's token. See [`apps/door/README.md`](apps/door/README.md).
+
+Next: the door app on real phones and in the stores (plan 15), and the learning loop (plan 14). Every plan, its status and its gate: [`docs/architecture/plans/README.md`](docs/architecture/plans/README.md).
 
 ## Tech stack
 
