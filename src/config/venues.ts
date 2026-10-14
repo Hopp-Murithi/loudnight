@@ -25,6 +25,9 @@ export const WEEKDAY_LABELS: Record<Weekday, string> = {
   sunday: "Sunday",
 }
 
+// A venue plans up to this many quiet nights; the database enforces the same limit.
+export const QUIET_NIGHTS_MAX = 3
+
 export const VENUE_TYPES = ["bar", "cafe", "restaurant", "music_venue", "other"] as const satisfies readonly VenueType[]
 
 export const VENUE_TYPE_LABELS: Record<VenueType, string> = {

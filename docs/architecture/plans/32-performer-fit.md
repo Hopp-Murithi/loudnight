@@ -1,6 +1,6 @@
 # Plan 32: The right performers for this room, this budget, this town
 
-Status: Plan written (Oct 14). Part A and Part B next; Part C after the core demo; Part D needs a migration.
+Status: Parts A, B, D and E built (Oct 14). Part C next.
 Depends on: 10, 11, 29
 Phase: 5 (the owner's requests of Oct 14)
 Judging criteria: Potential Impact, Technological Implementation (Qloo used where it is strongest, other sources only where it is not)
@@ -49,6 +49,7 @@ For the hackathon: Wikidata and MusicBrainz. After launch: Spotify, YouTube and 
 - A venue may have up to three quiet nights (`venue_settings.quiet_nights weekday[]`, one to three, the first being today's `slow_night`). Onboarding asks for one and offers "Add another night"; Settings lets the owner add, remove and reorder them.
 - The Plan page asks which night to plan; each night has its own runs, chosen night and series. Home shows each night's state.
 - Migration with `rls.sql` assertions; `slow_night` stays as the first entry so nothing breaks.
+- Built: a trigger keeps `slow_night` equal to the first quiet night whichever one a writer sets. Home, Plan, Series and Promote take `?night=`; a switcher shows when there is more than one night. A run may only start for one of the venue's quiet nights (409 otherwise).
 
 ## Part E: the booked acts on the poster
 
@@ -64,7 +65,7 @@ Hosts and atmosphere in the schema and prompt; the act size label from listeners
 - [ ] The room's hosts and atmosphere asked for and used by the planner and the performer search
 - [ ] Every act labelled for budget; stars hidden by default (Diamond Platnumz not offered to a 500,000 shilling night)
 - [ ] Poets and comedians found for Brooklyn and Nairobi from Wikidata and MusicBrainz, labelled by source
-- [ ] Up to three quiet nights per venue
+- [x] Up to three quiet nights per venue (migration `20261014075219_quiet_nights`, `rls.sql` passed on hosted; Settings reorder and the night switcher checked at 390 and 1280)
 - [ ] Booked acts' photos on the poster, one to three, tidy
 
 ## Verification

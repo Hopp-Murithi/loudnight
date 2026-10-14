@@ -24,7 +24,8 @@ import {
 import { CurrencyField } from "./currency-field"
 import { PlaceSearch } from "./place-search"
 import { TimeZoneField } from "./time-zone-field"
-import { AtmospherePicker, CapabilityPicker, HostsPicker, NightPicker } from "./venue-fields"
+import { QuietNightsPicker } from "./quiet-nights-picker"
+import { AtmospherePicker, CapabilityPicker, HostsPicker } from "./venue-fields"
 
 export function VenueIdentityForm({ venue }: { venue: VenueDetail }) {
   const update = useUpdateVenueIdentity(venue.id)
@@ -86,7 +87,7 @@ export function VenueSettingsForm({ venueId, settings, currency }: VenueSettings
       onSubmit={form.handleSubmit((input) => update.mutate(input, { onError: (e) => showApiError(e, form.setError) }))}
     >
       <FieldGroup>
-        <NightPicker control={form.control} name="slowNight" />
+        <QuietNightsPicker control={form.control} name="quietNights" />
         <TextField
           control={form.control}
           name="breakEvenHeadcount"

@@ -55,12 +55,9 @@ export const runsRepository = {
     return data
   },
 
-  async latestRun(supabase: ServerSupabase, venueId: string) {
-    const { data, error } = await supabase
-      .from("agent_runs")
-      .select("id")
-      .eq("venue_id", venueId)
-      .eq("mode", "encore")
+  async latestRun(supabase: ServerSupabase, venueId: string, weekday?: Enums<"weekday">) {
+    const query = supabase.from("agent_runs").select("id").eq("venue_id", venueId).eq("mode", "encore")
+    const { data, error } = await (weekday ? query.eq("target_weekday", weekday) : query)
       .order("created_at", { ascending: false })
       .limit(1)
       .maybeSingle()
@@ -68,13 +65,14 @@ export const runsRepository = {
     return data
   },
 
-  async latestRunsFor(supabase: ServerSupabase, venueIds: string[]) {
+  async latestRunsFor(supabase: ServerSupabase, venueIds: string[], weekday?: Enums<"weekday">) {
     if (venueIds.length === 0) return []
-    const { data, error } = await supabase
+    const query = supabase
       .from("agent_runs")
       .select("id, venue_id, status, created_at")
       .in("venue_id", venueIds)
       .eq("mode", "encore")
+    const { data, error } = await (weekday ? query.eq("target_weekday", weekday) : query)
       .order("created_at", { ascending: false })
       .limit(100)
     check(error)

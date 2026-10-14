@@ -1,10 +1,14 @@
 import { z } from "zod"
 import { PIPELINE_STEPS, type PipelineStep, type ToolSource } from "@/config/runs"
+import { WEEKDAYS, type Weekday } from "@/config/venues"
 import type { Candidate } from "@/modules/concepts/concepts.schemas"
 import type { OverlapResult } from "@/modules/concepts/concepts.signals"
 import type { PlanningSummary } from "@/modules/concepts/concepts.service"
 import type { GapScan, Scout } from "@/modules/gap/gap.schemas"
 import type { TasteFingerprint } from "@/modules/taste/taste.schemas"
+
+export const startRunSchema = z.object({ weekday: z.enum(WEEKDAYS) })
+export type StartRunInput = z.infer<typeof startRunSchema>
 
 export const stepParamSchema = z.enum(PIPELINE_STEPS as [PipelineStep, ...PipelineStep[]])
 
@@ -52,7 +56,7 @@ export interface StepView {
 export interface RunView {
   id: string
   venueId: string
-  weekday: string
+  weekday: Weekday
   status: RunStatus
   errorMessage: string | null
   createdAt: string

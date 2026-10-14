@@ -37,7 +37,8 @@ export function VenueBanner({ venue }: { venue: VenueDetail }) {
           {venue.settings && (
             <span className="inline-flex items-center gap-1.5 bg-spotlight px-2.5 py-1 font-medium text-primary-foreground">
               <CalendarDays aria-hidden className="size-4" />
-              Quiet night: {WEEKDAY_LABELS[venue.settings.slowNight]}
+              {venue.settings.quietNights.length > 1 ? "Quiet nights" : "Quiet night"}:{" "}
+              {venue.settings.quietNights.map((night) => WEEKDAY_LABELS[night]).join(", ")}
             </span>
           )}
           <span className="border border-white/25 px-2.5 py-1 text-white/85">{VENUE_ROLE_LABELS[venue.role]}</span>

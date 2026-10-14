@@ -21,7 +21,7 @@ import {
 const atmosphereOf = (value: string): Atmosphere => ATMOSPHERES.find((option) => option === value) ?? "mixed"
 
 const settingsColumns = (input: VenueSettingsInput) => ({
-  slow_night: input.slowNight,
+  quiet_nights: input.quietNights,
   break_even_headcount: input.breakEvenHeadcount,
   capacity: input.capacity,
   capabilities: [...new Set(input.capabilities)],
@@ -60,6 +60,7 @@ const loadDetail = cache(async (ctx: RequestContext, venueId: string): Promise<V
     currency: venue.currency,
     settings: settings && {
       slowNight: settings.slow_night,
+      quietNights: settings.quiet_nights.length > 0 ? settings.quiet_nights : [settings.slow_night],
       breakEvenHeadcount: settings.break_even_headcount,
       capacity: settings.capacity,
       capabilities: settings.capabilities,
@@ -111,7 +112,8 @@ export const venuesService = {
       p_time_zone: input.timeZone,
       p_capacity: input.capacity,
       p_capabilities: [...new Set(input.capabilities)],
-      p_slow_night: input.slowNight,
+      p_slow_night: input.quietNights[0],
+      p_quiet_nights: input.quietNights,
       p_break_even_headcount: input.breakEvenHeadcount,
       p_talent_budget_cents: toCents(input.talentBudget),
       p_average_spend_cents: toCents(input.averageSpend),

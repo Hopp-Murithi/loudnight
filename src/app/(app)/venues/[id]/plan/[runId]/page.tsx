@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { PageHeader } from "@/components/layout/page-header"
-import { WEEKDAY_LABELS, type Weekday } from "@/config/venues"
+import { WEEKDAY_LABELS } from "@/config/venues"
 import { AppError } from "@/lib/http/errors"
 import { getPageContext } from "@/modules/auth/server/context"
 import { listShortlist } from "@/modules/concepts/concepts.read"
@@ -9,6 +9,7 @@ import { RunWorkspace } from "@/modules/runs/components/run-workspace"
 import { StartRunButton } from "@/modules/runs/components/start-run"
 import { readRun } from "@/modules/runs/runs.read"
 import type { RunView } from "@/modules/runs/runs.schemas"
+import { NightSwitcher } from "@/modules/venues/components/night-switcher"
 import { venueForPage } from "@/modules/venues/venues.page"
 
 export const metadata: Metadata = { title: "Plan" }
@@ -31,7 +32,7 @@ export default async function RunPage({ params }: PageProps<"/venues/[id]/plan/[
   const scored = run.steps.some((step) => step.step === "score" && step.status === "done")
   const concepts = scored ? await listShortlist(ctx.supabase, runId) : []
   const canRun = venue.role !== "door" && venue.settings !== null
-  const night = WEEKDAY_LABELS[run.weekday as Weekday]
+  const night = WEEKDAY_LABELS[run.weekday]
   const planned = new Intl.DateTimeFormat("en-US", { dateStyle: "medium", timeZone: venue.timeZone }).format(
     new Date(run.createdAt),
   )
@@ -43,10 +44,11 @@ export default async function RunPage({ params }: PageProps<"/venues/[id]/plan/[
         description={`Planned ${planned}. Every number opens the Qloo answer it came from.`}
         actions={
           canRun && run.status === "succeeded" ? (
-            <StartRunButton venueId={id} label="Plan again" variant="outline" />
+            <StartRunButton venueId={id} weekday={run.weekday} label="Plan again" variant="outline" />
           ) : undefined
         }
       />
+      <NightSwitcher venueId={id} nights={venue.settings?.quietNights ?? []} current={run.weekday} page="venuePlan" />
       <RunWorkspace
         initial={run}
         initialConcepts={concepts}

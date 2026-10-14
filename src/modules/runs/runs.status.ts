@@ -1,4 +1,5 @@
 import "server-only"
+import type { Weekday } from "@/config/venues"
 import type { ServerSupabase } from "@/lib/supabase/server"
 import { runsRepository } from "./runs.repository"
 import type { RunStatus } from "./runs.schemas"
@@ -19,12 +20,13 @@ export interface VenuePlanStatus {
 
 const NONE: VenuePlanStatus = { runId: null, status: "none", plannedAt: null, shortlist: [], chosen: null }
 
-// Where each venue stands with planning, in two queries however many venues there are. RLS scopes both.
+// Where each venue stands with planning (for one quiet night when given), in two queries however many venues there are. RLS scopes both.
 export async function planStatuses(
   supabase: ServerSupabase,
   venueIds: string[],
+  weekday?: Weekday,
 ): Promise<Record<string, VenuePlanStatus>> {
-  const runs = await runsRepository.latestRunsFor(supabase, venueIds)
+  const runs = await runsRepository.latestRunsFor(supabase, venueIds, weekday)
   const latest = new Map<string, (typeof runs)[number]>()
   runs.forEach((run) => {
     if (!latest.has(run.venue_id)) latest.set(run.venue_id, run)

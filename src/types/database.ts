@@ -791,6 +791,7 @@ export type Database = {
           capacity: number
           created_at: string
           hosts: Database["public"]["Enums"]["venue_host"][]
+          quiet_nights: Database["public"]["Enums"]["weekday"][]
           search_radius_m: number
           slow_night: Database["public"]["Enums"]["weekday"]
           talent_budget_cents: number
@@ -805,6 +806,7 @@ export type Database = {
           capacity: number
           created_at?: string
           hosts?: Database["public"]["Enums"]["venue_host"][]
+          quiet_nights?: Database["public"]["Enums"]["weekday"][]
           search_radius_m?: number
           slow_night: Database["public"]["Enums"]["weekday"]
           talent_budget_cents?: number
@@ -819,6 +821,7 @@ export type Database = {
           capacity?: number
           created_at?: string
           hosts?: Database["public"]["Enums"]["venue_host"][]
+          quiet_nights?: Database["public"]["Enums"]["weekday"][]
           search_radius_m?: number
           slow_night?: Database["public"]["Enums"]["weekday"]
           talent_budget_cents?: number
@@ -927,6 +930,7 @@ export type Database = {
           p_latitude: number
           p_longitude: number
           p_name: string
+          p_quiet_nights?: Database["public"]["Enums"]["weekday"][]
           p_slow_night: Database["public"]["Enums"]["weekday"]
           p_talent_budget_cents: number
           p_time_zone: string

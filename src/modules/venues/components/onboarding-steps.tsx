@@ -11,7 +11,8 @@ import { toCents, type PlaceOption, type VenueOnboardingInput } from "../venues.
 import { CurrencyField } from "./currency-field"
 import { PlaceSearch } from "./place-search"
 import { TimeZoneField } from "./time-zone-field"
-import { AtmospherePicker, CapabilityPicker, HostsPicker, NightPicker } from "./venue-fields"
+import { QuietNightsPicker } from "./quiet-nights-picker"
+import { AtmospherePicker, CapabilityPicker, HostsPicker } from "./venue-fields"
 
 interface StepProps {
   step: number
@@ -65,9 +66,9 @@ export function OnboardingStep({ step, form, initialCountry }: StepProps) {
   if (step === 1) {
     return (
       <section className="space-y-6">
-        <Heading title="Your quiet night" description="The night Encore will plan a series for." />
+        <Heading title="Your quiet nights" description="The nights Encore will plan a series for." />
         <FieldGroup>
-          <NightPicker control={control} name="slowNight" />
+          <QuietNightsPicker control={control} name="quietNights" />
           <TextField
             control={control}
             name="breakEvenHeadcount"
@@ -135,8 +136,8 @@ export function OnboardingStep({ step, form, initialCountry }: StepProps) {
         <dd>{values.city ?? "Not found, that is fine"}</dd>
         <dt className="text-muted-foreground">Type</dt>
         <dd>{values.venueType && VENUE_TYPE_LABELS[values.venueType]}</dd>
-        <dt className="text-muted-foreground">Quiet night</dt>
-        <dd>{values.slowNight && WEEKDAY_LABELS[values.slowNight]}</dd>
+        <dt className="text-muted-foreground">Quiet nights</dt>
+        <dd>{values.quietNights?.map((night) => WEEKDAY_LABELS[night]).join(", ")}</dd>
         <dt className="text-muted-foreground">Break-even</dt>
         <dd>{values.breakEvenHeadcount} guests</dd>
         <dt className="text-muted-foreground">Room</dt>

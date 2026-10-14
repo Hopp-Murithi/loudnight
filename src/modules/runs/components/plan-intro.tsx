@@ -1,10 +1,21 @@
 import { Clock } from "lucide-react"
 import { PIPELINE } from "@/config/runs"
+import type { Weekday } from "@/config/venues"
 import { TYPE } from "@/lib/typography"
 import { StartRunButton } from "./start-run"
 
 // The empty state for planning: what will happen, how long it takes, and the one thing to do.
-export function PlanIntro({ venueId, night, canRun }: { venueId: string; night: string; canRun: boolean }) {
+export function PlanIntro({
+  venueId,
+  weekday,
+  night,
+  canRun,
+}: {
+  venueId: string
+  weekday: Weekday | undefined
+  night: string
+  canRun: boolean
+}) {
   return (
     <section
       aria-labelledby="intro-heading"
@@ -19,9 +30,9 @@ export function PlanIntro({ venueId, night, canRun }: { venueId: string; night: 
           Encore reads your neighbourhood&apos;s taste, checks what is on around you, and invents nights backed by
           evidence you can open.
         </p>
-        {canRun ? (
+        {canRun && weekday ? (
           <div className="flex flex-wrap items-center gap-4">
-            <StartRunButton venueId={venueId} label={`Plan my ${night}`} />
+            <StartRunButton venueId={venueId} weekday={weekday} label={`Plan my ${night}`} />
             <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
               <Clock aria-hidden className="size-4" />
               About a minute. You can leave and come back.

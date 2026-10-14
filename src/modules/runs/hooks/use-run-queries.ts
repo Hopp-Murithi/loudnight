@@ -4,14 +4,15 @@ import { useMutation, useQuery } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
 import { showApiError } from "@/components/forms/api-errors"
 import { ROUTES } from "@/config/site"
+import type { Weekday } from "@/config/venues"
 import { conceptsApi } from "@/modules/concepts/api"
 import type { ConceptView } from "@/modules/concepts/concepts.schemas"
 import { runsApi } from "../api"
 
-export function useStartRun(venueId: string) {
+export function useStartRun(venueId: string, weekday: Weekday) {
   const router = useRouter()
   return useMutation({
-    mutationFn: () => runsApi.start(venueId),
+    mutationFn: () => runsApi.start(venueId, weekday),
     onSuccess: ({ encoreId }) => router.push(ROUTES.venueRun(venueId, encoreId)),
     onError: (error) => showApiError(error),
   })

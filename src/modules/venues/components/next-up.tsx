@@ -2,11 +2,13 @@ import { CircleCheck } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ROUTES } from "@/config/site"
+import type { Weekday } from "@/config/venues"
 import type { VenuePlanStatus } from "@/modules/runs/runs.status"
 import { StartRunButton } from "@/modules/runs/components/start-run"
 
 interface NextUpProps {
   venueId: string
+  weekday: Weekday | undefined
   night: string
   status: VenuePlanStatus
   canPlan: boolean
@@ -31,10 +33,10 @@ function Frame({ kicker, title, children }: { kicker: string; title: string; chi
 }
 
 // The one thing to do next, whatever stage the venue is at. Every state ends in a single clear action.
-export function NextUp({ venueId, night, status, canPlan }: NextUpProps) {
-  const plan = status.runId ? ROUTES.venueRun(venueId, status.runId) : ROUTES.venuePlan(venueId)
+export function NextUp({ venueId, weekday, night, status, canPlan }: NextUpProps) {
+  const plan = status.runId ? ROUTES.venueRun(venueId, status.runId) : ROUTES.venuePlan(venueId, weekday)
 
-  if (!canPlan) {
+  if (!canPlan || !weekday) {
     return (
       <Frame kicker="Next up" title="Doors open on event nights">
         <p className="text-muted-foreground">When a night is published, you check guests in from the Door page.</p>
@@ -58,7 +60,7 @@ export function NextUp({ venueId, night, status, canPlan }: NextUpProps) {
           evidence behind them. About a minute.
         </p>
         <div className="mt-auto">
-          <StartRunButton venueId={venueId} label={`Plan my ${night}`} />
+          <StartRunButton venueId={venueId} weekday={weekday} label={`Plan my ${night}`} />
         </div>
       </Frame>
     )
@@ -93,7 +95,7 @@ export function NextUp({ venueId, night, status, canPlan }: NextUpProps) {
           className="mt-auto self-start"
           size="lg"
           nativeButton={false}
-          render={<Link href={ROUTES.venueSeries(venueId)} />}
+          render={<Link href={ROUTES.venueSeries(venueId, weekday)} />}
         >
           See the series
         </Button>

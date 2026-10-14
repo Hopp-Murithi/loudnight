@@ -1,5 +1,6 @@
 import "server-only"
 import { PIPELINE_STEPS } from "@/config/runs"
+import type { Weekday } from "@/config/venues"
 import { notFound } from "@/lib/http/errors"
 import { createAdminSupabase } from "@/lib/supabase/admin"
 import type { ServerSupabase } from "@/lib/supabase/server"
@@ -54,8 +55,12 @@ export async function readRun(supabase: ServerSupabase, runId: string): Promise<
   }
 }
 
-export async function latestRunId(supabase: ServerSupabase, venueId: string): Promise<string | null> {
-  return (await runsRepository.latestRun(supabase, venueId))?.id ?? null
+export async function latestRunId(
+  supabase: ServerSupabase,
+  venueId: string,
+  weekday?: Weekday,
+): Promise<string | null> {
+  return (await runsRepository.latestRun(supabase, venueId, weekday))?.id ?? null
 }
 
 const firstList = (response: unknown): unknown[] => {

@@ -119,7 +119,7 @@ describe("venueOnboardingSchema", () => {
     countryCode: "KE",
     city: "Nyeri",
     currency: "KES",
-    slowNight: "tuesday",
+    quietNights: ["tuesday", "thursday"],
     breakEvenHeadcount: 40,
     capacity: 90,
     capabilities: ["stage", "sound_system"],
@@ -135,7 +135,9 @@ describe("venueOnboardingSchema", () => {
   })
 
   it.each([
-    ["no quiet night", { slowNight: undefined }],
+    ["no quiet night", { quietNights: [] }],
+    ["the same night twice", { quietNights: ["tuesday", "tuesday"] }],
+    ["four quiet nights", { quietNights: ["monday", "tuesday", "wednesday", "thursday"] }],
     ["a break-even of zero", { breakEvenHeadcount: 0 }],
     ["a fractional capacity", { capacity: 90.5 }],
     ["a negative budget", { talentBudget: -1 }],

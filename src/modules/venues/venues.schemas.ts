@@ -5,6 +5,7 @@ import { isCurrency } from "@/config/currencies"
 import { isTimeZone } from "@/config/time-zones"
 import {
   ATMOSPHERES,
+  QUIET_NIGHTS_MAX,
   VENUE_CAPABILITIES,
   VENUE_HOSTS,
   VENUE_TYPES,
@@ -48,7 +49,11 @@ export const venueIdentitySchema = z.object({
 })
 
 export const venueSettingsSchema = z.object({
-  slowNight: z.enum(WEEKDAYS, { error: "Choose your quiet night." }),
+  quietNights: z
+    .array(z.enum(WEEKDAYS))
+    .min(1, "Choose your quiet night.")
+    .max(QUIET_NIGHTS_MAX, `Choose up to ${QUIET_NIGHTS_MAX} nights.`)
+    .refine((nights) => new Set(nights).size === nights.length, "Choose each night once."),
   breakEvenHeadcount: wholeNumber("how many people you need", 1, 100_000),
   capacity: wholeNumber("how many people the room holds", 1, 100_000),
   capabilities: z.array(z.enum(VENUE_CAPABILITIES)).max(VENUE_CAPABILITIES.length),
@@ -117,7 +122,9 @@ export interface MyVenue {
 }
 
 export interface VenueSettingsView {
+  // The first quiet night, kept for every screen that speaks of one night.
   slowNight: Weekday
+  quietNights: Weekday[]
   breakEvenHeadcount: number
   capacity: number
   capabilities: VenueCapability[]

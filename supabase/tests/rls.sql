@@ -328,6 +328,7 @@ begin
     80, '{stage}', 'wednesday', 30, 20000, 1800) into new_venue;
   assert (select role from public.venue_members where venue_id = new_venue and user_id = u_other) = 'owner', 'create_venue makes the caller the owner';
   assert (select break_even_headcount from public.venue_settings where venue_id = new_venue) = 30, 'and saves the settings with it';
+  assert (select quiet_nights from public.venue_settings where venue_id = new_venue) = '{wednesday}', 'an older caller gets its one night';
   select count(*) into before_count from public.venues where created_by = u_other;
   failed := false;
   begin
@@ -384,17 +385,33 @@ begin
   failed := false;
   begin update public.venue_settings set atmosphere = 'floating' where venue_id = v_mine; exception when check_violation then failed := true; end;
   assert failed, 'an unknown atmosphere is refused';
+  update public.venue_settings set quiet_nights = '{thursday,tuesday}' where venue_id = v_mine;
+  assert (select slow_night from public.venue_settings where venue_id = v_mine) = 'thursday', 'the first quiet night leads';
+  update public.venue_settings set slow_night = 'sunday' where venue_id = v_mine;
+  assert (select quiet_nights from public.venue_settings where venue_id = v_mine) = '{sunday,thursday,tuesday}',
+    'an old writer of slow_night moves it to the front';
+  failed := false;
+  begin update public.venue_settings set quiet_nights = '{monday,tuesday,wednesday,thursday}' where venue_id = v_mine; exception when check_violation then failed := true; end;
+  assert failed, 'at most three quiet nights';
+  failed := false;
+  begin update public.venue_settings set quiet_nights = '{friday,friday}' where venue_id = v_mine; exception when check_violation then failed := true; end;
+  assert failed, 'each quiet night once';
+  update public.venue_settings set quiet_nights = '{tuesday}' where venue_id = v_mine;
   reset role;
   perform set_config('request.jwt.claims', json_build_object('sub', u_door, 'role', 'authenticated')::text, true);
   set local role authenticated;
   update public.venue_settings set hosts = '{film}' where venue_id = v_mine; get diagnostics n = row_count;
   assert n = 0, 'door staff cannot change the room';
+  update public.venue_settings set quiet_nights = '{friday}' where venue_id = v_mine; get diagnostics n = row_count;
+  assert n = 0, 'door staff cannot change the quiet nights';
   reset role;
   perform set_config('request.jwt.claims', json_build_object('sub', u_other, 'role', 'authenticated')::text, true);
   set local role authenticated;
   select public.create_venue('Poetry cafe', '4 Main St', null, -0.42, 36.95, 'cafe', 'Africa/Nairobi',
-    40, '{}', 'thursday', 15, 3000000, 150000, 'KE', 'Nyeri', 'KES', '{poetry,seated_sets}', 'seated') into new_venue;
+    40, '{}', 'thursday', 15, 3000000, 150000, 'KE', 'Nyeri', 'KES', '{poetry,seated_sets}', 'seated', '{thursday,saturday}') into new_venue;
   assert (select atmosphere from public.venue_settings where venue_id = new_venue) = 'seated', 'create_venue saves what the room hosts';
+  assert (select quiet_nights from public.venue_settings where venue_id = new_venue) = '{thursday,saturday}', 'and its quiet nights';
+  assert (select slow_night from public.venue_settings where venue_id = new_venue) = 'thursday', 'led by the first';
   reset role;
 
   raise exception 'ALL RLS ASSERTIONS PASSED';

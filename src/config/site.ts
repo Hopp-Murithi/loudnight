@@ -6,6 +6,9 @@ export const SITE = {
   credit: "Encore is open source under the MIT licence. Taste data from Qloo.",
 } as const
 
+// Pages about one quiet night carry it in the address, so a link opens the same night.
+const withNight = (path: string, night?: string) => (night ? `${path}?night=${night}` : path)
+
 export const ROUTES = {
   home: "/",
   login: "/login",
@@ -18,11 +21,11 @@ export const ROUTES = {
   admin: "/admin",
   venues: "/venues",
   newVenue: "/venues/new",
-  venue: (id: string) => `/venues/${id}`,
-  venuePlan: (id: string) => `/venues/${id}/plan`,
+  venue: (id: string, night?: string) => withNight(`/venues/${id}`, night),
+  venuePlan: (id: string, night?: string) => withNight(`/venues/${id}/plan`, night),
   venueRun: (id: string, runId: string) => `/venues/${id}/plan/${runId}`,
-  venueSeries: (id: string) => `/venues/${id}/series`,
-  venuePromote: (id: string) => `/venues/${id}/promote`,
+  venueSeries: (id: string, night?: string) => withNight(`/venues/${id}/series`, night),
+  venuePromote: (id: string, night?: string) => withNight(`/venues/${id}/promote`, night),
   venueDoor: (id: string) => `/venues/${id}/door`,
   venueResults: (id: string) => `/venues/${id}/results`,
   venueTeam: (id: string) => `/venues/${id}/team`,

@@ -1,6 +1,7 @@
 import "server-only"
 import { townOf } from "@/lib/address"
 import { PIPELINE_STEPS, STEP_MAX_SECONDS, type PipelineStep } from "@/config/runs"
+import type { Weekday } from "@/config/venues"
 import { keepAlive } from "@/lib/http/background"
 import { AppError, conflict, notFound } from "@/lib/http/errors"
 import { createEventStream } from "@/lib/http/stream"
@@ -15,17 +16,17 @@ import { toToolLine } from "./runs.describe"
 import { startMessage } from "./runs.limits"
 import type { StepContext } from "./runs.steps"
 
-function toRunVenue(venue: ManagedVenue): RunVenue {
+function toRunVenue(venue: ManagedVenue, weekday: Weekday): RunVenue {
   return {
     id: venue.id,
     placeId: venue.googlePlaceId,
     point: { latitude: Number(venue.latitude), longitude: Number(venue.longitude) },
     radiusMetres: venue.settings.searchRadiusM,
     timeZone: venue.timeZone,
-    weekday: venue.settings.slowNight,
+    weekday,
     brief: {
       type: venue.venueType,
-      slowNight: venue.settings.slowNight,
+      slowNight: weekday,
       capacity: venue.settings.capacity,
       capabilities: venue.settings.capabilities,
       talentBudgetCents: Math.round(venue.settings.talentBudget * 100),
@@ -64,10 +65,12 @@ async function isStale(runId: string, step: PipelineStep): Promise<boolean> {
 }
 
 export const runsService = {
-  async start(ctx: RequestContext, venueId: string) {
+  async start(ctx: RequestContext, venueId: string, weekday: Weekday) {
     const venue = await managedVenue(ctx, venueId)
+    if (!venue.settings.quietNights.includes(weekday))
+      throw conflict("Add this night to your quiet nights in Settings first.")
     try {
-      return await runsRepository.createPair(ctx.supabase, venueId, ctx.user.id, venue.settings.slowNight)
+      return await runsRepository.createPair(ctx.supabase, venueId, ctx.user.id, weekday)
     } catch (error) {
       throw await startMessage(ctx, error, venue.timeZone)
     }
@@ -75,7 +78,7 @@ export const runsService = {
 
   async streamStep(ctx: RequestContext, runId: string, step: PipelineStep, signal: AbortSignal) {
     const { run, context } = await encoreRun(ctx, runId)
-    const venue = toRunVenue(await managedVenue(ctx, run.venue_id))
+    const venue = toRunVenue(await managedVenue(ctx, run.venue_id), run.target_weekday)
     const completed = context.completed ?? []
     const index = PIPELINE_STEPS.indexOf(step)
     if (index > 0 && !completed.includes(PIPELINE_STEPS[index - 1]))
@@ -138,7 +141,7 @@ export const runsService = {
       name: venue.name,
       venueType: venue.venueType,
       address: venue.address,
-      weekday: venue.settings.slowNight,
+      weekday: run.target_weekday,
     })
     return { answer }
   },
