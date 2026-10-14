@@ -105,6 +105,10 @@ describe("doorService.selfCheckIn", () => {
     await expect(doorService.selfCheckIn({} as never, "s", 1, new Date("2026-10-20T20:00:00Z"))).rejects.toMatchObject({
       code: "conflict",
     })
+    readEventPage.mockResolvedValue({ ...page, paused: true })
+    await expect(doorService.selfCheckIn({} as never, "s", 1, new Date("2026-10-20T20:00:00Z"))).rejects.toMatchObject({
+      message: "This venue is not taking check-ins right now.",
+    })
     expect(repo.addSelfArrival).not.toHaveBeenCalled()
   })
 })

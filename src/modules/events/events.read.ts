@@ -32,6 +32,7 @@ export async function readEventPage(
     status: night.status,
     past,
     nextSlug,
+    paused: venue.suspended_at !== null,
     venue: {
       name: venue.name,
       address: venue.address,

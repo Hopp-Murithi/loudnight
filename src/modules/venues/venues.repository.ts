@@ -8,7 +8,7 @@ type VenueUpdate = Database["public"]["Tables"]["venues"]["Update"]
 type SettingsUpdate = Database["public"]["Tables"]["venue_settings"]["Update"]
 
 const VENUE_COLUMNS =
-  "id, name, address, venue_type, google_place_id, latitude, longitude, time_zone, country_code, city, currency"
+  "id, name, address, venue_type, google_place_id, latitude, longitude, time_zone, country_code, city, currency, suspended_at, suspended_reason"
 const SETTINGS_COLUMNS =
   "slow_night, quiet_nights, break_even_headcount, capacity, capabilities, hosts, atmosphere, talent_budget_cents, average_spend_cents, search_radius_m"
 

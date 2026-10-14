@@ -25,7 +25,7 @@ export const eventsRepository = {
   async findPublicVenue(supabase: ServerSupabase, venueId: string) {
     const { data, error } = await supabase
       .from("venues")
-      .select("id, name, address, city, time_zone, latitude, longitude")
+      .select("id, name, address, city, time_zone, latitude, longitude, suspended_at")
       .eq("id", venueId)
       .maybeSingle()
     if (error) throw fromDatabaseError(error)

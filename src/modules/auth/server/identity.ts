@@ -1,6 +1,6 @@
 import "server-only"
 import { publicEnv } from "@/lib/env/public"
-import { AppError } from "@/lib/http/errors"
+import { AppError, upstreamFailed } from "@/lib/http/errors"
 import { createAdminSupabase } from "@/lib/supabase/admin"
 import { confirmLinkUrl } from "../auth.links"
 
@@ -52,4 +52,12 @@ export async function createInvite(email: string): Promise<{ userId: string; url
     throw new AppError("internal", "The invitation could not be created.")
   }
   return { userId: data.user.id, url: confirmLinkUrl(appUrl(), data.properties.hashed_token, "invite") }
+}
+
+// Deactivating a person blocks sign-in and ends every session at its next refresh; reactivating lifts the block.
+export async function setSignInBlocked(userId: string, blocked: boolean): Promise<void> {
+  const { error } = await createAdminSupabase().auth.admin.updateUserById(userId, {
+    ban_duration: blocked ? "876000h" : "none",
+  })
+  if (error) throw upstreamFailed("sign-in")
 }

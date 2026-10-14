@@ -14,7 +14,7 @@ import type { RunContext } from "@/modules/runs/runs.schemas"
 import { seriesRepository } from "@/modules/series/series.repository"
 import type { TalentEditInput } from "@/modules/series/series.schemas"
 import { cachedQloo } from "@/modules/taste/taste.service"
-import { managedVenue } from "@/modules/venues/venues.access"
+import { openVenue } from "@/modules/venues/venues.access"
 import { toCents } from "@/modules/venues/venues.schemas"
 import { actReceiptPath, actsFrom, conceptAnchors, messageTastes } from "./talent.anchors"
 import { openSearchFor } from "./talent.open"
@@ -150,7 +150,7 @@ export const talentService = {
     const series = await seriesRepository.findById(ctx.supabase, seriesId)
     const first = series?.event_nights.find((night) => night.sequence === 1)
     if (!series || !first) throw notFound("That series does not exist, or you cannot see it.")
-    const venue = await managedVenue(ctx, series.venue_id)
+    const venue = await openVenue(ctx, series.venue_id)
     const concept = await seriesRepository.findConcept(ctx.supabase, series.concept_id)
     if (!concept) throw notFound("The night behind this series is missing.")
     const found = await findTalent(

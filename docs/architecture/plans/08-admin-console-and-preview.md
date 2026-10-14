@@ -1,6 +1,6 @@
 # Plan 08: Administrator console and Preview as
 
-Status: Not started (revised Oct 14). The database half of Preview as exists and is tested (plan 00: `private.viewer_id()`, restrictive no-write policies, assertions in `rls.sql`).
+Status: Console, venue suspension and deactivation built (Oct 14). Preview as UI, the runs list and detail sheets next. The database half of Preview as exists and is tested (plan 00: `private.viewer_id()`, restrictive no-write policies, assertions in `rls.sql`).
 Depends on: 03, 13
 Phase: 5
 Judging criteria: Technological Implementation (trust and governance), Design (a complete product includes running it)
@@ -64,7 +64,7 @@ Out: acting on behalf of someone, previewing another administrator, editing othe
 - [ ] Preview as owner, manager and door person shows exactly their menu, pages and figures
 - [ ] Every write refused during a preview by the API and by the database
 - [ ] Preview start and end audited; 60-minute expiry and sign out end it
-- [ ] Deactivate removes access at once and is audited
+- [x] Deactivate removes access at once and is audited
 - [ ] Venue history page for owners and managers
 - [ ] Screen standard met for every console screen
 
@@ -81,8 +81,8 @@ The owner asked for a role that oversees the whole platform, can disable venues 
 New deliverables:
 
 - [x] A first administrator for the owner (Oct 14)
-- [ ] Suspend and lift a venue, with a reason, audited, enforced by the database
-- [ ] Deactivating a person signs them out everywhere
+- [x] Suspend and lift a venue, with a reason, audited, enforced by the database (migration `20261014095733_venue_suspension`, `supabase/tests/suspension.sql` passed on hosted; checked in the console, the team banner, a guest page and a direct RSVP)
+- [x] Deactivating a person signs them out everywhere: sign-in is blocked first (so a failure changes nothing), RLS stops their reads at once, sessions end at their next refresh; audited as `person.deactivated`. Checked on a throwaway account, then reactivated and deleted.
 
 ## Verification
 
@@ -95,3 +95,5 @@ New deliverables:
 You are working on Loudnight. Follow `CLAUDE.md` exactly. Read this plan, `ARCHITECTURE.md` section 5, the helpers in the first migration, the preview assertions in `supabase/tests/rls.sql`, and the UNoN reference `../UNoN-hackathon/docs/architecture/plans/10-admin-preview-as.md`, `../UNoN-hackathon/src/modules/preview`, `../UNoN-hackathon/src/lib/http/route.ts` and its tests. Adapt names; do not copy what does not fit.
 
 Order: cookie and tests, context and route wrapper changes with tests, proxy, service and audit, script, then console pages. Ask before adding `@tanstack/react-table` and before creating the `PREVIEW_COOKIE_SECRET` variable. Run `npm run validate` and `npm run db:test`. Tick boxes only when verified. No long dashes. Do not commit unless asked.
+
+Built Oct 14: `/admin` (overview counts and the latest changes everywhere), `/admin/venues` (search, suspend with a reason, lift), `/admin/people` (search, deactivate, reactivate; never yourself or another administrator), `/admin/audit` (every change, paginated). Lists are cards, 25 a page, at every width. Not yet: Preview as in the interface (needs the `PREVIEW_COOKIE_SECRET` variable, to be agreed), a runs list, detail sheets.

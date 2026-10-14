@@ -45,6 +45,7 @@ const venue = {
   time_zone: "Africa/Nairobi",
   latitude: -1.3,
   longitude: 36.8,
+  suspended_at: null as string | null,
 }
 const guest = { name: "Ada", partySize: 2, consent: false }
 const supabase = {} as never
@@ -109,6 +110,16 @@ describe("eventsService.rsvp", () => {
     await expect(eventsService.rsvp(supabase, "s", guest)).rejects.toMatchObject({ code: "conflict" })
     await expect(eventsService.rsvp(supabase, "s", { ...guest, website: "spam" })).rejects.toMatchObject({
       code: "validation_failed",
+    })
+    expect(repo.reservePlace).not.toHaveBeenCalled()
+  })
+
+  it("shows a suspended venue's night but takes no RSVPs for it", async () => {
+    repo.findPublicVenue.mockResolvedValue({ ...venue, suspended_at: "2026-10-20T10:00:00Z" })
+    expect(await readEventPage(supabase, "s")).toMatchObject({ paused: true })
+    await expect(eventsService.rsvp(supabase, "s", guest)).rejects.toMatchObject({
+      code: "conflict",
+      message: "This venue is not taking bookings right now.",
     })
     expect(repo.reservePlace).not.toHaveBeenCalled()
   })

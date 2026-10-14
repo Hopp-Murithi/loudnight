@@ -45,6 +45,7 @@ export function HistoryTimeline({ entries, timeZone }: { entries: HistoryEntry[]
                 <div className="min-w-0 flex-1">
                   <p className="text-sm">
                     <span className="font-medium">{entry.who}</span> {entry.what}
+                    {entry.venue && <span className="text-muted-foreground"> at {entry.venue}</span>}
                   </p>
                   {entry.changed.length > 0 && (
                     <p className="text-xs text-muted-foreground">Changed: {entry.changed.join(", ")}</p>

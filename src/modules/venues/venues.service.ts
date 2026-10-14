@@ -58,6 +58,8 @@ const loadDetail = cache(async (ctx: RequestContext, venueId: string): Promise<V
     timeZone: venue.time_zone,
     countryCode: venue.country_code,
     currency: venue.currency,
+    suspension:
+      venue.suspended_at && venue.suspended_reason ? { at: venue.suspended_at, reason: venue.suspended_reason } : null,
     settings: settings && {
       slowNight: settings.slow_night,
       quietNights: settings.quiet_nights.length > 0 ? settings.quiet_nights : [settings.slow_night],

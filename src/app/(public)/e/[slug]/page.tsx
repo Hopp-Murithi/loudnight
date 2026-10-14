@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function EventPage({ params }: Props) {
   const event = await readEventPage(await createServerSupabase(), (await params).slug)
   if (!event) notFound()
-  const open = event.status === "published" && !event.past
+  const open = event.status === "published" && !event.past && !event.paused
 
   return (
     <article className="mx-auto max-w-2xl space-y-8">

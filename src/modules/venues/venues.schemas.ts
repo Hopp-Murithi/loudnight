@@ -142,6 +142,8 @@ export interface VenueDetail extends MyVenue {
   timeZone: string
   countryCode: string | null
   currency: string
+  // Set while Loudnight has suspended the venue: the team still reads it, but nothing changes.
+  suspension: { at: string; reason: string } | null
   // Null for door staff: money and settings are for owners and managers (RLS).
   settings: VenueSettingsView | null
 }

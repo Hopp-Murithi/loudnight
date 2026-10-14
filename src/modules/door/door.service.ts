@@ -129,6 +129,7 @@ async function selfCheckIn(supabase: ServerSupabase, slug: string, partySize: nu
   const page = await readEventPage(supabase, slug, now)
   if (!page) throw notFound("This night does not exist.")
   if (page.status === "cancelled") throw conflict("This night has been cancelled.")
+  if (page.paused) throw conflict("This venue is not taking check-ins right now.")
   const starts = new Date(page.startsAt).getTime()
   if (now.getTime() < starts - OPEN_BEFORE) throw conflict("Check-in opens an hour before the night starts.")
   if (now.getTime() > starts + OPEN_AFTER) throw conflict("This night has finished.")

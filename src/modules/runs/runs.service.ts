@@ -7,7 +7,7 @@ import { AppError, conflict, notFound } from "@/lib/http/errors"
 import { createEventStream } from "@/lib/http/stream"
 import { createAdminSupabase } from "@/lib/supabase/admin"
 import type { RequestContext } from "@/modules/auth/types"
-import { managedVenue, type ManagedVenue } from "@/modules/venues/venues.access"
+import { managedVenue, openVenue, type ManagedVenue } from "@/modules/venues/venues.access"
 import { runAndStoreStep, storeGenericAnswer } from "./runs.execute"
 import type { RunVenue } from "./runs.pipeline"
 import { runsRepository } from "./runs.repository"
@@ -66,7 +66,7 @@ async function isStale(runId: string, step: PipelineStep): Promise<boolean> {
 
 export const runsService = {
   async start(ctx: RequestContext, venueId: string, weekday: Weekday) {
-    const venue = await managedVenue(ctx, venueId)
+    const venue = await openVenue(ctx, venueId)
     if (!venue.settings.quietNights.includes(weekday))
       throw conflict("Add this night to your quiet nights in Settings first.")
     try {

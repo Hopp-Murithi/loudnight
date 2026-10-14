@@ -20,6 +20,13 @@ export function EventNotice({ event }: { event: EventPageView }) {
         </p>
       </div>
     )
+  if (event.paused)
+    return (
+      <div role="status" className="space-y-1 border-l-2 border-warning bg-warning/10 p-4">
+        <ToneBadge tone="warning" label="Not taking bookings" />
+        <p className="text-sm">{event.venue.name} is not taking bookings on Loudnight right now.</p>
+      </div>
+    )
   if (event.past)
     return (
       <div role="status" className="space-y-2 border-l-2 border-border bg-muted p-4 text-sm">

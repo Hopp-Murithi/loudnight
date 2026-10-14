@@ -20,6 +20,7 @@ async function rsvp(supabase: ServerSupabase, slug: string, input: RsvpValues): 
   const page = await readEventPage(supabase, slug)
   if (!page) throw notFound("This night does not exist.")
   if (page.status === "cancelled") throw conflict("This night has been cancelled.")
+  if (page.paused) throw conflict("This venue is not taking bookings right now.")
   if (page.past) throw conflict("This night has already happened.")
   const code = checkinCode()
   const failure = await eventsRepository.reservePlace(supabase, {

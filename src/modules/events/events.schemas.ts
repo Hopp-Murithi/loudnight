@@ -53,5 +53,7 @@ export interface EventPageView {
   status: Extract<Enums<"night_status">, "published" | "cancelled">
   past: boolean
   nextSlug: string | null
+  // The venue is suspended by Loudnight: its page stays up, but it takes no bookings or check-ins.
+  paused: boolean
   venue: { name: string; address: string; town: string; timeZone: string; latitude: number; longitude: number }
 }

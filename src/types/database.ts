@@ -882,6 +882,9 @@ export type Database = {
           latitude: number
           longitude: number
           name: string
+          suspended_at: string | null
+          suspended_by: string | null
+          suspended_reason: string | null
           time_zone: string
           updated_at: string
           venue_type: Database["public"]["Enums"]["venue_type"]
@@ -899,6 +902,9 @@ export type Database = {
           latitude: number
           longitude: number
           name: string
+          suspended_at?: string | null
+          suspended_by?: string | null
+          suspended_reason?: string | null
           time_zone?: string
           updated_at?: string
           venue_type?: Database["public"]["Enums"]["venue_type"]
@@ -916,6 +922,9 @@ export type Database = {
           latitude?: number
           longitude?: number
           name?: string
+          suspended_at?: string | null
+          suspended_by?: string | null
+          suspended_reason?: string | null
           time_zone?: string
           updated_at?: string
           venue_type?: Database["public"]["Enums"]["venue_type"]
@@ -924,6 +933,13 @@ export type Database = {
           {
             foreignKeyName: "venues_created_by_fkey"
             columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "venues_suspended_by_fkey"
+            columns: ["suspended_by"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]

@@ -17,7 +17,9 @@ export default async function SelfCheckInPage({ params }: PageProps<"/e/[slug]/h
         <p className="text-sm text-muted-foreground">Welcome to {event.venue.name}</p>
         <h1 className={TYPE.h1}>{event.title}</h1>
       </div>
-      {event.status === "cancelled" ? (
+      {event.paused ? (
+        <p role="status">This venue is not taking check-ins right now.</p>
+      ) : event.status === "cancelled" ? (
         <p role="status">This night has been cancelled.</p>
       ) : (
         <SelfCheckIn slug={event.slug} venueName={event.venue.name} />

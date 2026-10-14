@@ -1,10 +1,11 @@
-import { CalendarDays } from "lucide-react"
+import { Ban, CalendarDays } from "lucide-react"
 import Image from "next/image"
 import { photoForVenue } from "@/config/night-photos"
 import { VENUE_TYPE_LABELS, WEEKDAY_LABELS } from "@/config/venues"
 import { townOf } from "@/lib/address"
 import { VENUE_ROLE_LABELS } from "@/modules/team/team.schemas"
 import type { VenueDetail } from "../venues.schemas"
+import { SUSPENDED_MESSAGE } from "../venues.suspension"
 
 // Every page about a venue opens on a night out: its own photo, its name on the marquee, its quiet night lit.
 export function VenueBanner({ venue }: { venue: VenueDetail }) {
@@ -52,6 +53,17 @@ export function VenueBanner({ venue }: { venue: VenueDetail }) {
       >
         Photo: {photo.author} ({photo.license})
       </a>
+      {venue.suspension && (
+        <p
+          role="status"
+          className="relative flex items-start gap-2 border-t border-warning/40 bg-warning/15 px-4 py-3 text-sm sm:px-6 lg:px-8"
+        >
+          <Ban aria-hidden className="mt-0.5 size-4 shrink-0 text-warning" />
+          <span>
+            {SUSPENDED_MESSAGE} Reason: {venue.suspension.reason}
+          </span>
+        </p>
+      )}
     </section>
   )
 }
