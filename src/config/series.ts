@@ -25,6 +25,8 @@ export const TALENT = {
   tierCeilings: { emerging: 0.4, local: 0.6, regional: 0.8 },
   referenceMin: 0.8,
   shortlistSize: 8,
+  // How many of Qloo's acts are checked for home country and fame before the shortlist is chosen.
+  vetPool: 20,
   referenceCount: 4,
   anchorCount: 3,
   minListeners: 1000,
@@ -43,11 +45,16 @@ export const OPEN_SOURCE_LABELS: Record<OpenSource, string> = { wikidata: "Wikid
 // Open data fills in the kinds of act Qloo knows few of. Wikidata occupations by item id; fame is capped by how many
 // Wikipedia languages describe a person, so household names stay out.
 export const OPEN_TALENT = {
-  roles: { poet: ["Q49757"], comedian: ["Q245068", "Q18545066"], dj: ["Q130857"] },
+  roles: {
+    poet: ["Q49757"],
+    comedian: ["Q245068", "Q18545066"],
+    dj: ["Q130857"],
+    musician: ["Q177220", "Q2252262", "Q488205", "Q639669"],
+  },
   nearbyKm: 50,
   maxLanguages: 20,
   bornAfter: 1955,
-  fetch: 12,
+  fetch: 20,
   keep: 4,
 } as const
 

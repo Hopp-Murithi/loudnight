@@ -12,9 +12,9 @@ const writeOutreach = vi.fn()
 const findRun = vi.fn()
 
 vi.mock("./talent.repository", () => ({ talentRepository: talentRepo }))
-const householdNames = vi.fn()
+const vetActs = vi.fn()
 vi.mock("./talent.outreach", () => ({ writeOutreach }))
-vi.mock("./talent.stars", () => ({ householdNames }))
+vi.mock("./talent.vet", () => ({ vetActs }))
 const openActs = vi.fn(async (): Promise<unknown[]> => [])
 vi.mock("./talent.open-data", () => ({ openActs }))
 vi.mock("@/modules/taste/taste.service", () => ({ cachedQloo }))
@@ -87,7 +87,7 @@ beforeEach(() => {
   findRun.mockResolvedValue({ context })
   talentRepo.currentList.mockResolvedValue([])
   writeOutreach.mockResolvedValue(new Map([["a", "Hello a"]]))
-  householdNames.mockResolvedValue(new Set(["Sample Act home"]))
+  vetActs.mockResolvedValue(new Map())
   cachedQloo.mockImplementation(async (_admin: unknown, request: { params: Params }) => {
     const kind = which(request.params)
     return { cacheId: `cache-${kind}`, fromCache: false, response: { results: { entities: answers[kind] } } }
@@ -124,6 +124,13 @@ describe("findTalent", () => {
   })
 
   it("keeps each act's receipt in the answer it came from, and where it was born when Qloo says", async () => {
+    vetActs.mockResolvedValueOnce(
+      new Map([
+        ["Sample Act both", { home: "KE", star: false, kind: "musician" }],
+        ["Sample Act home", { home: "KE", star: false, kind: "musician" }],
+        ["Sample Act a", { home: "KE", star: false, kind: "musician" }],
+      ]),
+    )
     await findTalent(admin, venue, night)
     const [both, home, fit, star] = stored()
     expect(both).toMatchObject({
@@ -132,9 +139,9 @@ describe("findTalent", () => {
     })
     expect(home).toMatchObject({ qloo_cache_id: "cache-area", fit_signals: [] })
     expect((home.profile as { origin: string }).origin).toBe("Sample Town, Sample Country")
-    expect((home.profile as { star: boolean }).star).toBe(true)
-    expect((fit.profile as { star: boolean }).star).toBe(false)
-    expect(householdNames.mock.calls[0][1]).toBe("Kenya")
+    expect(home.profile).toMatchObject({ star: false, home: "KE" })
+    expect(fit.profile).toMatchObject({ star: false, home: "KE" })
+    expect(vetActs.mock.calls[0][1]).toBe("Kenya")
     expect(fit).toMatchObject({ fit_signals: ["Sample soul"], outreach_draft: "Hello a", popularity_tier: "local" })
     expect(star).toMatchObject({ popularity_tier: "national", outreach_draft: null, qloo_cache_id: "cache-famous" })
   })
@@ -153,7 +160,7 @@ describe("findTalent", () => {
     ])
     findRun.mockResolvedValue({ context })
     writeOutreach.mockResolvedValue(new Map())
-    householdNames.mockResolvedValue(new Set())
+    vetActs.mockResolvedValue(new Map())
     await findTalent(admin, venue, night)
     expect(asked("fits")[0].page).toBeUndefined()
   })
@@ -251,7 +258,7 @@ describe("findTalent with open data", () => {
     const poet = stored().find((row) => row.qloo_entity_id === "wikidata:Q1")
     expect(poet).toMatchObject({ source: "wikidata", qloo_cache_id: null, response_path: [], fit_signals: [] })
     expect(stored().some((row) => row.qloo_entity_id === "wikidata:Q2")).toBe(false)
-    expect(householdNames.mock.calls[0][0]).toContain("Sample Poet")
+    expect(vetActs.mock.calls[0][0]).toContain("Sample Poet")
   })
 })
 
@@ -277,10 +284,31 @@ describe("findTalent with open data and stars", () => {
         profile: EMPTY_PROFILE,
       },
     ])
-    householdNames.mockResolvedValueOnce(new Set(["Sample Star"]))
+    vetActs.mockResolvedValueOnce(new Map([["Sample Star", { home: "US", star: true, kind: "musician" }]]))
     await findTalent(admin, venue, night)
     const ids = stored().map((row) => row.qloo_entity_id)
     expect(ids).toContain("musicbrainz:2")
     expect(ids).not.toContain("musicbrainz:1")
+  })
+})
+
+describe("findTalent for a venue in Kenya", () => {
+  it("leaves out foreign stars and non-performers, and puts Kenyan acts first", async () => {
+    vetActs.mockResolvedValueOnce(
+      new Map([
+        ["Sample Act both", { home: "TZ", star: true, kind: "musician" }],
+        ["Sample Act home", { home: "TZ", star: false, kind: "musician" }],
+        ["Sample Act a", { home: "KE", star: false, kind: "musician" }],
+      ]),
+    )
+    await findTalent(admin, venue, night)
+    const bookable = stored().filter((row) => row.popularity_tier !== "national")
+    expect(bookable.map((row) => row.qloo_entity_id)).toEqual(["a", "home"])
+  })
+
+  it("leaves out someone who is not a performer at all", async () => {
+    vetActs.mockResolvedValueOnce(new Map([["Sample Act a", { home: "US", star: false, kind: "other" }]]))
+    await findTalent(admin, venue, night)
+    expect(stored().map((row) => row.qloo_entity_id)).not.toContain("a")
   })
 })

@@ -135,3 +135,22 @@ export function talentRequest(
   if (page > 1) params.page = page
   return { path: "/v2/insights", params }
 }
+
+// Artists or people whose own genre is one of these tags (for example Kenyan music), near the venue, in a band.
+export function localSoundRequest(
+  tagIds: readonly string[],
+  type: QlooEntityType,
+  point: GeoPoint,
+  band: PopularityBand,
+  page = 1,
+): QlooRequest {
+  const params: QlooParams = {
+    "filter.type": type,
+    "filter.tags": tagIds.join(","),
+    "signal.location": wktPoint(point),
+    take: QLOO.take,
+  }
+  if (band.max !== undefined && band.max !== null) params["filter.popularity.max"] = band.max
+  if (page > 1) params.page = page
+  return { path: "/v2/insights", params }
+}

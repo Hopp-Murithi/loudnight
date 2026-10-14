@@ -11,8 +11,8 @@ const wikiRow = (id: string, name: string, extra: Record<string, string> = {}) =
 
 describe("openSearchFor", () => {
   it.each([
-    ["dj_night", [], "Deep House Thursdays", { roles: ["dj"], townMusicians: false }],
-    ["live_music", [], "Low Light Tuesdays", { roles: [], townMusicians: true }],
+    ["dj_night", [], "Deep House Thursdays", { roles: ["dj", "musician"], townMusicians: false }],
+    ["live_music", [], "Low Light Tuesdays", { roles: ["musician"], townMusicians: true }],
     ["talk", [], "Open Mic Poetry", { roles: ["poet"], townMusicians: false }],
     ["other", [], "Stand-up and Supper", { roles: ["comedian"], townMusicians: false }],
     ["talk", ["poetry", "comedy"], "Sunday Stories", { roles: ["poet", "comedian"], townMusicians: false }],

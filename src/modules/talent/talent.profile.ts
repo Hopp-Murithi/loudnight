@@ -24,6 +24,8 @@ export const profileSchema = z.object({
   origin: z.string().nullable().default(null),
   // A household name in the venue's country, by the copy model's judgement; null when not asked.
   star: z.boolean().nullable().default(null),
+  // The act's home country (ISO alpha-2) by the same check; null when unknown.
+  home: z.string().nullable().default(null),
   channels: z.array(z.object({ id: z.string(), label: z.string(), url: z.string() })),
 })
 
@@ -39,6 +41,7 @@ export const EMPTY_PROFILE: TalentProfile = {
   listeners: null,
   origin: null,
   star: null,
+  home: null,
   channels: [],
 }
 
@@ -143,6 +146,7 @@ export function profileFrom(entity: unknown): TalentProfile {
     listeners: main.listeners,
     origin: text(properties.place_of_birth, 120),
     star: null,
+    home: null,
     channels: [
       ...(site ? [{ id: "website", label: "Website", url: site }] : []),
       ...(Object.keys(CHANNELS) as ChannelId[]).flatMap((id) => {

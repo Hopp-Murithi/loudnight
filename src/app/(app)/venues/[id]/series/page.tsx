@@ -34,7 +34,9 @@ export default async function VenueSeriesPage({ params, searchParams }: PageProp
         readTalent(
           ctx.supabase,
           chosen.id,
-          venue.settings ? { cents: toCents(venue.settings.talentBudget), currency: venue.currency } : undefined,
+          venue.settings
+            ? { cents: toCents(venue.settings.talentBudget), currency: venue.currency, country: venue.countryCode }
+            : undefined,
         ),
       ])
     : [null, { talent: [], references: [] }]

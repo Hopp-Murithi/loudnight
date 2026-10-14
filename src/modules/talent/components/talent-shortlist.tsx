@@ -27,7 +27,7 @@ function summary(acts: TalentView[]): string {
   const tastes = acts.find((act) => act.fitSignals.length > 0)?.fitSignals ?? []
   const why = tastes.length > 0 ? `fans of ${LIST.format(tastes)} near you follow` : "this crowd follows"
   return acts.some((act) => act.source !== "night")
-    ? `Acts popular near you come first, then others ${why}. All are small enough to book.`
+    ? `Acts from your own country come first, then others ${why}. Big names are left out, so all are small enough to book.`
     : `Performers ${why}, each small enough to book.`
 }
 

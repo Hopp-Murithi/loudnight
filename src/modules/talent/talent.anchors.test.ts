@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest"
 import type { QlooInsights } from "@/lib/qloo/schemas"
 import type { RunContext } from "@/modules/runs/runs.schemas"
-import { actReceiptPath, actsFrom, conceptAnchors, messageTastes } from "./talent.anchors"
+import { actReceiptPath, actsFrom, conceptAnchors, localSoundAnchors, messageTastes } from "./talent.anchors"
 
 // Made-up values in the shape the pipeline stores. Never real Qloo data.
 const receipt = { cacheId: "00000000-0000-4000-8000-000000000000", path: ["results", "tags", "0", "query", "affinity"] }
@@ -81,5 +81,27 @@ describe("actsFrom", () => {
 
   it("is empty for an empty answer", () => {
     expect(actsFrom({ results: {} })).toEqual([])
+  })
+})
+
+describe("localSoundAnchors", () => {
+  it("picks the music styles named after the venue's country", () => {
+    const local: RunContext["fingerprint"] = {
+      domains: [
+        {
+          domain: "music_styles",
+          label: "Music styles",
+          status: "ok",
+          items: [item("t1", "Kenyan"), item("t2", "Bongo flava"), item("t3", "Kenya gospel")],
+        },
+      ],
+      audience: null,
+    }
+    expect(localSoundAnchors({ fingerprint: local }, "Kenya").map((anchor) => anchor.name)).toEqual([
+      "Kenyan",
+      "Kenya gospel",
+    ])
+    expect(localSoundAnchors({ fingerprint: local }, "Nigeria")).toEqual([])
+    expect(localSoundAnchors({}, "Kenya")).toEqual([])
   })
 })

@@ -79,3 +79,13 @@ Hosts and atmosphere in the schema and prompt; the act size label from listeners
 ## Verification
 
 `npm run validate`, `npm run db:test`; a Nairobi café hosting poetry and a Brooklyn bar hosting DJs, each searched, with the source and budget label read on every card.
+
+## Revision, Oct 14: home-grown first (the owner's report from Nairobi)
+
+The owner saw Diamond Platnumz and Rayvanny (Tanzanian stars) for a Nairobi venue with a 60,000 shilling budget, and Joel Osteen among "artists". Causes found: Qloo's near-Nairobi lists lead with regional stars, its popularity is global, it rarely gives a birthplace, and for people it returns anyone famous. Changes:
+
+- **Vetting**: one call to the reasoning model per search gives each candidate a home country, a star flag and a kind (musician, DJ, comedian, poet, speaker, other). Stars and non-performers are left out; home-country acts come first, then unknown, then foreign (`talent.fit.ts`, tested). The reasoning model refuses a forced tool, so it answers through the only tool offered; it needs room to think (8,000 tokens).
+- **Wider local pool**: Wikidata now also finds singers, rappers and musicians near the venue (then country-wide), and MusicBrainz falls back to the country when the town has few. Where Qloo has few home-grown acts, home-grown open records take the places foreign acts would have had.
+- **Local sound**: a Qloo query with `filter.tags` for the area's own sound (a music style named after the country). Probe: only Sauti Sol and KayCyy carry the Kenyan tag, so in Kenya open data carries most of the local list; in deeper markets Qloo does.
+- **The planner** no longer names a night after a star it cannot book (prompt `concepts-2026-10-14c`).
+- Checked on a Nairobi test venue: the list now leads with eight Kenyan musicians (Nikita Kering, J.S. Ondara, Wangechi, Wahu and others), each labelled Kenya, with foreign acts last and no stars.

@@ -5,6 +5,7 @@ import Image from "next/image"
 import { ToneBadge } from "@/components/shared/tone-badge"
 import type { Tone } from "@/components/shared/tone"
 import { Button } from "@/components/ui/button"
+import { countryName, flagOf } from "@/config/countries"
 import { isOpenSource, OPEN_SOURCE_LABELS, TIER_LABELS, type PopularityTier } from "@/config/series"
 import { REACH_LABELS } from "@/config/talent-reach"
 import { initials } from "@/lib/text"
@@ -68,6 +69,14 @@ export function TalentCard({ act, onOpen, onReceipt }: TalentCardProps) {
           )}
           {nearby && <span className="bg-background/85 px-2 py-0.5 text-xs font-medium">Popular near you</span>}
           {record && <span className="bg-background/85 px-2 py-0.5 text-xs font-medium">From {record}</span>}
+          {profile.home && (
+            <span className="bg-background/85 px-2 py-0.5 text-xs font-medium">
+              <span className="flag" aria-hidden>
+                {flagOf(profile.home)}
+              </span>{" "}
+              {countryName(profile.home)}
+            </span>
+          )}
         </span>
         <span className="absolute inset-x-4 bottom-3 space-y-1">
           <span className="block font-display text-3xl leading-none font-bold text-balance">{act.name}</span>

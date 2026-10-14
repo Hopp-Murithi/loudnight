@@ -28,7 +28,11 @@ const SOURCE_ORDER: TalentSource[] = ["both", "area", "night"]
 
 // Acts the venue could really book, local first: fans of the night who are also the area's own favourites, then the
 // area's favourites, then the rest of the night's fits. National names never appear here.
-export function shortlistOf<T extends RankedAct>(night: T[], area: T[]): (T & { source: TalentSource })[] {
+export function shortlistOf<T extends RankedAct>(
+  night: T[],
+  area: T[],
+  size: number = TALENT.shortlistSize,
+): (T & { source: TalentSource })[] {
   const areaRank = new Map(area.map((act, position) => [act.entityId, position]))
   const nightIds = new Set(night.map((act) => act.entityId))
   const sourced = [
@@ -45,7 +49,7 @@ export function shortlistOf<T extends RankedAct>(night: T[], area: T[]): (T & { 
         placeInArea(a) - placeInArea(b) ||
         b.affinity - a.affinity,
     )
-    .slice(0, TALENT.shortlistSize)
+    .slice(0, size)
 }
 
 // Looking again moves one page on through Qloo's answer, and comes back to the first page after the last.

@@ -1,150 +1,16 @@
 import "server-only"
-import { countryName } from "@/config/countries"
-import { MUSIC_FORMATS, OPEN_TALENT, TALENT, type TalentSource } from "@/config/series"
 import { townOf } from "@/lib/address"
-import { formatMoney } from "@/lib/format"
-import { conflict, notFound } from "@/lib/http/errors"
-import { talentRequest, type GeoPoint } from "@/lib/qloo/requests"
-import type { AdminSupabase } from "@/lib/supabase/admin"
+import { notFound } from "@/lib/http/errors"
 import { createAdminSupabase } from "@/lib/supabase/admin"
-import type { Json } from "@/types/database"
 import type { RequestContext } from "@/modules/auth/types"
-import { runsRepository } from "@/modules/runs/runs.repository"
-import type { RunContext } from "@/modules/runs/runs.schemas"
 import { seriesRepository } from "@/modules/series/series.repository"
 import type { TalentEditInput } from "@/modules/series/series.schemas"
-import { cachedQloo } from "@/modules/taste/taste.service"
 import { openVenue } from "@/modules/venues/venues.access"
 import { toCents } from "@/modules/venues/venues.schemas"
-import { actReceiptPath, actsFrom, conceptAnchors, messageTastes } from "./talent.anchors"
-import { openSearchFor } from "./talent.open"
-import { openActs } from "./talent.open-data"
-import { writeOutreach } from "./talent.outreach"
-import { householdNames } from "./talent.stars"
-import { talentRepository, type TalentInsert } from "./talent.repository"
-import {
-  activeMusicians,
-  nextPage,
-  overlapOf,
-  shortlistOf,
-  styleReferences,
-  tierOf,
-  type RankedAct,
-} from "./talent.tiers"
+import { findTalent } from "./talent.find"
+import { talentRepository } from "./talent.repository"
 
-export interface TalentVenue {
-  id: string
-  name: string
-  point: GeoPoint
-  timeZone: string
-  talentBudgetCents: number
-  currency: string
-  countryCode: string | null
-  town: string | null
-  hosts: string[]
-}
-
-export interface TalentNight {
-  conceptId: string
-  conceptName: string
-  format: string
-  runId: string
-  firstNight: string
-}
-
-const when = (iso: string, timeZone: string, options: Intl.DateTimeFormatOptions) =>
-  new Intl.DateTimeFormat("en-US", { ...options, timeZone }).format(new Date(iso))
-
-// Builds the shortlist for a night, local first: the area's own favourites who suit the night, then the area's
-// favourites, then other acts whose fans share its tastes. Each look moves a page on, so the list is fresh every time.
-// Acts the owner booked or reworded are never replaced.
-export async function findTalent(admin: AdminSupabase, venue: TalentVenue, night: TalentNight): Promise<number> {
-  const [run, current] = await Promise.all([
-    runsRepository.findRun(admin, night.runId),
-    talentRepository.currentList(admin, night.conceptId),
-  ])
-  const anchors = conceptAnchors(night.conceptName, (run?.context ?? {}) as RunContext)
-  if (anchors.length === 0) throw conflict("Plan this night again before looking for performers.")
-
-  const music = MUSIC_FORMATS.includes(night.format)
-  const type = music ? "urn:entity:artist" : "urn:entity:person"
-  const band = { max: TALENT.tierCeilings.regional }
-  const kept = new Set(current.filter((row) => row.booked_at || row.outreach_edited).map((row) => row.qloo_entity_id))
-  const openAnswer = openActs(admin, openSearchFor(night.format, venue.hosts, night.conceptName), venue)
-  const usable = (acts: RankedAct[]) => (music ? activeMusicians(acts) : acts).filter((act) => !kept.has(act.entityId))
-  const look = async (page: number) => {
-    const [fits, area] = await Promise.all([
-      cachedQloo(admin, talentRequest(anchors, type, venue.point, band, page)),
-      cachedQloo(admin, talentRequest([], type, venue.point, band, page)).catch(() => null),
-    ])
-    const shortlist = shortlistOf(usable(actsFrom(fits.response)), area ? usable(actsFrom(area.response)) : [])
-    return { page, fits, area, shortlist }
-  }
-
-  // A later page that holds nobody bookable starts again from the first, so a look never leaves the list empty.
-  const famousAnswer = cachedQloo(admin, talentRequest(anchors, type, venue.point, { min: TALENT.referenceMin })).catch(
-    () => null,
-  )
-  const asked = current.length > 0 ? nextPage(Math.max(...current.map((row) => row.search_page))) : 1
-  const first = await look(asked)
-  const { page, fits, area, shortlist } = first.shortlist.length === 0 && asked !== 1 ? await look(1) : first
-  const famous = await famousAnswer
-  const references = famous
-    ? styleReferences(actsFrom(famous.response), [...shortlist.map((act) => act.entityId), ...kept])
-    : []
-
-  const taken = new Set([...kept, ...shortlist.map((act) => act.entityId)])
-  const names = new Set(shortlist.map((act) => act.name.toLowerCase()))
-  const pool = (await openAnswer).filter((act) => !taken.has(act.entityId) && !names.has(act.name.toLowerCase()))
-  // Open records carry no Qloo evidence, so a household name among them is simply left out.
-  const stars = await householdNames(
-    [...shortlist, ...pool].map((act) => act.name),
-    countryName(venue.countryCode ?? "US"),
-  )
-  const open = pool.filter((act) => !stars.has(act.name)).slice(0, OPEN_TALENT.keep)
-  const offered = [...shortlist, ...open]
-
-  const fitSignals = anchors.map((anchor) => anchor.name)
-  const sharedTastes = messageTastes(anchors)
-  const messages = await writeOutreach(
-    {
-      venue: venue.name,
-      night: night.conceptName,
-      acts: offered.map((act) => ({ actId: act.entityId, name: act.name, sharedTastes })),
-    },
-    {
-      date: when(night.firstNight, venue.timeZone, { weekday: "long", month: "long", day: "numeric" }),
-      time: when(night.firstNight, venue.timeZone, { hour: "numeric", minute: "2-digit" }),
-      fee:
-        venue.talentBudgetCents > 0
-          ? `up to ${formatMoney(venue.talentBudgetCents, venue.currency)}`
-          : "a fee we agree together",
-    },
-  )
-
-  const row = (act: RankedAct, source: TalentSource, cacheId: string | null): TalentInsert => ({
-    concept_id: night.conceptId,
-    venue_id: venue.id,
-    qloo_entity_id: act.entityId,
-    qloo_cache_id: cacheId,
-    response_path: cacheId ? actReceiptPath(act.index) : [],
-    name: act.name.slice(0, 200),
-    popularity_tier: tierOf(act.popularity),
-    overlap_score: overlapOf(act.affinity),
-    fit_signals: source === "night" || source === "both" ? fitSignals : [],
-    outreach_draft: messages.get(act.entityId) ?? null,
-    profile: { ...act.profile, star: stars.has(act.name) } as unknown as Json,
-    source,
-    search_page: page,
-  })
-  await talentRepository.refreshForConcept(admin, night.conceptId, [
-    ...shortlist.map((act) => row(act, act.source, act.source === "area" && area ? area.cacheId : fits.cacheId)),
-    ...open.map((act) => row(act, act.source, null)),
-    ...references.map((act) => row(act, "night", famous?.cacheId ?? fits.cacheId)),
-  ])
-  return offered.length
-}
-
+export { findTalent, type TalentNight, type TalentVenue } from "./talent.find"
 export const talentService = {
   async find(ctx: RequestContext, seriesId: string): Promise<{ found: number }> {
     const series = await seriesRepository.findById(ctx.supabase, seriesId)

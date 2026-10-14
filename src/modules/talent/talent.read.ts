@@ -18,7 +18,7 @@ const sourceOf = (value: string): TalentSource => SOURCE_ORDER.find((source) => 
 export async function readTalent(
   supabase: ServerSupabase | AdminSupabase,
   conceptId: string,
-  budget?: { cents: number; currency: string },
+  budget?: { cents: number; currency: string; country?: string | null },
 ): Promise<{ talent: TalentView[]; references: TalentView[] }> {
   const views = (await talentRepository.listForConcept(supabase, conceptId)).map((row): TalentView => ({
     id: row.id,
@@ -36,10 +36,12 @@ export async function readTalent(
     profile: readProfile(row.profile),
   }))
   if (budget) for (const view of views) view.reach = reachOf(view.profile, budget.cents, budget.currency)
-  // Booked acts first, then local before the rest, then the closest match.
+  // Booked acts first, then acts from the venue's own country, then local before the rest, then the closest match.
+  const home = (view: TalentView) => Number(Boolean(budget?.country) && view.profile.home === budget?.country)
   const ordered = views.sort(
     (a, b) =>
       Number(b.booked) - Number(a.booked) ||
+      home(b) - home(a) ||
       SOURCE_ORDER.indexOf(a.source) - SOURCE_ORDER.indexOf(b.source) ||
       b.overlap - a.overlap,
   )

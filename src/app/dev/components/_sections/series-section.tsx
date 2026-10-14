@@ -47,6 +47,7 @@ const act = (id: string, name: string, tier: TalentView["tier"], overlap: number
     listeners: 34500,
     origin: id === "a" ? "Sample Town, Sample Country" : null,
     star: false,
+    home: null,
     channels: [{ id: "instagram", label: "Instagram", url: "https://www.instagram.com/" }],
   },
 })

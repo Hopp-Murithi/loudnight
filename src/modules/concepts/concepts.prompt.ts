@@ -3,7 +3,7 @@ import type { CoveredTheme } from "@/modules/gap/gap.schemas"
 import { CANDIDATE_COUNT, CONCEPT_FORMATS } from "./concepts.schemas"
 import { signalsForModel, type Signal } from "./concepts.signals"
 
-export const CONCEPTS_PROMPT_VERSION = "concepts-2026-10-14b"
+export const CONCEPTS_PROMPT_VERSION = "concepts-2026-10-14c"
 
 export const CONCEPTS_SYSTEM = [
   "You are the programming director for one venue. Invent recurring weekly nights for its quietest night.",
@@ -12,6 +12,9 @@ export const CONCEPTS_SYSTEM = [
   "for example a music style with a kind of food, or a film taste with a kind of night out.",
   "Build nights a bar can really run every week: lead with a music style, a local artist or a kind of night out,",
   "and pair it with food, drink or a film or TV taste. A night that only plays a screen needs a strong local reason.",
+  "Famous artists in the signals show what the crowd loves; they are not who will play. Never name a night after,",
+  "or build it around booking, a star a small venue could not afford. Name the sound or the scene instead, played by",
+  "local acts from the venue's own country.",
   "Before you submit, confirm each combination with check_overlap: anchor one signal and target the others.",
   "Only cite overlap ids that check_overlap returned. An overlap marked not confirmed is weak; prefer confirmed ones.",
   "Claims are two to four short labels in plain words, each citing one signal id or one overlap id as its source.",

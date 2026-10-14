@@ -1,5 +1,6 @@
 import "server-only"
 import { createHash } from "node:crypto"
+import { countryName } from "@/config/countries"
 import { OPEN_DATA } from "@/config/integrations"
 import { OPEN_TALENT, type OpenSource } from "@/config/series"
 import { artistsFrom, type MusicBrainzArtist } from "@/lib/musicbrainz/client"
@@ -59,12 +60,18 @@ export async function openActs(admin: AdminSupabase, search: OpenSearch, venue: 
         found.push(...more.filter((act) => !found.some((known) => known.entityId === act.entityId)))
       }
     }
-    if (search.townMusicians && venue.town) {
-      const town = venue.town.split(",")[0].trim()
-      const artists = await cached<MusicBrainzArtist[]>(admin, "musicbrainz", town, () =>
-        artistsFrom(town, OPEN_TALENT.fetch),
-      )
-      found.push(...actsFromMusicBrainz(artists))
+    if (search.townMusicians) {
+      // The town first; the whole country when the town has few musicians on record.
+      const places = [venue.town?.split(",")[0].trim(), venue.countryCode ? countryName(venue.countryCode) : null]
+      for (const place of places) {
+        if (!place || found.filter((act) => act.source === "musicbrainz").length >= OPEN_TALENT.keep) continue
+        const artists = await cached<MusicBrainzArtist[]>(admin, "musicbrainz", place, () =>
+          artistsFrom(place, OPEN_TALENT.fetch),
+        )
+        found.push(
+          ...actsFromMusicBrainz(artists).filter((act) => !found.some((known) => known.entityId === act.entityId)),
+        )
+      }
     }
     return found
   } catch {

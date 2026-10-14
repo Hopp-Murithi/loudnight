@@ -16,6 +16,20 @@ export function conceptAnchors(conceptName: string, context: RunContext): Signal
   return anchors.slice(0, TALENT.anchorCount)
 }
 
+// The area's own sound: music styles named after the venue's country, such as "Kenyan" for a venue in Kenya. Asking
+// Qloo who fans of that sound follow brings home-grown acts forward, where the area alone returns regional stars.
+export function localSoundAnchors(context: RunContext, country: string): Signal[] {
+  if (!context.fingerprint || country.length < 4) return []
+  const stem = country.slice(0, 5).toLowerCase()
+  return buildSignals(context.fingerprint)
+    .filter(
+      (signal) =>
+        signal.domain === "music_styles" &&
+        signal.name.toLowerCase().startsWith(stem.slice(0, Math.max(4, stem.length - 1))),
+    )
+    .slice(0, 2)
+}
+
 // Every act in a Qloo answer that carries an affinity, with its place in the list so a receipt can point at it.
 export function actsFrom(response: QlooInsights): RankedAct[] {
   return (response.results?.entities ?? []).flatMap((entity, index) => {

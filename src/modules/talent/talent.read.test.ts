@@ -7,6 +7,7 @@ vi.mock("./talent.repository", () => ({ talentRepository: talentRepo }))
 vi.mock("@/modules/concepts/concepts.read", () => ({ receiptAt }))
 
 const { readTalent, readTalentReceipt } = await import("./talent.read")
+const { EMPTY_PROFILE } = await import("./talent.profile")
 
 // Made-up rows in the shape the database returns.
 const row = {
@@ -46,6 +47,15 @@ describe("readTalent", () => {
     const { talent } = await readTalent({} as never, "c1")
     expect(talent.map((act) => act.id)).toEqual(["booked", "both", "area", "fit"])
     expect(talent[0]).toMatchObject({ booked: true, bookedAt: "2026-10-13T10:00:00Z" })
+  })
+
+  it("puts acts from the venue's own country right after booked ones", async () => {
+    talentRepo.listForConcept.mockResolvedValue([
+      { ...row, id: "abroad", source: "both", profile: { ...EMPTY_PROFILE, home: "NG" } },
+      { ...row, id: "home", source: "night", profile: { ...EMPTY_PROFILE, home: "KE" } },
+    ])
+    const { talent } = await readTalent({} as never, "c1", { cents: 6_000_000, currency: "KES", country: "KE" })
+    expect(talent.map((act) => act.id)).toEqual(["home", "abroad"])
   })
 
   it("reads an unknown source as a fit for the night", async () => {

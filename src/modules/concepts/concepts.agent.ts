@@ -56,8 +56,9 @@ export async function runConceptAgent(userMessage: string, signals: Signal[], de
       model: AI_MODELS.reasoning,
       max_tokens: CONCEPT_AGENT.maxTokens,
       system: CONCEPTS_SYSTEM,
-      tools: [CHECK_OVERLAP_TOOL, SUBMIT_TOOL],
-      tool_choice: lastTurn ? { type: "tool", name: SUBMIT_TOOL.name } : { type: "auto" },
+      // The reasoning model refuses a forced tool, so the last turn offers only the submit tool instead.
+      tools: lastTurn ? [SUBMIT_TOOL] : [CHECK_OVERLAP_TOOL, SUBMIT_TOOL],
+      tool_choice: { type: "auto" },
       messages,
     })
     messages.push({ role: "assistant", content: reply.content })

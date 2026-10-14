@@ -22,8 +22,8 @@ const OPEN_FORMATS = ["talk", "other"]
 // Which open records suit a night: DJs for a DJ night, town musicians for live music, and poets or comedians when the
 // night's name says so, or when an open format night happens in a room that hosts them.
 export function openSearchFor(format: string, hosts: readonly string[], nightName: string): OpenSearch {
-  if (format === "dj_night") return { roles: ["dj"], townMusicians: false }
-  if (format === "live_music") return { roles: [], townMusicians: true }
+  if (format === "dj_night") return { roles: ["dj", "musician"], townMusicians: false }
+  if (format === "live_music") return { roles: ["musician"], townMusicians: true }
   const named = NAME_ROLES.filter(([pattern]) => pattern.test(nightName)).map(([, role]) => role)
   const hosted = OPEN_FORMATS.includes(format) ? hosts.flatMap((host) => HOST_ROLES[host] ?? []) : []
   return { roles: [...new Set(named.length > 0 ? named : hosted)], townMusicians: false }

@@ -100,12 +100,14 @@ describe("runConceptAgent", () => {
     expect(outcome.candidates).toHaveLength(6)
   })
 
-  it("forces a submission on the last turn and stops at the budget", async () => {
+  it("offers only the submit tool on the last turn and stops at the budget", async () => {
     const chatter = Array.from({ length: CONCEPT_AGENT.maxTurns }, () => reply({ type: "text", text: "Thinking." }))
     const d = deps(chatter)
     const outcome = await runConceptAgent("plan", signals, d)
     expect(outcome.stop).toBe("budget")
-    expect(d.create.mock.calls.at(-1)?.[0].tool_choice).toEqual({ type: "tool", name: "submit_concepts" })
+    const last = d.create.mock.calls.at(-1)?.[0]
+    expect(last.tools.map((tool: { name: string }) => tool.name)).toEqual(["submit_concepts"])
+    expect(last.tool_choice).toEqual({ type: "auto" })
   })
 })
 
