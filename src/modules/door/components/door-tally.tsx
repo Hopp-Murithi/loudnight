@@ -32,7 +32,7 @@ export function DoorCount({ numbers, breakEven }: { numbers: DoorView["numbers"]
 }
 
 // The last few people through the door, newest first.
-export function RecentArrivals({ arrivals }: { arrivals: DoorArrival[] }) {
+export function RecentArrivals({ arrivals, timeZone }: { arrivals: DoorArrival[]; timeZone: string }) {
   if (arrivals.length === 0) return null
   return (
     <section aria-labelledby="recent-heading" className="space-y-2">
@@ -46,7 +46,7 @@ export function RecentArrivals({ arrivals }: { arrivals: DoorArrival[] }) {
               {arrival.name ?? "Walk-in"}
               {arrival.partySize > 1 && `, ${arrival.partySize}`}
             </span>
-            <span className="text-muted-foreground">{formatClock(arrival.at)}</span>
+            <span className="text-muted-foreground">{formatClock(arrival.at, timeZone)}</span>
           </li>
         ))}
       </ul>

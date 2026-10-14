@@ -42,7 +42,7 @@ export default async function TicketPage({ params }: PageProps<"/e/[slug]/ticket
           This night has been cancelled. Your ticket will not be needed.
         </p>
       )}
-      {staff && <StaffCheckIn code={code} {...staff} />}
+      {staff && <StaffCheckIn code={code} timeZone={event.venue.timeZone} {...staff} />}
       <div className="mx-auto grid place-items-center gap-3 border bg-white p-5">
         <QrCode value={ticketUrl(event.slug, code)} label={`Ticket QR code for ${code}`} />
         <p className="font-mono text-lg tracking-[0.3em] text-black">{code.toUpperCase()}</p>

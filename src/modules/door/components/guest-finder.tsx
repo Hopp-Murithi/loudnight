@@ -11,10 +11,12 @@ import { formatClock } from "@/lib/format"
 // The guest list by name, for a guest without their phone. Door staff see names and party sizes, never contacts.
 export function GuestFinder({
   guests,
+  timeZone,
   onCheckIn,
   busy,
 }: {
   guests: DoorGuest[]
+  timeZone: string
   onCheckIn: (rsvpId: string) => void
   busy: boolean
 }) {
@@ -48,7 +50,7 @@ export function GuestFinder({
             {guest.arrivedAt ? (
               <span className="flex shrink-0 items-center gap-1 text-sm text-success">
                 <Check aria-hidden className="size-4" />
-                In at {formatClock(guest.arrivedAt)}
+                In at {formatClock(guest.arrivedAt, timeZone)}
               </span>
             ) : (
               <Button className="h-12 shrink-0 px-5" disabled={busy} onClick={() => onCheckIn(guest.id)}>

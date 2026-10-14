@@ -49,7 +49,7 @@ export default async function VenueOverviewPage({ params, searchParams }: PagePr
             </FadeIn>
           )}
           <FadeIn delay={3} className="lg:col-span-2">
-            <RecentActivity venueId={id} entries={history} />
+            <RecentActivity venueId={id} entries={history} timeZone={venue.timeZone} />
           </FadeIn>
         </>
       )}

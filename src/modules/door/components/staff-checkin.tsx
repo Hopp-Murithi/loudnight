@@ -12,10 +12,11 @@ interface StaffCheckInProps {
   name: string
   partySize: number
   arrivedAt: string | null
+  timeZone: string
 }
 
 // Shown on a ticket only to the venue's own team: one tap lets the guest in, and a second scan says when they came.
-export function StaffCheckIn({ nightId, code, name, partySize, arrivedAt }: StaffCheckInProps) {
+export function StaffCheckIn({ nightId, code, name, partySize, arrivedAt, timeZone }: StaffCheckInProps) {
   const checkIn = useCheckIn(nightId)
   const result = checkIn.data
   const firstIn = result?.at ?? arrivedAt
@@ -32,7 +33,9 @@ export function StaffCheckIn({ nightId, code, name, partySize, arrivedAt }: Staf
           ) : (
             <CircleAlert aria-hidden className="size-6 text-warning" />
           )}
-          {result?.status === "in" ? "Checked in. Enjoy the night." : `Already came in at ${formatClock(firstIn)}`}
+          {result?.status === "in"
+            ? "Checked in. Enjoy the night."
+            : `Already came in at ${formatClock(firstIn, timeZone)}`}
         </p>
       ) : (
         <Button

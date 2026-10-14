@@ -41,6 +41,7 @@ async function build(ctx: RequestContext, night: Night, venue: VenueDetail): Pro
       title: night.title ?? venue.name,
       startsAt: night.starts_at,
       status: night.status,
+      timeZone: venue.timeZone,
     },
     breakEven: venue.settings?.breakEvenHeadcount ?? null,
     guests: list.map((row) => ({

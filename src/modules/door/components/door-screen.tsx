@@ -22,11 +22,11 @@ const MODES: { id: Mode; label: string }[] = [
 
 type Feedback = { tone: "good" | "warn"; text: string } | null
 
-function feedbackFor(result: CheckinResult): Feedback {
+function feedbackFor(result: CheckinResult, timeZone: string): Feedback {
   const who = result.partySize > 1 ? `${result.name}, party of ${result.partySize}` : result.name
   return result.status === "in"
     ? { tone: "good", text: `${who}: in` }
-    : { tone: "warn", text: `${who} already came in at ${formatClock(result.at)}` }
+    : { tone: "warn", text: `${who} already came in at ${formatClock(result.at, timeZone)}` }
 }
 
 // The door on the night: one big live count, then scan, find a name, or count a walk-in. Built for a thumb.
@@ -37,18 +37,19 @@ export function DoorScreen({ initial }: { initial: DoorView }) {
   const [party, setParty] = useState(1)
   const [feedback, setFeedback] = useState<Feedback>(null)
   const { numbers, breakEven } = door
+  const timeZone = door.night.timeZone
 
   const send = useCallback(
     (input: CheckinInput) =>
       checkIn.mutate(input, {
         onSuccess: (result) => {
-          setFeedback(feedbackFor(result))
+          setFeedback(feedbackFor(result, timeZone))
           navigator.vibrate?.(result.status === "in" ? 60 : [40, 60, 40])
         },
         onError: (error) =>
           setFeedback({ tone: "warn", text: error instanceof ApiError ? error.message : "That did not go through." }),
       }),
-    [checkIn],
+    [checkIn, timeZone],
   )
   const onCode = useCallback((code: string) => send({ code }), [send])
 
@@ -92,7 +93,12 @@ export function DoorScreen({ initial }: { initial: DoorView }) {
       <div role="tabpanel">
         {mode === "scan" && <DoorScanner onCode={onCode} busy={checkIn.isPending} />}
         {mode === "list" && (
-          <GuestFinder guests={door.guests} busy={checkIn.isPending} onCheckIn={(rsvpId) => send({ rsvpId })} />
+          <GuestFinder
+            guests={door.guests}
+            timeZone={door.night.timeZone}
+            busy={checkIn.isPending}
+            onCheckIn={(rsvpId) => send({ rsvpId })}
+          />
         )}
         {mode === "walk-in" && (
           <div className="space-y-4 border p-5">
@@ -109,7 +115,7 @@ export function DoorScreen({ initial }: { initial: DoorView }) {
         )}
       </div>
 
-      <RecentArrivals arrivals={door.recent} />
+      <RecentArrivals arrivals={door.recent} timeZone={door.night.timeZone} />
     </div>
   )
 }

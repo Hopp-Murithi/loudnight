@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
 import {
+  formatClock,
   currencyName,
   formatLocalDate,
   formatMoney,
@@ -43,5 +44,12 @@ describe("format", () => {
 describe("formatLocalDate", () => {
   it("keeps the calendar day whatever the server's zone", () => {
     expect(formatLocalDate("2026-10-13", { weekday: "short", month: "short", day: "numeric" })).toBe("Tue, Oct 13")
+  })
+})
+
+describe("formatClock", () => {
+  it("shows the time in the venue's zone, whatever the machine's clock says", () => {
+    expect(formatClock("2026-10-22T01:20:00Z", "America/Chicago")).toBe("8:20 PM")
+    expect(formatClock("2026-10-22T01:20:00Z", "Africa/Nairobi")).toBe("4:20 AM")
   })
 })

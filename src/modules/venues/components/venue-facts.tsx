@@ -62,12 +62,24 @@ export function VenueRoom({ venueId, capabilities }: { venueId: string; capabili
   )
 }
 
-const when = (iso: string) =>
-  new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }).format(
-    new Date(iso),
-  )
+const when = (iso: string, timeZone: string) =>
+  new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    timeZone,
+  }).format(new Date(iso))
 
-export function RecentActivity({ venueId, entries }: { venueId: string; entries: HistoryEntry[] }) {
+export function RecentActivity({
+  venueId,
+  entries,
+  timeZone,
+}: {
+  venueId: string
+  entries: HistoryEntry[]
+  timeZone: string
+}) {
   return (
     <SectionCard title="Recent activity" description="Who changed what, newest first.">
       {entries.length === 0 ? (
@@ -81,7 +93,7 @@ export function RecentActivity({ venueId, entries }: { venueId: string; entries:
                 <p>
                   <span className="font-medium">{entry.who}</span> {entry.what}
                 </p>
-                <p className="text-xs text-muted-foreground">{when(entry.at)}</p>
+                <p className="text-xs text-muted-foreground">{when(entry.at, timeZone)}</p>
               </div>
             </li>
           ))}

@@ -47,7 +47,7 @@ export interface DoorArrival {
 
 // Everything the door screen shows for one night. Money is null for door staff.
 export interface DoorView {
-  night: { id: string; slug: string; title: string; startsAt: string; status: string }
+  night: { id: string; slug: string; title: string; startsAt: string; status: string; timeZone: string }
   // Null for door staff, who do not see the venue's settings.
   breakEven: number | null
   guests: DoorGuest[]
