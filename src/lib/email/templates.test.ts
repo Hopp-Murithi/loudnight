@@ -7,7 +7,7 @@ describe("emailTemplates", () => {
   it("puts the link in both the HTML and the plain text", () => {
     const email = emailTemplates.verifyEmail({ name: "Ada", url: URL_WITH_TOKEN })
 
-    expect(email.subject).toBe("Confirm your email for Encore")
+    expect(email.subject).toBe("Confirm your email for Loudnight")
     expect(email.html).toContain("token_hash=abc&amp;type=signup")
     expect(email.text).toContain(URL_WITH_TOKEN)
   })
@@ -28,7 +28,7 @@ describe("emailTemplates", () => {
       url: URL_WITH_TOKEN,
     })
 
-    expect(email.subject).toBe("Ada added you to The Copper Room on Encore")
+    expect(email.subject).toBe("Ada added you to The Copper Room on Loudnight")
     expect(email.text).toContain("as door staff")
   })
 

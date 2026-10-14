@@ -7,7 +7,7 @@ const SOURCE_STYLE: Record<ToolSource, string> = {
   "Google Places": "bg-info/12 text-info",
   Ticketmaster: "bg-success/12 text-success",
   Claude: "bg-muted text-muted-foreground",
-  Encore: "bg-primary/12 text-primary",
+  Loudnight: "bg-primary/12 text-primary",
 }
 
 export function SourceBadge({ source }: { source: ToolSource }) {

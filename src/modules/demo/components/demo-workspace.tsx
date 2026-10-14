@@ -33,7 +33,7 @@ export function DemoWorkspace({ run, concepts, radiusMetres, plannedAt, currency
             Two answers to the same question
           </h2>
           <p className="text-sm text-muted-foreground">
-            A general chatbot guesses. Encore reads the neighbourhood first, and every number opens its receipt.
+            A general chatbot guesses. Loudnight reads the neighbourhood first, and every number opens its receipt.
           </p>
         </div>
         <RunOutcome

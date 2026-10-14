@@ -69,7 +69,7 @@ const BY_COUNTRY: Record<string, string> = {
 
 export const DEFAULT_CURRENCY = "USD"
 
-// Every currency Encore knows, for the settings picker, in alphabetical order.
+// Every currency Loudnight knows, for the settings picker, in alphabetical order.
 export const CURRENCIES: readonly string[] = [...new Set(Object.values(BY_COUNTRY))].sort()
 
 export const currencyFor = (countryCode: string | null | undefined): string =>

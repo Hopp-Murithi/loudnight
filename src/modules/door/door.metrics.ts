@@ -55,6 +55,6 @@ export function nightNumbers(input: {
 export const monthlyGain = (extraGuests: number, spendCents: number, nights = 4) =>
   Math.max(0, extraGuests) * Math.max(0, spendCents) * nights
 
-// How many times a month's gain pays for Encore.
+// How many times a month's gain pays for Loudnight.
 export const paysFor = (gainCents: number, priceCents: number) =>
   priceCents > 0 ? Math.floor(gainCents / priceCents) : 0

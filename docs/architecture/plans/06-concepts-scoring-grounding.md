@@ -7,7 +7,7 @@ Judging criteria: Technological Implementation (non-trivial agent with tool use 
 
 ## Goal
 
-From the fingerprint and the gap scan, Claude invents six candidate nights. Each combines two or three high-affinity signals from different domains and is re-checked with Qloo to confirm the overlap is real. Encore scores all six and keeps the best three. Every number on a concept card is an evidence chip that opens the exact Qloo response behind it, and a claim without a receipt never reaches the screen or the database.
+From the fingerprint and the gap scan, Claude invents six candidate nights. Each combines two or three high-affinity signals from different domains and is re-checked with Qloo to confirm the overlap is real. Loudnight scores all six and keeps the best three. Every number on a concept card is an evidence chip that opens the exact Qloo response behind it, and a claim without a receipt never reaches the screen or the database.
 
 ## Brief coverage
 
@@ -69,7 +69,7 @@ Out: orchestration and streaming (plan 07), series creation after choice (plan 1
 ## Build notes (Oct 13)
 
 - Migration `20261013085947_concept_details_and_choice`: `format`, `needs`, `themes`, `expected_audience` and `chosen_at` on concepts; one choice per run (partial unique index); `choose_concept` runs with the caller's rights, under a policy for owners and managers on shortlisted concepts only; choices are audited. Applied locally and on hosted; `rls.sql` passes on both.
-- The model never writes numbers. Claims are word labels citing a signal id or an overlap id; Encore attaches the value from the receipt. The validator still drops any label whose digits do not equal the cited value at two decimals, ignoring digits inside a taste's own name ("2 Dope Queens").
+- The model never writes numbers. Claims are word labels citing a signal id or an overlap id; Loudnight attaches the value from the receipt. The validator still drops any label whose digits do not equal the cited value at two decimals, ignoring digits inside a taste's own name ("2 Dope Queens").
 - The fingerprint, covered themes and venue constraints go in the first message as a JSON data block instead of three getter tools, which saves a model turn each. `check_overlap` and `submit_concepts` are the tools. All checks in a turn run in parallel, and a failed Qloo check comes back to the model as a tool error instead of ending the run.
 - Overlap: `signal.interests.tags` (or `.entities`) with the anchor, `signal.location` with the venue, and `filter.type` (plus `filter.tag.types`) of the target. The target's affinity in that answer is the overlap, with spread values (0.78 to 0.99) where plain area affinities cluster at 1.0. AudienceFit is the mean of the cited overlaps; a target Qloo did not return counts as zero.
 - Novelty matches themes by shared words (hyphens split, plurals folded) and the synonym groups in `config/concepts.ts`; "Drinks, no programme" never counts.
@@ -95,6 +95,6 @@ Out: orchestration and streaming (plan 07), series creation after choice (plan 1
 
 ---
 
-You are working on Encore. Follow `CLAUDE.md` exactly, section 5 above all. Read this plan, `modules/taste`, `modules/gap`, the `concepts` and `evidence` tables and the receipt trigger, and plan 02's Findings for response paths. Load the `claude-api` skill before writing the tool loop.
+You are working on Loudnight. Follow `CLAUDE.md` exactly, section 5 above all. Read this plan, `modules/taste`, `modules/gap`, the `concepts` and `evidence` tables and the receipt trigger, and plan 02's Findings for response paths. Load the `claude-api` skill before writing the tool loop.
 
 Order: scoring and grounding helpers with tests, tool definitions and schemas, the loop with recorded synthetic responses, storage, receipt route, read route, choose route, then the components in the gallery. Run `npm run validate` and `npm run db:test`. Tick boxes only when verified. No long dashes. Do not commit unless asked.

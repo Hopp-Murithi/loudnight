@@ -56,7 +56,7 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* Encore palette: copper #A4361C on warm white by day; at night the room goes dark and the spotlight amber #F2B860 leads. */
+/* Loudnight palette: copper #A4361C on warm white by day; at night the room goes dark and the spotlight amber #F2B860 leads. */
 :root {
   --radius: 0.25rem;
 
@@ -213,6 +213,19 @@
   }
 }
 /* A soft pulse for something happening now: a plan in progress, a door that is open. */
+/* The loader's equaliser: each bar breathes on its own beat, like a sound meter at the back of a room. */
+.eq-bar {
+  transform-origin: bottom;
+  animation: eq-bounce 0.48s ease-in-out infinite alternate;
+}
+@keyframes eq-bounce {
+  from {
+    transform: scaleY(0.25);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
 .live-dot {
   animation: live-pulse 1.8s ease-in-out infinite;
 }

@@ -28,7 +28,7 @@ export async function venueHistory(supabase: ServerSupabase, venueId: string, li
     )
     return {
       id: row.id,
-      who: row.actor_id ? (people.get(row.actor_id) ?? "Someone on the team") : "Encore",
+      who: row.actor_id ? (people.get(row.actor_id) ?? "Someone on the team") : "Loudnight",
       what: HISTORY_ACTIONS[row.action] ?? "made a change",
       changed: changed.map((field) => HISTORY_FIELDS[field] ?? field.replace(/_/g, " ")),
       at: row.created_at,

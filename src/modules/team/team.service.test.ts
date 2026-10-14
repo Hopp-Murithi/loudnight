@@ -45,7 +45,7 @@ describe("teamService.invite", () => {
       status: "invited",
     })
     expect(add).toHaveBeenCalledWith(ctx.supabase, "v1", "new-1", "door", "owner-1")
-    expect(sendEmail.mock.calls[0][0].subject).toBe("Ada added you to Union Pool on Encore")
+    expect(sendEmail.mock.calls[0][0].subject).toBe("Ada added you to Union Pool on Loudnight")
   })
 
   it("adds an existing account without creating another", async () => {
@@ -56,7 +56,7 @@ describe("teamService.invite", () => {
       status: "added",
     })
     expect(createInvite).not.toHaveBeenCalled()
-    expect(sendEmail.mock.calls[0][0].subject).toBe("You now work at Union Pool on Encore")
+    expect(sendEmail.mock.calls[0][0].subject).toBe("You now work at Union Pool on Loudnight")
   })
 
   // Nothing is created for someone who is not the owner, so the endpoint cannot be used to make accounts.

@@ -13,7 +13,7 @@ export const hometown = (origin: string | null) => origin?.split(",")[0]?.trim()
 export const listenersText = (listeners: number | null) =>
   listeners && listeners > 0 ? `${COMPACT.format(listeners)} monthly listeners` : null
 
-// Opens the owner's own mail app with the message ready. Encore has no address for the act, so the owner adds it.
+// Opens the owner's own mail app with the message ready. Loudnight has no address for the act, so the owner adds it.
 export function mailtoLink(subject: string, body: string): string {
   return `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
 }

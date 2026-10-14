@@ -7,11 +7,11 @@ Judging criteria: Technological Implementation (multi-step agent, streaming, eve
 
 ## Goal
 
-A run is something the owner watches. The client drives the six steps in order; each step is its own streamed server call, so nothing approaches the host's time limit. Each step appears as it happens with what it found and its source. A "Generic AI vs Encore" toggle shows the same venue answered by a plain model beside Encore's evidence-backed concepts. A "Powered by Qloo" panel lists every Qloo call in the run, each opening its receipt.
+A run is something the owner watches. The client drives the six steps in order; each step is its own streamed server call, so nothing approaches the host's time limit. Each step appears as it happens with what it found and its source. A "Generic AI vs Loudnight" toggle shows the same venue answered by a plain model beside Loudnight's evidence-backed concepts. A "Powered by Qloo" panel lists every Qloo call in the run, each opening its receipt.
 
 ## Brief coverage
 
-"Watch the agent think (about 60 seconds). A live trace shows each step: reading the neighbourhood, checking competitors, generating concepts. Every finding carries its source." "Encore runs a fixed pipeline of six steps, and Claude chooses which tools to call inside each step." "Long runs: each pipeline step is its own server call, driven from the client and streamed." Wow features: "Generic AI vs Encore toggle". Judging proof: "Powered by Qloo panel listing every call in a run". Abuse control: "per-IP rate limits on fresh runs".
+"Watch the agent think (about 60 seconds). A live trace shows each step: reading the neighbourhood, checking competitors, generating concepts. Every finding carries its source." "Loudnight runs a fixed pipeline of six steps, and Claude chooses which tools to call inside each step." "Long runs: each pipeline step is its own server call, driven from the client and streamed." Wow features: "Generic AI vs Loudnight toggle". Judging proof: "Powered by Qloo panel listing every call in a run". Abuse control: "per-IP rate limits on fresh runs".
 
 ## Scope
 
@@ -48,7 +48,7 @@ Out: demo precompute and the public demo page (plan 09).
   - At 768: trace collapsible panel, concept cards 2-up.
   - At 1280 and 1440: trace in a left column (sticky), concepts in a right area 3-up, Powered by Qloo panel below.
 - **`RunTrace`** (`Stepper`): six steps with status icon and text ("Reading the neighbourhood", "Checking what's on nearby"), tool lines with source badges, findings with evidence chips, latency per step. `aria-live="polite"` announces step changes only, not every line. Reduced motion: no pulsing, instant updates.
-- **`GenericToggle`**: segmented control "Generic AI" | "Encore". Generic view shows the plain answer in a muted card with the label "No local data used". Encore view shows the concept cards. On desktop a "Side by side" option shows both columns.
+- **`GenericToggle`**: segmented control "Generic AI" | "Loudnight". Generic view shows the plain answer in a muted card with the label "No local data used". Loudnight view shows the concept cards. On desktop a "Side by side" option shows both columns.
 - **`PoweredByQlooPanel`**: a list of every Qloo call in the run: endpoint, plain description of parameters, result count, latency, cache hit badge, "Open receipt". Count summary at the top ("14 Qloo calls, 9 from cache").
 - States: not started (one-sentence explanation and "Plan my Tuesday"), running, step failed (message, Retry), capped ("You have planned 6 times this hour. Try again at 21:40."), finished.
 
@@ -89,6 +89,6 @@ Out: demo precompute and the public demo page (plan 09).
 
 ---
 
-You are working on Encore. Follow `CLAUDE.md` exactly. Read this plan, `lib/http/stream.ts`, `apiStreamRoute`, `apiStream`, the services from plans 04 to 06, the UNoN reference `../UNoN-hackathon/src/modules/assistant` for streaming patterns, and plan 01's `Stepper`. Load the `claude-api` skill for the generic prompt.
+You are working on Loudnight. Follow `CLAUDE.md` exactly. Read this plan, `lib/http/stream.ts`, `apiStreamRoute`, `apiStream`, the services from plans 04 to 06, the UNoN reference `../UNoN-hackathon/src/modules/assistant` for streaming patterns, and plan 01's `Stepper`. Load the `claude-api` skill for the generic prompt.
 
 Order: event schemas and tests, run service with step dispatch and idempotency, routes, generic mode, hook with tests, then the page and components. Run `npm run validate` and `npm run db:test`. Check the page at four widths in both themes, with reduced motion, and with the network throttled. Tick boxes only when verified. No long dashes. Do not commit unless asked.

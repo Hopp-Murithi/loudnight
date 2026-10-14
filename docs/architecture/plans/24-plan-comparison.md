@@ -21,7 +21,7 @@ Out: comparing plans from different venues, merging plans.
 ## Design
 
 - `modules/compare`: `compare.diff.ts` (pure): given two run views and their shortlists, returns for each side the nights with scores, and three lists per taste domain and for nearby themes: in both, only in the first, only in the second. Names are compared case-insensitively.
-- `compare.service.ts`: `listPlans(supabase, venueId)` (finished Encore runs, newest first, capped at 12, with the top night's name) and `comparePlans(supabase, venueId, a, b)`, both through the caller's client so RLS decides. A run from another venue is not found.
+- `compare.service.ts`: `listPlans(supabase, venueId)` (finished Loudnight runs, newest first, capped at 12, with the top night's name) and `comparePlans(supabase, venueId, a, b)`, both through the caller's client so RLS decides. A run from another venue is not found.
 - Page `/venues/[id]/plan/compare?a=<run>&b=<run>`; with no choice it defaults to the two newest. Owners, managers and door staff may read it, like the plan itself.
 
 ## Screens
@@ -48,4 +48,4 @@ The diff (shared, only-first, only-second, case, empty domains), the service (ve
 
 ---
 
-You are working on Encore. Follow `CLAUDE.md` exactly. Read this plan and `modules/runs`. Order: the diff with tests, the service with tests, the page. No long dashes. Do not commit unless asked.
+You are working on Loudnight. Follow `CLAUDE.md` exactly. Read this plan and `modules/runs`. Order: the diff with tests, the service with tests, the page. No long dashes. Do not commit unless asked.

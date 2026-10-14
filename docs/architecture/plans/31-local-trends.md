@@ -7,7 +7,7 @@ Judging criteria: Potential Impact
 
 ## Goal
 
-Taste changes slowly; trends change weekly. An owner planning a Thursday wants to know both: what people near them have loved for years (Qloo, today) and what they are talking about this month (a sound going round on TikTok, a song climbing the country's chart, a search everybody is making). Encore would use trends the way it uses taste: as evidence with a receipt, never as a guess.
+Taste changes slowly; trends change weekly. An owner planning a Thursday wants to know both: what people near them have loved for years (Qloo, today) and what they are talking about this month (a sound going round on TikTok, a song climbing the country's chart, a search everybody is making). Loudnight would use trends the way it uses taste: as evidence with a receipt, never as a guess.
 
 ## Sources, and what we know about each
 
@@ -37,7 +37,7 @@ Qloo trends only, because the key already covers them and the receipts work as t
 
 - Terms of use: most social networks forbid storing or reselling their data. Each source needs its terms read before any code.
 - Cost: paid tiers (X) and data vendors (TikTok) cost more than the rest of a plan together. Worth it only once owners pay (see the roadmap's money section).
-- Noise: a trend in a country is not a trend on one street. Encore says which level a trend is from (country, city) and never presents a national trend as local.
+- Noise: a trend in a country is not a trend on one street. Loudnight says which level a trend is from (country, city) and never presents a national trend as local.
 
 ## The owner's answers (Oct 14)
 

@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils"
 
 const LAYER = "pointer-events-none absolute inset-0 overflow-hidden"
 
-// Scene three: inside one venue. The room comes into focus and the night Encore found is pinned to it like a ticket.
+// Scene three: inside one venue. The room comes into focus and the night Loudnight found is pinned to it like a ticket.
 export function RoomLayer({ region, active }: { region: LandingRegion; active: boolean }) {
   return (
     <div aria-hidden className={LAYER} style={{ opacity: "var(--v2)" }}>

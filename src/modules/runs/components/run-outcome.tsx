@@ -31,7 +31,7 @@ function Waiting() {
   )
 }
 
-// Encore's nights against a plain chatbot's answer for the same venue: the reason Qloo matters, side by side.
+// Loudnight's nights against a plain chatbot's answer for the same venue: the reason Qloo matters, side by side.
 export function RunOutcome({
   concepts,
   ready,
@@ -52,7 +52,7 @@ export function RunOutcome({
   return (
     <Tabs defaultValue={first} className="gap-5">
       <TabsList aria-label="Compare answers">
-        <TabsTrigger value="encore">Encore</TabsTrigger>
+        <TabsTrigger value="encore">Loudnight</TabsTrigger>
         <TabsTrigger value="generic">Generic AI</TabsTrigger>
         <TabsTrigger value="both" className="hidden lg:inline-flex">
           Side by side

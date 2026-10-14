@@ -93,7 +93,7 @@ Out: planning runs (plans 04 to 07), Preview as (plan 08), venue history page (p
 
 - [x] Sidebar focus visible for keyboard users (plan 01 finding): a solid inset outline on every focusable element in the sidebar; the user checks it visually
 - [x] Sign up sends a branded verification email through Resend; the link signs the person in (real email read back from Resend, link followed, `/api/v1/me` returned the new account; the same link used twice is refused)
-- [x] Unverified sign in is refused with a way to send the link again (`email_not_verified`; resend delivered "Your new Encore confirmation link"; nothing sent to an already verified address)
+- [x] Unverified sign in is refused with a way to send the link again (`email_not_verified`; resend delivered "Your new Loudnight confirmation link"; nothing sent to an already verified address)
 - [x] Forgot password sends a reset email; the link leads to the set-password form; the new password works (every page redirects to the form while pending; old password refused afterwards)
 - [x] Responses never reveal whether an email has an account (same answer for unknown, existing and verified addresses; emails sent after the response); auth endpoints are rate limited per IP (unit tests and the database limiter assertions)
 - [x] Onboarding saves venue and settings in one transaction; the creator is the owner (`create_venue`, asserted in `rls.sql`; Union Pool created from a live Places search)
@@ -111,6 +111,6 @@ Out: planning runs (plans 04 to 07), Preview as (plan 08), venue history page (p
 
 ---
 
-You are working on Encore. Follow `CLAUDE.md` exactly. Read `CLAUDE.md`, `ARCHITECTURE.md` sections 4 to 6, the plans README, plan 01, this plan, and the UNoN reference for auth and email: `../UNoN-hackathon/src/modules/auth`, `../UNoN-hackathon/src/lib/email`, `../UNoN-hackathon/src/app/api/v1/auth` and `../UNoN-hackathon/src/app/(auth)`.
+You are working on Loudnight. Follow `CLAUDE.md` exactly. Read `CLAUDE.md`, `ARCHITECTURE.md` sections 4 to 6, the plans README, plan 01, this plan, and the UNoN reference for auth and email: `../UNoN-hackathon/src/modules/auth`, `../UNoN-hackathon/src/lib/email`, `../UNoN-hackathon/src/app/api/v1/auth` and `../UNoN-hackathon/src/app/(auth)`.
 
 Order: migration with assertions, email layer with tests, rate limiter with tests, auth schemas, service and routes with tests, proxy, auth pages, then venues and team. Apply the migration to the hosted project only after local tests pass. Run `npm run validate` and `npm run db:test`. No long dashes. Commit only when the user asks, as the user alone.

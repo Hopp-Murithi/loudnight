@@ -7,9 +7,9 @@ Judging criteria: Potential Impact (the brief's go-to-market names Kenya and oth
 
 ## Goal
 
-An owner in Nairobi, Lagos, London, Mexico City or Tokyo adds their venue as easily as one in Brooklyn, sees times on their own clock and money in their own currency, and gets a plan whenever Qloo holds enough taste data for their area. Where it does not, Encore says so plainly before a plan is started, and never invents a neighbourhood.
+An owner in Nairobi, Lagos, London, Mexico City or Tokyo adds their venue as easily as one in Brooklyn, sees times on their own clock and money in their own currency, and gets a plan whenever Qloo holds enough taste data for their area. Where it does not, Loudnight says so plainly before a plan is started, and never invents a neighbourhood.
 
-## What ties Encore to the United States today
+## What ties Loudnight to the United States today
 
 Found by reading the code on Oct 14:
 
@@ -38,7 +38,7 @@ Out: translating the owner's interface (plan 28 covers ads in Spanish), tax or t
 
 - Time zone: Google Places details returns the place's IANA zone. The form shows it as read-only text with a "Change" control that accepts any zone the runtime knows (`Intl.supportedValuesOf("timeZone")`). The schema validates the same way. The six-zone list and the state map are deleted.
 - Country and city: from the place's address components (`country` short code, `locality`, falling back to `postal_town`, then `administrative_area_level_2`).
-- Currency: from the country, through a small table in `config/currencies.ts` covering the countries Encore is likely to meet first, falling back to USD, and changeable in settings.
+- Currency: from the country, through a small table in `config/currencies.ts` covering the countries Loudnight is likely to meet first, falling back to USD, and changeable in settings.
 
 ### Coverage check
 
@@ -100,4 +100,4 @@ Built:
 
 ---
 
-You are working on Encore. Follow `CLAUDE.md` exactly. Read this plan, plans 03 to 05, `lib/places/client.ts`, `config/time-zones.ts`, `lib/format.ts` and every caller of `formatMoney` and `cityOf`. Probe Qloo first and write the Findings. Then: migration and rules, config and pure helpers with tests, services, the form and settings, the coverage check, the gap scan. No long dashes. Do not commit unless asked.
+You are working on Loudnight. Follow `CLAUDE.md` exactly. Read this plan, plans 03 to 05, `lib/places/client.ts`, `config/time-zones.ts`, `lib/format.ts` and every caller of `formatMoney` and `cityOf`. Probe Qloo first and write the Findings. Then: migration and rules, config and pure helpers with tests, services, the form and settings, the coverage check, the gap scan. No long dashes. Do not commit unless asked.

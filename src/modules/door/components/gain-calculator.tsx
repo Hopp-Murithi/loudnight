@@ -58,7 +58,7 @@ export function GainCalculator({ currency, averageSpendCents, extraGuests }: Gai
       <p className="text-lg" aria-live="polite">
         That is <span className="font-display text-3xl font-bold tabular-nums">{formatMoney(gain, currency)}</span> a
         month, over four nights.
-        {price ? ` It pays for Encore ${paysFor(gain, price)} times over.` : ""}
+        {price ? ` It pays for Loudnight ${paysFor(gain, price)} times over.` : ""}
       </p>
     </section>
   )

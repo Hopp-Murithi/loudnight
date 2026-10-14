@@ -25,7 +25,7 @@ So Qloo stays the source for what the crowd loves and for musicians; other sourc
 
 ## Part B: within budget, honestly
 
-- **Act size** is judged from what is known, never invented: Spotify monthly listeners (already in Qloo's answer), plus a "household name in this country" check by the copy model on the act's name and country, cached per act and country. The check is a yes or no label, never a number, and the card says "Encore's estimate: ask the act".
+- **Act size** is judged from what is known, never invented: Spotify monthly listeners (already in Qloo's answer), plus a "household name in this country" check by the copy model on the act's name and country, cached per act and country. The check is a yes or no label, never a number, and the card says "Loudnight's estimate: ask the act".
 - Each card says one of: "Likely within your budget", "A stretch", "Probably beyond this budget". The list hides "beyond" acts by default, with "Show bigger names" to see them.
 - The thresholds scale with the budget in the venue's own currency through a small table of typical small-venue fees per country band (config, reviewed by the owner), not by converting currencies.
 - A star the owner knows is too big can be hidden for good ("Not for us").
@@ -36,7 +36,7 @@ So Qloo stays the source for what the crowd loves and for musicians; other sourc
 | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- | ------------------------------------------------------------------ |
 | Wikidata                 | People by occupation (poet, comedian, DJ, actor) with birthplace and country; Wikipedia article count as a rough fame measure | Free, open data (CC0), SPARQL endpoint | Polite rate, a descriptive User-Agent; cached like Qloo answers    |
 | MusicBrainz              | Artists by area (city or country) with genre tags                                                                             | Free, open data, 1 request a second    | Fills "artists from Nyeri"                                         |
-| Ticketmaster attractions | Performers who play shows in the country, by type including comedy                                                            | Key already in Encore                  | About 30 countries                                                 |
+| Ticketmaster attractions | Performers who play shows in the country, by type including comedy                                                            | Key already in Loudnight               | About 30 countries                                                 |
 | Spotify                  | Followers and popularity, for act size                                                                                        | Free key                               | No location; some features restricted for new apps since late 2024 |
 | YouTube Data API         | Subscriber counts, for act size where Spotify understates                                                                     | Free daily quota                       | After launch                                                       |
 

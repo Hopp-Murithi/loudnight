@@ -32,7 +32,7 @@ Out: the keep, tweak or swap decision (plan 14); offline door mode (plan 15).
 ### Measurement (pure `attendance.metrics.ts`, tested)
 
 - RSVPs (people = sum of party sizes), check-ins (people), show-up rate = RSVP holders who checked in divided by RSVP holders, walk-ins, distance to break-even = break-even headcount minus people checked in, revenue estimate = people times average spend (or logged spend when present), extra revenue against a baseline the owner enters (optional, default zero).
-- Calculator: "If this night adds N guests every week at $S each, that is $X a month", with N and S editable sliders defaulting to tonight's numbers and the venue's average spend. Shown against Encore's price band ($49 to $99) as "pays for itself N times".
+- Calculator: "If this night adds N guests every week at $S each, that is $X a month", with N and S editable sliders defaulting to tonight's numbers and the venue's average spend. Shown against Loudnight's price band ($49 to $99) as "pays for itself N times".
 - Realtime: subscribe to `rsvps` and `checkins` filtered by `event_night_id`, remove the channel on cleanup, rebuild on `TOKEN_REFRESHED` (UNoN's lesson). Door staff get counts only.
 
 ## Screens
@@ -71,7 +71,7 @@ Out: the keep, tweak or swap decision (plan 14); offline door mode (plan 15).
 - **Takings** are one figure per night in `night_spend`, owners and managers only, updated in place.
 - **Live** uses Supabase Realtime on `rsvps` and `checkins`, filtered to the night. The browser hands Realtime the signed-in session before subscribing; without that, the subscription ran as an anonymous visitor and the database rules hid every event.
 - **Door staff** see the count without the break-even target (it lives in the venue's settings, which are owners' and managers' only).
-- The Results page shows tonight live, a row per published night with takings entry, and the monthly sum in the owner's own numbers with "pays for Encore N times" where a price is set for the currency.
+- The Results page shows tonight live, a row per published night with takings entry, and the monthly sum in the owner's own numbers with "pays for Loudnight N times" where a price is set for the currency.
 
 ## Verification
 
@@ -81,6 +81,6 @@ Out: the keep, tweak or swap decision (plan 14); offline door mode (plan 15).
 
 ---
 
-You are working on Encore. Follow `CLAUDE.md` exactly. Read this plan, plan 12, the `checkins` and `rsvps` policies and assertions, and UNoN's realtime hook pattern in `../UNoN-hackathon/src/modules/notifications/hooks/use-notifications.ts`. Load the `supabase` skill for Realtime and the `supabase-postgres-best-practices` skill for the door view or grants. Ask before adding a QR decoder library.
+You are working on Loudnight. Follow `CLAUDE.md` exactly. Read this plan, plan 12, the `checkins` and `rsvps` policies and assertions, and UNoN's realtime hook pattern in `../UNoN-hackathon/src/modules/notifications/hooks/use-notifications.ts`. Load the `supabase` skill for Realtime and the `supabase-postgres-best-practices` skill for the door view or grants. Ask before adding a QR decoder library.
 
 Order: metrics helpers with tests, migration for door privacy and spend with assertions, services and routes, realtime hook, then the door screen, tabs and calculator. Run `npm run validate` and `npm run db:test`. Test on a real phone camera. Tick boxes only when verified. No long dashes. Do not commit unless asked.

@@ -6,7 +6,7 @@ import { cityOf } from "@/lib/address"
 import { createServerSupabase } from "@/lib/supabase/server"
 import { readDemoPlan } from "@/modules/demo/demo.service"
 
-export const alt = "A demo venue planned by Encore"
+export const alt = "A demo venue planned by Loudnight"
 export const size = { width: 1200, height: 630 }
 export const contentType = "image/png"
 

@@ -7,11 +7,11 @@ Judging criteria: all four, made explicit for the judges
 
 ## Goal
 
-Encore is submitted on Devpost by Oct 29 with everything the rules and the brief's checklist ask for, and the write-up and video make each judging criterion easy to score: how deeply Qloo is used, how complete the product is, the real impact with real numbers, and why the idea is original.
+Loudnight is submitted on Devpost by Oct 29 with everything the rules and the brief's checklist ask for, and the write-up and video make each judging criterion easy to score: how deeply Qloo is used, how complete the product is, the real impact with real numbers, and why the idea is original.
 
 ## Brief coverage
 
-Submission checklist (all items). Two-minute walkthrough script. "How to protect the edge before Oct 30: run Encore at one or two real venues, even small ones, and put the real check-in numbers in the submission." Hackathon facts and requirements: public repository with an open-source licence, written explanation of functionality and Qloo integration, video. Business model and go-to-market for the impact case.
+Submission checklist (all items). Two-minute walkthrough script. "How to protect the edge before Oct 30: run Loudnight at one or two real venues, even small ones, and put the real check-in numbers in the submission." Hackathon facts and requirements: public repository with an open-source licence, written explanation of functionality and Qloo integration, video. Business model and go-to-market for the impact case.
 
 ## Scope
 
@@ -34,25 +34,25 @@ Out: recording and editing the video (the user records; this plan supplies the s
 
 ### Screenshots
 
-Trace mid-run, concept card with an open receipt, Generic vs Encore side by side, launch kit, event page on a phone, door screen, dashboard with the calculator. Captured at 1440 and 390 in light mode, plus one dark. Stored in `docs/submission/` (our own UI only; no Qloo raw responses visible beyond the receipt slice).
+Trace mid-run, concept card with an open receipt, Generic vs Loudnight side by side, launch kit, event page on a phone, door screen, dashboard with the calculator. Captured at 1440 and 390 in light mode, plus one dark. Stored in `docs/submission/` (our own UI only; no Qloo raw responses visible beyond the receipt slice).
 
 ### Video (two minutes, following the brief's script)
 
-| Time      | Shot                                                                 | Line                                                                                    |
-| --------- | -------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| 0:00-0:15 | The Copper Room demo, Generic tab                                    | "This bar in Brooklyn is empty every Tuesday. Here's what a normal AI tells the owner." |
-| 0:15-0:45 | Toggle to Encore, trace replay: neighbourhood, competitors, concepts | What each step found, with sources on screen                                            |
-| 0:45-1:10 | Open a concept, tap an evidence chip, receipt sheet                  | "Every number has a receipt from Qloo."                                                 |
-| 1:10-1:35 | Choose it: calendar, talent, poster, posts                           | One tap to a launch kit                                                                 |
-| 1:35-1:50 | Event page on a phone, RSVP, door scan, dashboard ticks up           | "Who actually came."                                                                    |
-| 1:50-2:00 | Calculator and the pilot result                                      | "Qloo knows the taste. Encore fills the room."                                          |
+| Time      | Shot                                                                    | Line                                                                                    |
+| --------- | ----------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| 0:00-0:15 | The Copper Room demo, Generic tab                                       | "This bar in Brooklyn is empty every Tuesday. Here's what a normal AI tells the owner." |
+| 0:15-0:45 | Toggle to Loudnight, trace replay: neighbourhood, competitors, concepts | What each step found, with sources on screen                                            |
+| 0:45-1:10 | Open a concept, tap an evidence chip, receipt sheet                     | "Every number has a receipt from Qloo."                                                 |
+| 1:10-1:35 | Choose it: calendar, talent, poster, posts                              | One tap to a launch kit                                                                 |
+| 1:35-1:50 | Event page on a phone, RSVP, door scan, dashboard ticks up              | "Who actually came."                                                                    |
+| 1:50-2:00 | Calculator and the pilot result                                         | "Qloo knows the taste. Loudnight fills the room."                                       |
 
 Captions burned in; no music over the voice; under 2:00.
 
 ### Pilot venue
 
 - Phase 2: the user approaches one or two friendly venues (anywhere; label honestly if outside the US and Qloo coverage is weaker). Agree a night in the week of Oct 20 to 27.
-- Run Encore for their venue, publish one night, use the door screen on the night, log spend if they agree.
+- Run Loudnight for their venue, publish one night, use the door screen on the night, log spend if they agree.
 - Record: RSVPs, check-ins, show-up rate, break-even distance, owner quote (with written permission). If no pilot happens, say so plainly; never invent or round up numbers.
 
 ### Eligibility and rules (from plan 02)
@@ -84,6 +84,6 @@ Open the Devpost preview; follow every link in it from a logged-out phone; watch
 
 ---
 
-You are working on Encore. Follow `CLAUDE.md` exactly, including the no-long-dashes rule in the write-up. Read this plan, the brief, the plans README's judging criteria section, and every Done plan's Deliverables for facts to cite. Use only verified numbers from the database and the Powered by Qloo panel.
+You are working on Loudnight. Follow `CLAUDE.md` exactly, including the no-long-dashes rule in the write-up. Read this plan, the brief, the plans README's judging criteria section, and every Done plan's Deliverables for facts to cite. Use only verified numbers from the database and the Powered by Qloo panel.
 
 Write `docs/submission.md` and the README sections, capture screenshots in a browser, write the video script and captions, and fill in the pilot section from real data. Ask the user to review before anything is posted. Never submit on the user's behalf. Tick boxes only when verified. Do not commit unless asked.

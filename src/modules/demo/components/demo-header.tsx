@@ -40,7 +40,8 @@ export function DemoHeader({ venue, plannedAt }: { venue: DemoVenueView; planned
         </ul>
         {plannedAt && (
           <p className="max-w-xl pt-2 text-sm text-muted-foreground">
-            Planned by Encore on {plannedAt}. Nothing here was typed in by hand: the same six steps run for every venue.
+            Planned by Loudnight on {plannedAt}. Nothing here was typed in by hand: the same six steps run for every
+            venue.
           </p>
         )}
       </div>

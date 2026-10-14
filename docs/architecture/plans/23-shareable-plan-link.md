@@ -45,7 +45,7 @@ The existing public read routes (run, concepts, receipts) accept a `share` query
 ## Screens
 
 - **Share sheet** on the plan page: one button to make a link; the link with Copy and Share; "Ends in 7 days"; a list of live links with End. Bottom sheet on a phone.
-- **`/shared/[token]`**: the venue name, "Shared plan, read only", the nights with their evidence, the taste and nearby tabs. An ended or unknown link shows one plain message and a link to Encore's home page.
+- **`/shared/[token]`**: the venue name, "Shared plan, read only", the nights with their evidence, the taste and nearby tabs. An ended or unknown link shows one plain message and a link to Loudnight's home page.
 
 ## Tests
 
@@ -69,4 +69,4 @@ The existing public read routes (run, concepts, receipts) accept a `share` query
 
 ---
 
-You are working on Encore. Follow `CLAUDE.md` exactly, the new-table checklist in section 3 especially. Read this plan, the preview header mechanism in the row level security migration, `lib/supabase` and `lib/http/route.ts`. Order: migration and rule tests, service with tests, routes, the sheet, the shared page. No long dashes. Do not commit unless asked.
+You are working on Loudnight. Follow `CLAUDE.md` exactly, the new-table checklist in section 3 especially. Read this plan, the preview header mechanism in the row level security migration, `lib/supabase` and `lib/http/route.ts`. Order: migration and rule tests, service with tests, routes, the sheet, the shared page. No long dashes. Do not commit unless asked.

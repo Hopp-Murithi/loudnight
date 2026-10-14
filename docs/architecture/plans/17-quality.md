@@ -25,7 +25,7 @@ Out: load testing beyond a simple concurrency check of the run start and RSVP en
 - Projects: `phone` (390x844, touch), `tablet` (768x1024), `desktop` (1440x900); light and dark via `colorScheme`.
 - Runs against the local stack (`supabase start`, seed, `next build && next start`) with upstream calls replaced by a test mode that serves synthetic fixtures through the same clients (`ENCORE_FAKE_UPSTREAMS=1`, refused in production by an env check).
 - Suites:
-  1. **Judge path**: landing, open a demo venue, Generic first, toggle to Encore, open a receipt, see the launch kit preview. Under 3 seconds to first content on the phone project with throttling.
+  1. **Judge path**: landing, open a demo venue, Generic first, toggle to Loudnight, open a receipt, see the launch kit preview. Under 3 seconds to first content on the phone project with throttling.
   2. **Owner path**: start, onboard, plan (fake upstreams), choose a concept, series, launch kit, publish a night.
   3. **Guest path**: event page, RSVP, ticket.
   4. **Door path**: door screen check-in by code, duplicate, walk-in; dashboard updates live in a second context.
@@ -84,6 +84,6 @@ The suites above, plus unit tests for `lib/log.ts` redaction and request id prop
 
 ---
 
-You are working on Encore. Follow `CLAUDE.md` exactly. Read this plan, plan 01's route map and the Screen standard, and the four user paths in plans 09, 03 to 07, 12 and 13. Ask the user before adding Playwright and axe.
+You are working on Loudnight. Follow `CLAUDE.md` exactly. Read this plan, plan 01's route map and the Screen standard, and the four user paths in plans 09, 03 to 07, 12 and 13. Ask the user before adding Playwright and axe.
 
 Order: fake upstream mode with an env guard and tests, Playwright config and the judge path, then the other suites, then axe, then logging and request ids, then Lighthouse. Run `npm run validate` and `npm run e2e`. Tick boxes only when verified. No long dashes. Do not commit unless asked.

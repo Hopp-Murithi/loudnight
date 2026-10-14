@@ -1,4 +1,4 @@
-# Architecture: Encore
+# Architecture: Loudnight
 
 Written for whoever picks this up next. Read the summary, then use the rest as reference.
 
@@ -26,7 +26,7 @@ Why it wins for this project: it is the smallest design that is still correct fo
 | Score formula                               | `concepts.total_score`, a generated column: 40 x audience + 20 x novelty + 20 x venue fit + 20 x cost fit.                      |
 | Grounding rule                              | Validator in code plus the `evidence_requires_receipt` trigger in the database. Plans 06, 16.                                   |
 | Live agent trace                            | One server call per step, streamed as NDJSON; `run_steps` rows record each tool call. Plan 07.                                  |
-| Generic AI vs Encore toggle                 | A `generic` run mode: a plain model answer for the same venue, stored beside the Encore run. Plan 07.                           |
+| Generic AI vs Loudnight toggle              | A `generic` run mode: a plain model answer for the same venue, stored beside the Loudnight run. Plan 07.                        |
 | Preloaded demo venues, instant              | Three seeded venues; their plans are precomputed by the real pipeline, never typed in. Plan 09.                                 |
 | 4-week series, talent, launch kit, ad brief | `modules/series`, `modules/talent`, `modules/launch-kit`. Plans 10, 11.                                                         |
 | Event page, RSVP, QR, door check-in         | Public pages and `publicApiRoute`; guests write, never read. Plans 12, 13.                                                      |
@@ -111,7 +111,7 @@ Every policy is built from these, wrapped as `(select ...)` so Postgres evaluate
 
 ## 5. Preview as
 
-An administrator can open Encore exactly as any owner, manager or door person sees it, read only. This is the UNoN pattern, built in from the first migration:
+An administrator can open Loudnight exactly as any owner, manager or door person sees it, read only. This is the UNoN pattern, built in from the first migration:
 
 - The server's Supabase client sends `x-encore-preview: <user id>` only when the signed-in person is an administrator with a valid preview cookie.
 - `private.viewer_id()` honours the header only if the real caller is an active administrator and the target is an active non-administrator. Otherwise it returns `auth.uid()`. A preview can only narrow what an administrator sees.
@@ -127,7 +127,7 @@ An administrator can open Encore exactly as any owner, manager or door person se
 | `venues`            | Public face: name, address, coordinates, type, time zone, demo flag                                                               |
 | `venue_members`     | Who works where and as what. Exactly one owner, added by trigger in the same statement as the venue                               |
 | `venue_settings`    | Capacity, capabilities, slow night, break-even headcount, talent budget, average spend, search radius                             |
-| `agent_runs`        | One planning run per venue and night, Encore or generic mode, status and timing                                                   |
+| `agent_runs`        | One planning run per venue and night, Loudnight or generic mode, status and timing                                                |
 | `run_steps`         | Each tool call: step, tool, input, summarised output, latency, and the Qloo cache row it used                                     |
 | `qloo_cache`        | Request hash, canonical request, full response, fetch time, refresh-after time (seven days). Shared by all; private to the server |
 | `concepts`          | Name, pitch, why it beats nearby, the four sub-scores, the generated total, estimated cost                                        |
@@ -173,7 +173,7 @@ The client drives the steps in order and renders the stream; the server never ho
 
 The MCP tools cannot change Auth settings. Do these once for the hosted project (Authentication section):
 
-1. Keep **Allow new users to sign up** and **Confirm email** on; Encore sends the confirmation itself through Resend, so Supabase's own email templates are never used.
+1. Keep **Allow new users to sign up** and **Confirm email** on; Loudnight sends the confirmation itself through Resend, so Supabase's own email templates are never used.
 2. Turn **Allow anonymous sign-ins** off. Owners have email accounts (plan 03); judges use the public demo pages, which need no session.
 3. Set **Site URL** to the deployed URL, and add `http://localhost:3000` as a redirect for development.
 4. Password minimum length 10; turn on leaked password protection if the plan allows it.

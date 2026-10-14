@@ -7,11 +7,11 @@ Judging criteria: Quality of the Idea (closes the loop: decide, execute, promote
 
 ## Goal
 
-After each night, Encore compares turnout with the break-even target and recommends what to do with the next date in the series: keep it, tweak it, or swap the concept. The manager confirms with one tap; a tweak rewrites the next night's variation and launch kit grounded in the same fingerprint; a swap moves the series to the next shortlisted concept. Every decision is recorded, building the outcome data the brief calls the moat.
+After each night, Loudnight compares turnout with the break-even target and recommends what to do with the next date in the series: keep it, tweak it, or swap the concept. The manager confirms with one tap; a tweak rewrites the next night's variation and launch kit grounded in the same fingerprint; a swap moves the series to the next shortlisted concept. Every decision is recorded, building the outcome data the brief calls the moat.
 
 ## Brief coverage
 
-"Learn. After each night Encore compares turnout with the break-even target and adjusts the next date: keep, tweak or swap the concept." Feature table: "Learning loop: check-ins vs break-even adjust the next date (light)." "For the learning loop: the next date in the series adapts to what actually happened." "For the business: a growing record of which concepts filled seats in which kinds of neighbourhoods." Cut-list item 1.
+"Learn. After each night Loudnight compares turnout with the break-even target and adjusts the next date: keep, tweak or swap the concept." Feature table: "Learning loop: check-ins vs break-even adjust the next date (light)." "For the learning loop: the next date in the series adapts to what actually happened." "For the business: a growing record of which concepts filled seats in which kinds of neighbourhoods." Cut-list item 1.
 
 ## Scope
 
@@ -58,6 +58,6 @@ Out: machine learning on outcomes (roadmap note in plan 20).
 
 ---
 
-You are working on Encore. Follow `CLAUDE.md` exactly. Read this plan, plans 10, 11 and 13, and the `event_nights.decision` constraint. Load the `claude-api` skill for the tweak prompt and the `supabase-postgres-best-practices` skill for the swap function.
+You are working on Loudnight. Follow `CLAUDE.md` exactly. Read this plan, plans 10, 11 and 13, and the `event_nights.decision` constraint. Load the `claude-api` skill for the tweak prompt and the `supabase-postgres-best-practices` skill for the swap function.
 
 Order: rules with tests, swap function with database tests, services and routes, UI. If the schedule is tight, ship the recommendation and the recorded decision first and leave tweak and swap automation for last, as the brief's cut-list says. Run `npm run validate` and `npm run db:test`. Tick boxes only when verified. No long dashes. Do not commit unless asked.

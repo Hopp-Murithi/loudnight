@@ -1,7 +1,7 @@
 import type { Enums } from "@/types/database"
 
 export type PipelineStep = Enums<"pipeline_step">
-export type ToolSource = "Qloo" | "Google Places" | "Ticketmaster" | "Claude" | "Encore"
+export type ToolSource = "Qloo" | "Google Places" | "Ticketmaster" | "Claude" | "Loudnight"
 
 // The fixed spine of a run. Claude chooses tools inside a step, never the order of steps.
 export const PIPELINE: { step: PipelineStep; label: string; what: string }[] = [
@@ -31,7 +31,7 @@ export const TOOL_SOURCES: Record<string, ToolSource> = {
   "ticketmaster.events": "Ticketmaster",
   "planner.themes": "Claude",
   "planner.concepts": "Claude",
-  "encore.score": "Encore",
+  "encore.score": "Loudnight",
 }
 
 // The longest step (inventing nights) takes about a minute; the route allows twice that.

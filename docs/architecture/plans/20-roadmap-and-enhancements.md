@@ -25,7 +25,7 @@ For each item: the problem it solves, how it builds on what exists (tables, modu
 | Multi-venue dashboard           | `venue_members` roles, administrator console (plan 08) | Group entity above venues, group roles           |
 | Brand sponsorship matching      | Partner cross-promo (plan 11), outcome data (plan 14)  | Brand accounts, sponsorship terms                |
 
-Also write up: the five business model stages with pricing as assumptions to test, the moat, go-to-market, and how outcome data (plan 14) makes Encore learn which taste signals actually convert.
+Also write up: the five business model stages with pricing as assumptions to test, the moat, go-to-market, and how outcome data (plan 14) makes Loudnight learn which taste signals actually convert.
 
 ## Part B: stretch enhancements (ranked; build only after plan 19's checklist is green)
 
@@ -53,6 +53,6 @@ The user reads `docs/roadmap.md` and agrees it matches the brief and is honest a
 
 ---
 
-You are working on Encore. Follow `CLAUDE.md` exactly. Read this plan, the brief's roadmap, business model and moat sections, and the tables and modules named above.
+You are working on Loudnight. Follow `CLAUDE.md` exactly. Read this plan, the brief's roadmap, business model and moat sections, and the tables and modules named above.
 
 Write `docs/roadmap.md` first. Start a stretch enhancement only if plan 19's checklist is fully ticked and the user agrees, and write its plan from the template before any code. No long dashes. Do not commit unless asked.

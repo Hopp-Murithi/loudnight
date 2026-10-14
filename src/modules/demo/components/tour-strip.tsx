@@ -5,12 +5,12 @@ import { IconButton } from "@/components/shared/icon-button"
 import { useDismissed } from "../hooks/use-dismissed"
 
 const HINTS = [
-  { href: "#answers", text: "See what a normal AI says, then switch to Encore" },
+  { href: "#answers", text: "See what a normal AI says, then switch to Loudnight" },
   { href: "#answers", text: "Open any number to see the Qloo answer behind it" },
   { href: "#series", text: "See the four weeks and who could play them" },
 ]
 
-// Three things worth trying, in order, for someone seeing Encore for the first time.
+// Three things worth trying, in order, for someone seeing Loudnight for the first time.
 export function TourStrip() {
   const { dismissed, dismiss } = useDismissed("encore-demo-tour")
   if (dismissed) return null

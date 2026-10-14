@@ -56,8 +56,8 @@ export function NextUp({ venueId, weekday, night, status, canPlan }: NextUpProps
     return (
       <Frame kicker="Next up" title={`Find the ${night} nobody nearby is running`}>
         <p className="max-w-xl text-muted-foreground">
-          Encore reads what your neighbourhood loves, checks what is already on, and brings back three nights with the
-          evidence behind them. About a minute.
+          Loudnight reads what your neighbourhood loves, checks what is already on, and brings back three nights with
+          the evidence behind them. About a minute.
         </p>
         <div className="mt-auto">
           <StartRunButton venueId={venueId} weekday={weekday} label={`Plan my ${night}`} />

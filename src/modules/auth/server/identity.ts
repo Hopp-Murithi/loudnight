@@ -4,7 +4,7 @@ import { AppError } from "@/lib/http/errors"
 import { createAdminSupabase } from "@/lib/supabase/admin"
 import { confirmLinkUrl } from "../auth.links"
 
-// Allowed service-role uses (CLAUDE.md section 3). Supabase sends no email here; Encore sends its own through Resend.
+// Allowed service-role uses (CLAUDE.md section 3). Supabase sends no email here; Loudnight sends its own through Resend.
 
 export interface AccountLookup {
   id: string

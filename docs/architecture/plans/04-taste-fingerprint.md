@@ -7,7 +7,7 @@ Judging criteria: Technological Implementation (depth of Qloo use), Quality of t
 
 ## Goal
 
-For a venue's location, Encore builds a taste fingerprint: the top over-indexing entities and tags in each of 8 or more domains with their affinity scores, plus the area's demographic skew. Every Qloo answer is cached privately in `qloo_cache`, and every number in the fingerprint keeps its receipt (cache row and JSON path). The fingerprint is shown to the owner as a readable card, so the "read the neighbourhood" step is visible, not hidden.
+For a venue's location, Loudnight builds a taste fingerprint: the top over-indexing entities and tags in each of 8 or more domains with their affinity scores, plus the area's demographic skew. Every Qloo answer is cached privately in `qloo_cache`, and every number in the fingerprint keeps its receipt (cache row and JSON path). The fingerprint is shown to the owner as a readable card, so the "read the neighbourhood" step is visible, not hidden.
 
 ## Brief coverage
 
@@ -75,6 +75,6 @@ Out: run orchestration and streaming (plan 07), concept generation (plan 06).
 
 ---
 
-You are working on Encore. Follow `CLAUDE.md` exactly, section 5 (grounding) above all. Read this plan, plan 02's Findings and recipe, `lib/qloo`, `qloo_cache` and `run_steps` in the migrations, and `CLAUDE.md` section 3 for allowed service-role uses.
+You are working on Loudnight. Follow `CLAUDE.md` exactly, section 5 (grounding) above all. Read this plan, plan 02's Findings and recipe, `lib/qloo`, `qloo_cache` and `run_steps` in the migrations, and `CLAUDE.md` section 3 for allowed service-role uses.
 
 Order: pure helpers and tests, repository, service and tests, step writer, script, then the card in the gallery from plan 01. Hand-written fixtures only. Run `npm run validate`. Tick boxes only when verified. No long dashes. Do not commit unless asked.

@@ -1,5 +1,5 @@
 // A typical fee for one act at a small venue, per currency, in whole units. Not a quote: it scales how big an act
-// a budget can reach. The owner sees the label as Encore's estimate and asks the act. Currencies not listed use 1.
+// a budget can reach. The owner sees the label as Loudnight's estimate and asks the act. Currencies not listed use 1.
 export const TYPICAL_SMALL_VENUE_FEE: Record<string, number> = {
   USD: 500,
   CAD: 600,

@@ -7,7 +7,7 @@ Judging criteria: Technological Implementation (how thoroughly and skilfully the
 
 ## Goal
 
-Before any pipeline code, prove with live calls which Qloo requests return rich data for three US neighbourhoods, record the exact parameters and response paths that work, and harden `lib/qloo` around them: correct base URL and header, retries on rate limits, empty-result detection, and Zod schemas for exactly the fields Encore reads. Settle the hackathon's eligibility questions on the same day.
+Before any pipeline code, prove with live calls which Qloo requests return rich data for three US neighbourhoods, record the exact parameters and response paths that work, and harden `lib/qloo` around them: correct base URL and header, retries on rate limits, empty-result detection, and Zod schemas for exactly the fields Loudnight reads. Settle the hackathon's eligibility questions on the same day.
 
 ## Brief coverage
 
@@ -33,7 +33,7 @@ From the Qloo hackathon developer guide and docs.qloo.com (read Oct 12):
 ## What the probe must settle (not documented, or documented inconsistently)
 
 1. Whether `signal.location` with a WKT point works for each entity type on the hackathon host, or whether `signal.location.query` (locality name) is the reliable form. Compare result counts for both, with and without `signal.location.radius`.
-2. The response field names Encore needs: the entity id, name, type, the affinity score (expected under `query.affinity`), popularity, tags, and image. Record the exact JSON paths for the receipt trigger.
+2. The response field names Loudnight needs: the entity id, name, type, the affinity score (expected under `query.affinity`), popularity, tags, and image. Record the exact JSON paths for the receipt trigger.
 3. Whether `filter.type=urn:tag` with a location signal returns the area's over-indexing tags (the "taste analysis" view), and with which tag types.
 4. How to get the area's demographic skew: try `urn:demographics` if accepted, otherwise compare affinities under `signal.demographics.age` bands and genders for the same location, and record which works.
 5. `/v2/tags` parameters and response paths (the docs page for it moved; confirm live).
@@ -52,7 +52,7 @@ From the Qloo hackathon developer guide and docs.qloo.com (read Oct 12):
   - `qlooSearch(query, types, near?)` for `/search`, with miles converted from metres in one tested helper.
   - `qlooTags(query, types?)` for `/v2/tags`.
   - Typed request builders per domain in `lib/qloo/requests.ts` (pure, tested), so no service ever hand-writes parameter names.
-  - `lib/qloo/schemas.ts`: Zod for the fields Encore reads (from the findings), with `passthrough` so the stored response stays whole.
+  - `lib/qloo/schemas.ts`: Zod for the fields Loudnight reads (from the findings), with `passthrough` so the stored response stays whole.
   - `isEmptyInsight(response)` helper so the fingerprint can tell "no data here" from an error.
 - `scripts/check-connections.ts` uses the recipe the probe proved.
 - Eligibility: read the official rules on Devpost (qloo.devpost.com) and record in this plan: eligibility for residents of Kenya, prize payment method, the start-date rule, the licence requirement. If anything is unclear, draft a question for the Devpost discussion or Discord for the user to post.
@@ -82,8 +82,8 @@ Probe run Oct 13 (`scripts/qloo-probe.ts`, then `--refine`): 151 calls against W
 
 What the live calls showed, against the docs:
 
-- `signal.location` with a WKT point works for every supported type. `signal.location.query` (locality name) is unreliable: 0 entities for artist, brand and place in Williamsburg, and for almost every type in East Austin. Encore uses the WKT point only.
-- `signal.location.radius` changed nothing: identical results with and without it. Encore leaves it out, as the docs advise.
+- `signal.location` with a WKT point works for every supported type. `signal.location.query` (locality name) is unreliable: 0 entities for artist, brand and place in Williamsburg, and for almost every type in East Austin. Loudnight uses the WKT point only.
+- `signal.location.radius` changed nothing: identical results with and without it. Loudnight leaves it out, as the docs advise.
 - `filter.location` needs WKT. `lat,lng` returns 400 "WKT format is invalid".
 - `urn:entity:video_game` is not supported on the hackathon host (400). `urn:demographics` needs `signal.interests.tags` or `.entities` (400 without).
 - Affinity saturates. The top results all sit at 1.0, and the most popular ones are the same in every city (global stars). Two fixes: `filter.popularity.max=0.7` brings up the local names (East Austin: Walker Lukens, Mobley, Jackie Venson), and tags differ clearly by area (East Austin: alt-country, americana, blues; Williamsburg: indie, experimental; Logan Square: chicago, comedy). So the fingerprint reads tags plus popularity-capped entities, and ranks by position. Receipts still point at the stored affinity value.
@@ -96,7 +96,7 @@ Gate decision: **pass**. Nine domains (artist, book, brand, destination, movie, 
 
 Demographic skew method: `urn:demographics` for each of the concept's driving tags gives age and gender lean. Location does not change it, so it describes a taste's audience, not the area. The area's own taste comes from tags and capped entities around the point.
 
-Eligibility (qloo.devpost.com/rules, read Oct 13): open to individuals of the age of majority. Excluded: Brazil, Quebec, Russia, Crimea, Cuba, Iran, North Korea and countries comprehensively sanctioned by OFAC. Kenya is not excluded. Prizes are paid to the entrant within 60 days of the winner forms, and the winner pays any fees. Projects must be new or significantly updated after Sep 30, 2026 9:00 am ET. Encore was started Oct 12. Licence: the repository must be public with an open source licence file visible in the About section (MIT). Submissions close Oct 30, 2026 11:45 pm ET. Judging Nov 2 to 16, winners around Nov 23. Required: a working demo link, a public repository and a text description. The rules set no video length.
+Eligibility (qloo.devpost.com/rules, read Oct 13): open to individuals of the age of majority. Excluded: Brazil, Quebec, Russia, Crimea, Cuba, Iran, North Korea and countries comprehensively sanctioned by OFAC. Kenya is not excluded. Prizes are paid to the entrant within 60 days of the winner forms, and the winner pays any fees. Projects must be new or significantly updated after Sep 30, 2026 9:00 am ET. Loudnight was started Oct 12. Licence: the repository must be public with an open source licence file visible in the About section (MIT). Submissions close Oct 30, 2026 11:45 pm ET. Judging Nov 2 to 16, winners around Nov 23. Required: a working demo link, a public repository and a text description. The rules set no video length.
 
 ## Tests
 
@@ -123,6 +123,6 @@ Eligibility (qloo.devpost.com/rules, read Oct 13): open to individuals of the ag
 
 ---
 
-You are working on Encore. Follow `CLAUDE.md` exactly. Read this plan, `lib/qloo`, `lib/http/upstream.ts`, `config/integrations.ts`, and the "What the official docs already confirm" section above. If a live call contradicts this plan, the live call wins: update the plan.
+You are working on Loudnight. Follow `CLAUDE.md` exactly. Read this plan, `lib/qloo`, `lib/http/upstream.ts`, `config/integrations.ts`, and the "What the official docs already confirm" section above. If a live call contradicts this plan, the live call wins: update the plan.
 
 Ask the user for `QLOO_API_KEY` if it is not in `.env.local`. Never print it. Write the probe, run it, fill in Findings, then stop and show the user the findings and the proposed gate decision before hardening the client. Then harden `lib/qloo` with tests using hand-written fixtures only. Read the official rules on qloo.devpost.com for the eligibility items. Run `npm run validate`. Tick boxes only when verified. No long dashes. Do not commit unless asked.

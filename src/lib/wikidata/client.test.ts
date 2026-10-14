@@ -17,7 +17,7 @@ describe("open data clients", () => {
     expect(await sparql("SELECT ?p WHERE {}")).toEqual([{ p: "x", links: "3" }])
     const [url, init] = fetch.mock.calls[0] as unknown as [string, RequestInit]
     expect(url).toContain("query=SELECT%20%3Fp")
-    expect((init.headers as Record<string, string>)["User-Agent"]).toMatch(/^Encore\//)
+    expect((init.headers as Record<string, string>)["User-Agent"]).toMatch(/^Loudnight\//)
   })
 
   it("turns a refusal or an odd answer into a safe upstream error", async () => {

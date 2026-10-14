@@ -45,12 +45,12 @@ export function RunDetails({ view, steps, radiusMetres, onOpenCall, trace }: Run
     <section id="details" aria-labelledby="details-heading" className="scroll-mt-6 space-y-4">
       <div className="space-y-1">
         <h2 id="details-heading" className={TYPE.h2}>
-          How Encore got there
+          How Loudnight got there
         </h2>
         <p className="text-sm text-muted-foreground">What the planner read before it suggested anything.</p>
       </div>
       <Tabs defaultValue={first.value} className="gap-6">
-        <TabsList aria-label="How Encore got there" className="max-w-full overflow-x-auto">
+        <TabsList aria-label="How Loudnight got there" className="max-w-full overflow-x-auto">
           {tabs.map((tab) => (
             <TabsTrigger key={tab.value} value={tab.value}>
               {tab.label}

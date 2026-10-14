@@ -5,7 +5,7 @@ import { talentService } from "@/modules/talent/talent.service"
 
 type Params = { id: string }
 
-// Owners and managers reword a message or mark an act as booked. Encore never sends anything to a performer.
+// Owners and managers reword a message or mark an act as booked. Loudnight never sends anything to a performer.
 export const PATCH = apiRoute<TalentEditInput, Params>(
   { body: talentEditSchema, rateLimit: RATE_LIMITS.seriesEdit },
   async ({ ctx, params, body }) => {

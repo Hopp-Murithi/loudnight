@@ -26,7 +26,7 @@ Submissions close Oct 30, 11:45 pm EDT (Oct 31, 6:45 am Nairobi). Target Oct 29;
 If the day-one Qloo probe fails (thin location data), switch neighbourhoods or lean on interest signals before writing pipeline code (plan 02 records the decision).
 
 **Cut-list if behind, in this order:** 1. learning loop automation (keep check-in counts), 2. partner cross-promo, 3. talent outreach drafts (keep the shortlist), 4. poster generation (keep the posts).
-**Never cut:** the Generic vs Encore toggle, evidence chips with receipts, the live trace, preloaded demo venues, live hosting.
+**Never cut:** the Generic vs Loudnight toggle, evidence chips with receipts, the live trace, preloaded demo venues, live hosting.
 
 ## Index
 
@@ -70,14 +70,14 @@ If the day-one Qloo probe fails (thin location data), switch neighbourhoods or l
 
 From the hackathon page (these replace the five criteria in the brief, which predates them). Every plan names the criteria it serves; plan 19 turns them into the write-up and the video.
 
-| Criterion                                                                                                                | What the judges look for                 | Where Encore earns it                                                                                                                                                                          | Plans                  |
+| Criterion                                                                                                                | What the judges look for                 | Where Loudnight earns it                                                                                                                                                                       | Plans                  |
 | ------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
 | **Technological Implementation**: how thoroughly and skilfully the project uses Qloo; genuine, working, non-trivial code | Depth of Qloo use; a real working system | Six Qloo surfaces (location insights, demographics, cross-domain affinity, entity search, tags, popularity) drive decisions; cache and receipts; grounding trigger; streamed agent; RLS; tests | 02, 04, 06, 07, 16, 17 |
 | **Design**: a complete, coherent product experience, not a proof of concept                                              | End-to-end flow that feels finished      | Two-minute onboarding to launched night to measured turnout, every state designed, mobile first, light and dark, one design system                                                             | 01, 03, 09-15, 17      |
 | **Potential Impact**: a credible, specific case for a real problem and audience, addressed by what is demonstrated       | Real venues, real money, real attendance | Break-even input drives the maths; check-ins prove turnout; pilot venue result; unit economics on screen                                                                                       | 13, 14, 19             |
-| **Quality of the Idea**: creative, non-obvious use of Qloo; genuine understanding of the problem space                   | Not another consumer recommender         | Supply-side taste AI (helps the venue, not the consumer); cross-domain concepts; Generic vs Encore toggle shows why Qloo matters; closes decide, execute, promote, measure                     | 06, 07, 09, 19         |
+| **Quality of the Idea**: creative, non-obvious use of Qloo; genuine understanding of the problem space                   | Not another consumer recommender         | Supply-side taste AI (helps the venue, not the consumer); cross-domain concepts; Generic vs Loudnight toggle shows why Qloo matters; closes decide, execute, promote, measure                  | 06, 07, 09, 19         |
 
-Proof points each criterion needs on screen during judging: the "Powered by Qloo" panel and evidence receipts (Technological Implementation), the logged-out judge path on a phone (Design), the dashboard and break-even calculator with pilot numbers (Potential Impact), the Generic vs Encore toggle (Quality of the Idea).
+Proof points each criterion needs on screen during judging: the "Powered by Qloo" panel and evidence receipts (Technological Implementation), the logged-out judge path on a phone (Design), the dashboard and break-even calculator with pilot numbers (Potential Impact), the Generic vs Loudnight toggle (Quality of the Idea).
 
 ## Screen standard (applies to every screen in every plan)
 
@@ -122,7 +122,7 @@ Proof points each criterion needs on screen during judging: the "Powered by Qloo
 | Evidence chips; grounding rule; validator; "no number without a receipt"                                                      | 06, 16                 |
 | Live agent trace streaming each step and finding with its source                                                              | 07                     |
 | Fixed six-step spine; Claude picks tools inside a step; one server call per step                                              | 07                     |
-| Generic AI vs Encore toggle                                                                                                   | 07, 09                 |
+| Generic AI vs Loudnight toggle                                                                                                | 07, 09                 |
 | "Powered by Qloo" panel listing every call in a run                                                                           | 07                     |
 | Preloaded demo venues: 3 real US neighbourhoods, instant, no signup                                                           | 09                     |
 | 4-week series calendar with weekly variations                                                                                 | 10                     |

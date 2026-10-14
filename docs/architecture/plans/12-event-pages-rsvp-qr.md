@@ -74,6 +74,6 @@ Out: check-in handling and dashboard (plan 13).
 
 ---
 
-You are working on Encore. Follow `CLAUDE.md` exactly, sections 3 and 4 above all, because guests are not signed in. Read this plan, `publicApiRoute`, the `rsvps` policies and RSVP assertions in `supabase/tests/rls.sql`, and plan 11's asset schemas. Load the `supabase-postgres-best-practices` skill before the migration. Ask before adding a QR library.
+You are working on Loudnight. Follow `CLAUDE.md` exactly, sections 3 and 4 above all, because guests are not signed in. Read this plan, `publicApiRoute`, the `rsvps` policies and RSVP assertions in `supabase/tests/rls.sql`, and plan 11's asset schemas. Load the `supabase-postgres-best-practices` skill before the migration. Ask before adding a QR library.
 
 Order: migration with assertions, pure helpers (code, `.ics`, calendar link) with tests, services and routes, pages. Apply the migration to the hosted project after local tests, run the advisors, rename the file to the recorded version. Run `npm run validate` and `npm run db:test`. Tick boxes only when verified. No long dashes. Do not commit unless asked.

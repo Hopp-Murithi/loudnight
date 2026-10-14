@@ -3,7 +3,7 @@ import type { TasteFingerprint } from "../taste.schemas"
 import { AudienceLean } from "./audience-lean"
 import { DomainTile } from "./domain-tile"
 
-// The "read the neighbourhood" step made visible: every domain Encore read, then who loves the leading tastes.
+// The "read the neighbourhood" step made visible: every domain Loudnight read, then who loves the leading tastes.
 export function TasteFingerprintCard({ fingerprint }: { fingerprint: TasteFingerprint }) {
   const withResults = fingerprint.domains.filter((domain) => domain.status === "ok").length
 

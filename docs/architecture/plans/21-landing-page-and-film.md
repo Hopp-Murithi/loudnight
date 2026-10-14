@@ -3,15 +3,15 @@
 Status: In progress
 Depends on: 01, 03
 Phase: 2 (added Oct 13 at the user's request: the landing page looked bare)
-Judging criteria: Design (complete, coherent product), Quality of the Idea (the generic-versus-Encore contrast), Potential Impact (the money on screen)
+Judging criteria: Design (complete, coherent product), Quality of the Idea (the generic-versus-Loudnight contrast), Potential Impact (the money on screen)
 
 ## Goal
 
-The landing page tells Encore's story in one scroll: a quiet night, what a chatbot says about it, what Encore does instead, why every number can be trusted, what a full night is worth, and real neighbourhoods to try. A short product film, rendered with Remotion from the same brand tokens, shows the whole journey in about 20 seconds without anyone needing to sign up.
+The landing page tells Loudnight's story in one scroll: a quiet night, what a chatbot says about it, what Loudnight does instead, why every number can be trusted, what a full night is worth, and real neighbourhoods to try. A short product film, rendered with Remotion from the same brand tokens, shows the whole journey in about 20 seconds without anyone needing to sign up.
 
 ## Brief coverage
 
-"The hook: this bar in Brooklyn is empty every Tuesday. Here's what a normal AI tells the owner." The Generic AI vs Encore contrast. "Every claim links to the Qloo result behind it." "Unit logic for the pitch: 30 guests at $20 each, about $2,400 a month, against a $49 to $99 subscription." "Closes the loop: decide, execute, promote, measure."
+"The hook: this bar in Brooklyn is empty every Tuesday. Here's what a normal AI tells the owner." The Generic AI vs Loudnight contrast. "Every claim links to the Qloo result behind it." "Unit logic for the pitch: 30 guests at $20 each, about $2,400 a month, against a $49 to $99 subscription." "Closes the loop: decide, execute, promote, measure."
 
 ## Design
 
@@ -31,8 +31,8 @@ The landing page tells Encore's story in one scroll: a quiet night, what a chatb
 ### Landing page sections (`/`)
 
 1. **Hero** (always night: ink background in both themes): headline, one line, two actions (Plan your quiet night, Watch the demo venues), the film in a framed screen beside it on desktop and below on phones. The film is muted, autoplays only without reduced motion, and has a visible pause control.
-2. **Ask a chatbot, ask Encore**: the same quiet Tuesday answered twice. Left: the generic list (trivia, karaoke, open mic). Right: a specific night with its evidence chips. Labelled as a sample.
-3. **One loop**: decide, execute, promote, measure, as four connected steps with what Encore makes at each.
+2. **Ask a chatbot, ask Loudnight**: the same quiet Tuesday answered twice. Left: the generic list (trivia, karaoke, open mic). Right: a specific night with its evidence chips. Labelled as a sample.
+3. **One loop**: decide, execute, promote, measure, as four connected steps with what Loudnight makes at each.
 4. **No number without a receipt**: an evidence chip opening onto the Qloo response slice it came from, explained in two sentences.
 5. **What a full night is worth**: an interactive calculator (extra guests, spend per guest) showing the monthly gain against the subscription, using the brief's own example as the default.
 6. **Demo venues**: the three real neighbourhoods, with their photos.
@@ -72,14 +72,14 @@ The owner's feedback was that the page had too much going on. It is now two scre
 1. The hero with the film.
 2. The use case as five pictures ("From an empty Tuesday to a full room"), a gallery on a laptop and a row to swipe on a phone, with three links to finished demo plans beneath.
 
-The two-answers block, the loop, the receipt explorer and the night-value calculator (with its maths and tests) were removed from the page and the code. The Generic vs Encore contrast and the receipts now live on the demo pages (plan 09), where they are real rather than samples. Blocks rise in as they enter the screen where the browser supports scroll-driven animation, and are simply visible otherwise and under reduced motion. A signed-in visitor sees "Your venues" in the header instead of "Sign in".
+The two-answers block, the loop, the receipt explorer and the night-value calculator (with its maths and tests) were removed from the page and the code. The Generic vs Loudnight contrast and the receipts now live on the demo pages (plan 09), where they are real rather than samples. Blocks rise in as they enter the screen where the browser supports scroll-driven animation, and are simply visible otherwise and under reduced motion. A signed-in visitor sees "Your venues" in the header instead of "Sign in".
 
 ## Revision, Oct 14: one stage, five scenes
 
 The owner asked for the page to behave like the slide deck: scrolling should not move the page, it should move the story on, with the background zooming from the world into Kenya, into a venue, then party lights, then the world lit up.
 
 - `components/landing/night-stage.tsx`: a pinned stage (`position: sticky`) inside a track five screens tall. `use-scroll-stage.ts` turns the scroll into a position from 0 to 4 and writes style values straight onto the stage each frame, so scrolling never re-renders React; only a change of scene does. The maths is in `stage-math.ts`, tested.
-- Scenes: the world at night (one light on Nairobi), Kenya with its towns lit and an area's tastes, a room with the night Encore found pinned to it, coloured spotlights sweeping in from the corners over "And fills it.", and the world again with a light coming on in one city after another.
+- Scenes: the world at night (one light on Nairobi), Kenya with its towns lit and an area's tastes, a room with the night Loudnight found pinned to it, coloured spotlights sweeping in from the corners over "And fills it.", and the world again with a light coming on in one city after another.
 - Words hand over faster than pictures, so two headlines are never on screen together. Only the scene on screen can be read or focused (`inert` on the others). Dots beside the stage jump to any scene.
 - Maps: dotted world and Kenya maps generated once with `dotted-map` (MIT) and saved as static SVG in `public/landing`; the app gains no dependency. Pin positions are in `config/landing.ts`.
 - Reduced motion: scenes cross-fade; nothing zooms, sweeps or pulses.

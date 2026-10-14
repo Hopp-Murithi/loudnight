@@ -68,7 +68,7 @@ export function RsvpForm({ slug, venueName }: { slug: string; venueName: string 
           Save my place
         </SubmitButton>
         <p className="text-xs text-muted-foreground">
-          Only {venueName} sees your details. Encore keeps them for this night and nothing else.
+          Only {venueName} sees your details. Loudnight keeps them for this night and nothing else.
         </p>
       </FieldGroup>
     </form>

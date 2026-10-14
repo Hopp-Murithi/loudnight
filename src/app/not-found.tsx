@@ -11,7 +11,7 @@ export default function NotFound() {
         <h1 className="text-2xl font-semibold tracking-tight">This page does not exist</h1>
         <p className="text-sm text-muted-foreground">The link may be old, or the night may have been removed.</p>
         <Button nativeButton={false} render={<Link href={ROUTES.home} />}>
-          Back to Encore
+          Back to Loudnight
         </Button>
       </div>
     </main>

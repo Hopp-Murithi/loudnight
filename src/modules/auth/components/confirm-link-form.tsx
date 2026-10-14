@@ -12,7 +12,7 @@ export function ConfirmLinkForm({ tokenHash, type, label }: { tokenHash: string;
     <form method="post" action={`${API_BASE}/auth/confirm`} onSubmit={() => setSent(true)}>
       <input type="hidden" name="token_hash" value={tokenHash} />
       <input type="hidden" name="type" value={type} />
-      <SubmitButton size="lg" className="w-full" pending={sent} pendingLabel="Opening Encore">
+      <SubmitButton size="lg" className="w-full" pending={sent} pendingLabel="Opening Loudnight">
         {label}
       </SubmitButton>
     </form>

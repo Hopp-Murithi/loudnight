@@ -7,7 +7,7 @@ Judging criteria: Technological Implementation, Quality of the Idea
 
 ## Goal
 
-For each performer on the shortlist, Encore shows which of the night's tastes drove the match and by how much, using Qloo's own explanation of its answer, with the receipt one tap away. "Very strong crowd match" stops being a single number and becomes "mostly because of Ambient, partly Lounge".
+For each performer on the shortlist, Loudnight shows which of the night's tastes drove the match and by how much, using Qloo's own explanation of its answer, with the receipt one tap away. "Very strong crowd match" stops being a single number and becomes "mostly because of Ambient, partly Lounge".
 
 ## Brief coverage
 
@@ -21,7 +21,7 @@ Out: explanations for the neighbourhood fingerprint (single-signal requests have
 ## Design
 
 - `talentRequest` adds `feature.explainability=true`. The answer then carries, per act, a contribution for each input tag or entity under `query.explainability`. The exact shape is read with a live probe before the reader is written, and the reader accepts only what it recognises.
-- `talent.profile.ts`: `driversFrom(entity, anchors)` returns up to three `{ name, share }` pairs, where `share` is that input's part of the total contribution, rounded to two places. Names come from the anchors Encore sent, never from the model.
+- `talent.profile.ts`: `driversFrom(entity, anchors)` returns up to three `{ name, share }` pairs, where `share` is that input's part of the total contribution, rounded to two places. Names come from the anchors Loudnight sent, never from the model.
 - Stored inside `talent_candidates.profile.drivers`. No migration: the profile is already a JSON object.
 - The receipt for an act already shows the act's whole object from the stored answer, so the explanation is inside the receipt with no extra work.
 
@@ -47,4 +47,4 @@ Out: explanations for the neighbourhood fingerprint (single-signal requests have
 
 ---
 
-You are working on Encore. Follow `CLAUDE.md` exactly. Read this plan, plan 02's findings and `modules/talent`. Probe one real answer first (output to `.probe/`, never committed). Fixtures are synthetic. No long dashes. Do not commit unless asked.
+You are working on Loudnight. Follow `CLAUDE.md` exactly. Read this plan, plan 02's findings and `modules/talent`. Probe one real answer first (output to `.probe/`, never committed). Fixtures are synthetic. No long dashes. Do not commit unless asked.

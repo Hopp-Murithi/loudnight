@@ -15,7 +15,7 @@ Plan 20 part B item 7: "Spanish UI copy for US venues where it matters (copy in 
 
 ## Scope
 
-In: the words Encore writes onto an ad and into its captions, in English and Spanish, held in config; a language choice in the ad studio saved with the design.
+In: the words Loudnight writes onto an ad and into its captions, in English and Spanish, held in config; a language choice in the ad studio saved with the design.
 Out: translating the owner's dashboard (owners chose English at sign-up; a full interface translation is its own project), translating the night's name or the owner's own extra line (those are theirs), the guest event page (plan 12 will read the same config).
 
 ## Design
@@ -36,7 +36,7 @@ Spanish content (weekday, month, "Con {act}"), Spanish captions inside each limi
 ## Deliverables
 
 - [x] Poster, video and captions in Spanish from one choice
-- [x] Every Encore-written phrase on an ad comes from config in both languages
+- [x] Every Loudnight-written phrase on an ad comes from config in both languages
 - [x] Older saved designs still open, in English
 
 ## Verification
@@ -47,4 +47,4 @@ Spanish content (weekday, month, "Con {act}"), Spanish captions inside each limi
 
 ---
 
-You are working on Encore. Follow `CLAUDE.md` exactly. Read this plan and `modules/promote`. Order: config, schema, copy builder with tests, the control. No long dashes. Do not commit unless asked.
+You are working on Loudnight. Follow `CLAUDE.md` exactly. Read this plan and `modules/promote`. Order: config, schema, copy builder with tests, the control. No long dashes. Do not commit unless asked.

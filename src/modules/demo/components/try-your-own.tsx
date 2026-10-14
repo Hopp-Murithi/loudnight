@@ -14,7 +14,7 @@ export function TryYourOwn({ night }: { night: string }) {
           Now your {night}.
         </h2>
         <p className="max-w-xl text-muted-foreground">
-          Add your address and your quiet night. Encore runs these same six steps for your neighbourhood in about a
+          Add your address and your quiet night. Loudnight runs these same six steps for your neighbourhood in about a
           minute.
         </p>
       </div>

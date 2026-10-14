@@ -7,7 +7,7 @@ Judging criteria: Potential Impact (works where the owner is), Design (the first
 
 ## Goal
 
-An owner in Nairobi types "quiver" and sees Quiver Lounge on Mombasa Road and Quiver Kilimani on Ngong Road, not an archery shop in Indiana. The search knows which country to look in, looks only at the kinds of places Encore plans for, and fills in the address, town, time zone and currency from the place the owner picks.
+An owner in Nairobi types "quiver" and sees Quiver Lounge on Mombasa Road and Quiver Kilimani on Ngong Road, not an archery shop in Indiana. The search knows which country to look in, looks only at the kinds of places Loudnight plans for, and fills in the address, town, time zone and currency from the place the owner picks.
 
 ## Why it is wrong today
 
@@ -77,4 +77,4 @@ The owner asked for the country to be picked before typing, detected and changea
 
 ---
 
-You are working on Encore. Follow `CLAUDE.md` exactly. Read this plan, plan 29, `lib/places/client.ts`, `modules/venues/venues.search.ts`, `venues.places.ts` and the place search component. Order: config (countries), client calls (autocomplete, details) with tests, service and routes, hook, the combo box and the search, onboarding and Settings. No long dashes. Do not commit unless asked.
+You are working on Loudnight. Follow `CLAUDE.md` exactly. Read this plan, plan 29, `lib/places/client.ts`, `modules/venues/venues.search.ts`, `venues.places.ts` and the place search component. Order: config (countries), client calls (autocomplete, details) with tests, service and routes, hook, the combo box and the search, onboarding and Settings. No long dashes. Do not commit unless asked.

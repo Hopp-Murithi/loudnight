@@ -7,11 +7,11 @@ Judging criteria: Design (every step ends in something to approve, edit or send)
 
 ## Goal
 
-Choosing a concept turns it into a four-week series on a calendar, each week with its own variation so regulars keep coming back. Encore shortlists performers whose fans overlap this audience at a bookable popularity tier, explains why each fits with receipts, and drafts a personal outreach message for each. The owner can edit dates, variations and messages before anything goes out.
+Choosing a concept turns it into a four-week series on a calendar, each week with its own variation so regulars keep coming back. Loudnight shortlists performers whose fans overlap this audience at a bookable popularity tier, explains why each fits with receipts, and drafts a personal outreach message for each. The owner can edit dates, variations and messages before anything goes out.
 
 ## Brief coverage
 
-"Review the series plan. The chosen concept becomes 4 weekly dates on a calendar, each with a variation so regulars keep coming back." "Book talent. Encore shortlists performers whose fan base overlaps this audience, at the right popularity tier, and drafts a personal outreach message for each." Feature table: 4-week series calendar; talent finder and outreach. Risk: "Talent suggestions are famous, not bookable: filter to lower popularity tiers; frame as acts this crowd loves, book a local act in this style." Cut-list item 3: outreach drafts go before the shortlist.
+"Review the series plan. The chosen concept becomes 4 weekly dates on a calendar, each with a variation so regulars keep coming back." "Book talent. Loudnight shortlists performers whose fan base overlaps this audience, at the right popularity tier, and drafts a personal outreach message for each." Feature table: 4-week series calendar; talent finder and outreach. Risk: "Talent suggestions are famous, not bookable: filter to lower popularity tiers; frame as acts this crowd loves, book a local act in this style." Cut-list item 3: outreach drafts go before the shortlist.
 
 ## Scope
 
@@ -32,7 +32,7 @@ Out: launch kit assets (plan 11), publishing (plan 12).
 - Candidates from Qloo: `/search` and `/v2/insights` with `filter.type=urn:entity:artist` (or the format's domain), signals = the concept's signals, location = venue, `filter.popularity.max` from the tier policy, `take` 20.
 - Tier policy (pure, tested): popularity to tier (`emerging` under 0.4, `local` 0.4 to 0.6, `regional` 0.6 to 0.8, `national` above), thresholds confirmed with plan 02's findings. Shortlist prefers emerging and local; national acts are shown only as "Style references: book a local act like this".
 - Overlap score from the insights affinity for the concept's signals (receipt kept). Stored with the service role in `talent_candidates`.
-- Outreach drafts (`AI_MODELS.copy`): short, personal, venue voice; mentions the night, date, fee range from the budget, and why their fans fit (no invented numbers; the validator checks digits against receipts or the venue's own settings). Editable and copyable; never sent by Encore.
+- Outreach drafts (`AI_MODELS.copy`): short, personal, venue voice; mentions the night, date, fee range from the budget, and why their fans fit (no invented numbers; the validator checks digits against receipts or the venue's own settings). Editable and copyable; never sent by Loudnight.
 
 ### API
 
@@ -78,7 +78,7 @@ A migration adds `talent_candidates.outreach_edited` (text, nullable) and `event
 - The series is made with one button on the Series page ("Make it four weeks") after a night is chosen, not at the moment of choosing. Choosing stays instant, and the copy call happens when the owner asks for it.
 - `create_series(concept, starts_on, nights)` takes the four nights as JSON. Slugs end in four characters of the concept's own id, so they are unique without a lookup: `low-light-tuesdays-tue-oct-20-3fa9`.
 - Start time is 20:00 in the venue's zone and is edited per night; there is no series-wide start time setting.
-- Numbers in copy: the variation writer may use no digits at all. The outreach writer may use none either and marks where the date, time and fee go; Encore fills those from the first night and the talent budget. A draft that breaks either rule is replaced by a plain fallback, so a series or a shortlist is never blocked by the copywriter.
+- Numbers in copy: the variation writer may use no digits at all. The outreach writer may use none either and marks where the date, time and fee go; Loudnight fills those from the first night and the talent budget. A draft that breaks either rule is replaced by a plain fallback, so a series or a shortlist is never blocked by the copywriter.
 - Talent comes from one `/v2/insights` call anchored on the tastes the chosen night cites (falling back to the area's leading music styles), with `filter.popularity.max` 0.8, and a second call with `filter.popularity.min` 0.8 for style references. `/search` was not needed. Music formats look for artists; other formats look for people.
 - `POST /series/[id]/talent` is a plain request (about 30 seconds on a cold cache), not a stream. `GET /venues/[id]/series/current` was not built: the page is rendered on the server and refreshed after each change. `GET /talent/[id]/receipt` was added so the overlap opens its receipt.
 - The migration also adds `talent_candidates.response_path` and `fit_signals`, so every overlap has a receipt and a reason.
@@ -129,6 +129,6 @@ Changes:
 
 ---
 
-You are working on Encore. Follow `CLAUDE.md` exactly. Read this plan, plans 05 and 06, the `series`, `event_nights` and `talent_candidates` tables, plan 02's Findings for popularity, and the new-table checklist in `CLAUDE.md` section 3. Load the `claude-api` skill for the copy prompts and the `supabase-postgres-best-practices` skill before the migration.
+You are working on Loudnight. Follow `CLAUDE.md` exactly. Read this plan, plans 05 and 06, the `series`, `event_nights` and `talent_candidates` tables, plan 02's Findings for popularity, and the new-table checklist in `CLAUDE.md` section 3. Load the `claude-api` skill for the copy prompts and the `supabase-postgres-best-practices` skill before the migration.
 
 Order: migration and `rls.sql` assertions, pure helpers and tests, services, routes, hooks, then the page. Run `npm run validate` and `npm run db:test`. Apply the migration to the hosted project only after local tests pass, then run the advisors and rename the file to the recorded version. Tick boxes only when verified. No long dashes. Do not commit unless asked.

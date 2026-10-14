@@ -38,7 +38,7 @@ export function PoweredByQloo({ steps, onOpen }: { steps: StepView[]; onOpen: (s
   return (
     <SectionCard
       title="Powered by Qloo"
-      description={`${calls.length} Qloo calls in this plan, ${cached} answered from Encore's cache.`}
+      description={`${calls.length} Qloo calls in this plan, ${cached} answered from Loudnight's cache.`}
     >
       <ul className="divide-y">{calls.slice(0, VISIBLE).map(row)}</ul>
       {calls.length > VISIBLE && (

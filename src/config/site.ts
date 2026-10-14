@@ -1,9 +1,9 @@
 export const SITE = {
-  name: "Encore",
+  name: "Loudnight",
   tagline: "Fill your quiet nights.",
   description:
-    "Encore reads your neighbourhood's taste, finds the night nobody nearby is running, and gives you a four-week event series ready to launch.",
-  credit: "Encore is open source under the MIT licence. Taste data from Qloo.",
+    "Loudnight reads your neighbourhood's taste, finds the night nobody nearby is running, and gives you a four-week event series ready to launch.",
+  credit: "Loudnight is open source under the MIT licence. Taste data from Qloo.",
 } as const
 
 // Pages about one quiet night carry it in the address, so a link opens the same night.

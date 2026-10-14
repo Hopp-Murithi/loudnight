@@ -39,7 +39,7 @@ export const venueIdentitySchema = z.object({
   longitude: z.number().min(-180).max(180),
   venueType: z.enum(VENUE_TYPES),
   timeZone: z.string().refine(isTimeZone, "Choose a time zone."),
-  // From the venue's Google place. Venues made before Encore worked worldwide have no stored town or country.
+  // From the venue's Google place. Venues made before Loudnight worked worldwide have no stored town or country.
   countryCode: z
     .string()
     .regex(/^[A-Z]{2}$/)

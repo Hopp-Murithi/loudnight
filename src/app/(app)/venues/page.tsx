@@ -23,7 +23,7 @@ export default async function VenuesPage() {
         <h1 className={TYPE.display}>{first ? `Good to see you, ${first}.` : "Your venues"}</h1>
         <p className={TYPE.lead}>
           {venues.length === 0
-            ? "Add your venue and Encore finds the night your neighbourhood is waiting for."
+            ? "Add your venue and Loudnight finds the night your neighbourhood is waiting for."
             : "Pick a venue to plan its quiet night, or add another."}
         </p>
       </div>

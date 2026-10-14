@@ -7,7 +7,7 @@ const SAMPLES: Record<TypeRole, string> = {
   h1: "Your venues",
   h2: "From an empty night to a full room",
   h3: "Afrobeats Tuesday",
-  lead: "Encore reads your neighbourhood's taste and finds the night nobody nearby is running.",
+  lead: "Loudnight reads your neighbourhood's taste and finds the night nobody nearby is running.",
   body: "Four dates with a twist each week, performers whose fans live nearby, and a message drafted for each one.",
   caption: "Fetched from Qloo at 20:14",
   number: "32 of 40",

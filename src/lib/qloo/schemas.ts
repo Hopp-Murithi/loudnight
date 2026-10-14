@@ -1,6 +1,6 @@
 import { z } from "zod"
 
-// Only the fields Encore reads are checked. Loose objects keep everything else, so the stored response stays whole.
+// Only the fields Loudnight reads are checked. Loose objects keep everything else, so the stored response stays whole.
 const affinityQuery = z.looseObject({ affinity: z.number() })
 // Some entity tags arrive with only a type (seen on artists), so id and name are optional here.
 const tagRef = z.looseObject({ id: z.string().optional(), name: z.string().optional(), type: z.string() })

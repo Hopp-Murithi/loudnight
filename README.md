@@ -1,8 +1,8 @@
-# Encore
+# Loudnight
 
-Fill your quiet nights. Encore is a programming director for bars, cafes, restaurants and small music venues. An owner enters their address and their slow night. Encore reads the neighbourhood's taste through [Qloo](https://www.qloo.com), finds what nobody nearby is running, invents a recurring event backed by evidence, finds the talent, produces the launch kit, and measures who actually came.
+Fill your quiet nights. Loudnight is a programming director for bars, cafes, restaurants and small music venues. An owner enters their address and their slow night. Loudnight reads the neighbourhood's taste through [Qloo](https://www.qloo.com), finds what nobody nearby is running, invents a recurring event backed by evidence, finds the talent, produces the launch kit, and measures who actually came.
 
-> Qloo knows what a neighbourhood loves. Encore turns that into people through the door on a Tuesday.
+> Qloo knows what a neighbourhood loves. Loudnight turns that into people through the door on a Tuesday.
 
 Live: https://encore-seven-dusky.vercel.app
 
@@ -68,7 +68,7 @@ component -> hook -> api.ts -> /api/v1 route -> service -> repository -> Supabas
 - **No number without a receipt.** Every Qloo answer is cached in `qloo_cache`. Every evidence chip stores the cached row and the JSON path of its value, and the database refuses a value that is not there.
 - **Score** = 40 x audience fit + 20 x novelty + 20 x venue fit + 20 x cost fit, computed by the database.
 - **Three gates**: `proxy.ts`, the route wrappers, RLS. A hidden button is never the control.
-- **Preview as**: an administrator can see Encore as any owner or staff member, read only. The database enforces it.
+- **Preview as**: an administrator can see Loudnight as any owner or staff member, read only. The database enforces it.
 
 Full reasoning: [`docs/architecture/ARCHITECTURE.md`](docs/architecture/ARCHITECTURE.md).
 
@@ -115,7 +115,7 @@ docs               architecture (ARCHITECTURE.md, plans) and reference (the brie
 
 | Role          | Who                        | Can                                                              |
 | ------------- | -------------------------- | ---------------------------------------------------------------- |
-| Administrator | Runs Encore                | Everything; previews anyone read only                            |
+| Administrator | Runs Loudnight             | Everything; previews anyone read only                            |
 | Venue owner   | Whoever created the venue  | Everything at their venue, including the team and money settings |
 | Venue manager | Invited by the owner       | Plans, series, nights, settings, spend                           |
 | Door staff    | Invited by the owner       | Guest list and check-ins; never money                            |
@@ -135,8 +135,8 @@ Judges and new owners need no account: demo venues are open to everyone, and sta
 - [`CLAUDE.md`](CLAUDE.md): the rules
 - [`docs/architecture/ARCHITECTURE.md`](docs/architecture/ARCHITECTURE.md): the design and why
 - [`docs/architecture/plans`](docs/architecture/plans): the schedule, gates, judging criteria, traceability and plans 00 to 31
-- [`docs/roadmap.md`](docs/roadmap.md): how Encore makes money, point-of-sale onboarding, posting to social networks, local trends
-- [`docs/reference`](docs/reference): the Encore system brief
+- [`docs/roadmap.md`](docs/roadmap.md): how Loudnight makes money, point-of-sale onboarding, posting to social networks, local trends
+- [`docs/reference`](docs/reference): the Loudnight system brief
 
 ## Licence
 

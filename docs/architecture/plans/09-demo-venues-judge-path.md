@@ -7,7 +7,7 @@ Judging criteria: Design (judge gets a full plan without signing up), Quality of
 
 ## Goal
 
-A judge opens the live URL on any device, logged out, and within seconds sees three real neighbourhoods with full plans: the generic answer next to Encore's, the trace of how it got there, three concepts with receipts, and a series ready to launch. Nothing is typed in by hand: the real pipeline produced every demo plan ahead of time, and the page says so.
+A judge opens the live URL on any device, logged out, and within seconds sees three real neighbourhoods with full plans: the generic answer next to Loudnight's, the trace of how it got there, three concepts with receipts, and a series ready to launch. Nothing is typed in by hand: the real pipeline produced every demo plan ahead of time, and the page says so.
 
 ## Brief coverage
 
@@ -31,7 +31,7 @@ Out: changes to the pipeline itself.
 
 - **`/demo/[venueId]`** sections in order, matching the two-minute demo script:
   1. Venue header: name, neighbourhood, quiet night, break-even ("needs 40 people").
-  2. Generic vs Encore toggle (from plan 07), Generic shown first.
+  2. Generic vs Loudnight toggle (from plan 07), Generic shown first.
   3. Trace replay (collapsible) and the fingerprint card (plan 04) and gap scan card (plan 05).
   4. Three concept cards with receipts (plan 06), the chosen one marked.
   5. The series calendar and launch kit preview (plans 10 and 11), read only.
@@ -60,7 +60,7 @@ Out: changes to the pipeline itself.
 ## What changed while building
 
 - The page reads through the visitor's own cookie client, so it is rendered on demand, not cached for an hour. It is still one round of parallel reads.
-- The trace replay lives in the Steps tab of "How Encore got there", not in its own section, to keep the page to one idea at a time.
+- The trace replay lives in the Steps tab of "How Loudnight got there", not in its own section, to keep the page to one idea at a time.
 - The landing page shows demo venues as a row of links under the five-picture story, not as cards.
 - `npm run demo:precompute` runs the upkeep. A failed refresh deletes only the half-made run and keeps the previous plan.
 
@@ -72,6 +72,6 @@ Run the precompute against the hosted project (with the user's approval), open e
 
 ---
 
-You are working on Encore. Follow `CLAUDE.md` exactly. Read this plan, plan 07's services and components, plans 10 and 11 for the series and launch kit read models, and the demo script in the brief.
+You are working on Loudnight. Follow `CLAUDE.md` exactly. Read this plan, plan 07's services and components, plans 10 and 11 for the series and launch kit read models, and the demo script in the brief.
 
 Order: precompute script with tests, page data loader, page sections reusing existing components, replay, tour strip, Open Graph images. Ask the user before running the precompute against the hosted project. Run `npm run validate`. Check at four widths, both themes, logged out. Tick boxes only when verified. No long dashes. Do not commit unless asked.

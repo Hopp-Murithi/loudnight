@@ -15,7 +15,7 @@ export const CONCEPTS_SYSTEM = [
   "Before you submit, confirm each combination with check_overlap: anchor one signal and target the others.",
   "Only cite overlap ids that check_overlap returned. An overlap marked not confirmed is weak; prefer confirmed ones.",
   "Claims are two to four short labels in plain words, each citing one signal id or one overlap id as its source.",
-  "Never write a number in a label. Encore adds every number from the stored Qloo answer the label cites.",
+  "Never write a number in a label. Loudnight adds every number from the stored Qloo answer the label cites.",
   "Steer away from the themes already covered nearby; reasonBeatsNearby says plainly why this night is different.",
   "Respect the venue: only list needs it has, keep the cost within its talent budget where you can,",
   "Every amount is in hundredths of the venue's own currency (venue.currency): estimate the cost in that currency.",

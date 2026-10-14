@@ -66,7 +66,7 @@ export function OnboardingStep({ step, form, initialCountry }: StepProps) {
   if (step === 1) {
     return (
       <section className="space-y-6">
-        <Heading title="Your quiet nights" description="The nights Encore will plan a series for." />
+        <Heading title="Your quiet nights" description="The nights Loudnight will plan a series for." />
         <FieldGroup>
           <QuietNightsPicker control={control} name="quietNights" />
           <TextField

@@ -4,12 +4,12 @@ export const STAGE_SCENES = [
   {
     id: "world",
     title: "Every venue has a quiet night.",
-    line: "Encore finds the night your area is missing, then helps you fill it. Anywhere in the world.",
+    line: "Loudnight finds the night your area is missing, then helps you fill it. Anywhere in the world.",
   },
   {
     id: "area",
     title: "It starts with the people around you.",
-    line: "Encore reads what your area loves: the music, the food, the nights out.",
+    line: "Loudnight reads what your area loves: the music, the food, the nights out.",
   },
   {
     id: "room",
@@ -31,7 +31,7 @@ export const STAGE_SCENES = [
 
 export type StageSceneId = (typeof STAGE_SCENES)[number]["id"]
 
-// What the night Encore found brings with it. The night's own name comes from the visitor's region.
+// What the night Loudnight found brings with it. The night's own name comes from the visitor's region.
 export const NIGHT_READY = [
   "A local act, booked",
   "A poster with a ticket QR",

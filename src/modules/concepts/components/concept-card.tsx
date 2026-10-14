@@ -30,7 +30,7 @@ function Marker({ concept }: { concept: ConceptView }) {
   return (
     <span className="inline-flex items-center gap-1 border border-spotlight/60 px-2 py-0.5 text-spotlight">
       <Star aria-hidden className="size-3.5" />
-      Encore&apos;s pick
+      Loudnight&apos;s pick
     </span>
   )
 }

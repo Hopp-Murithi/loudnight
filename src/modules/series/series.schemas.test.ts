@@ -13,7 +13,7 @@ describe("variationsSchema", () => {
     expect(variationsSchema.safeParse({ variations: four }).success).toBe(true)
   })
 
-  it("rejects a twist that states a number, because Encore fills those in itself", () => {
+  it("rejects a twist that states a number, because Loudnight fills those in itself", () => {
     const withNumber = [...four.slice(0, 3), "Doors at 8 for the finale with half price drinks."]
     expect(variationsSchema.safeParse({ variations: withNumber }).success).toBe(false)
   })

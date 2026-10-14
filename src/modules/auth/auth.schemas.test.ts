@@ -34,7 +34,7 @@ describe("loginSchema", () => {
 })
 
 describe("confirmLinkSchema", () => {
-  it("accepts only the link types Encore sends", () => {
+  it("accepts only the link types Loudnight sends", () => {
     expect(confirmLinkSchema.safeParse({ token_hash: "a".repeat(20), type: "recovery" }).success).toBe(true)
     expect(confirmLinkSchema.safeParse({ token_hash: "a".repeat(20), type: "email_change" }).success).toBe(false)
   })

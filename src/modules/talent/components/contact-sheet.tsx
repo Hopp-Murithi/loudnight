@@ -69,7 +69,7 @@ function MessageForm({ act, nightName, onDone }: { act: TalentView; nightName: s
           control={form.control}
           name="message"
           label="Your message"
-          description="Encore never sends this. Email it, or copy it into a direct message on one of their channels."
+          description="Loudnight never sends this. Email it, or copy it into a direct message on one of their channels."
           rows={8}
         />
         <div className="flex flex-wrap gap-2">
@@ -110,7 +110,7 @@ export function ContactSheet({ act, nightName, canEdit, onClose }: ContactSheetP
           {canEdit && act.message && <MessageForm key={act.id} act={act} nightName={nightName} onDone={onClose} />}
           {!canEdit && act.message && (
             <div className="space-y-2">
-              <h3 className="text-sm font-medium">The first message Encore drafted</h3>
+              <h3 className="text-sm font-medium">The first message Loudnight drafted</h3>
               <p className="border bg-muted/40 p-4 text-sm whitespace-pre-line">{act.message}</p>
             </div>
           )}

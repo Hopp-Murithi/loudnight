@@ -48,4 +48,4 @@ The fact sheet (holds the nights, claims and themes; no money from settings), th
 
 ---
 
-You are working on Encore. Follow `CLAUDE.md` exactly, section 5 especially. Read this plan, `modules/concepts/concepts.grounding.ts` and `modules/gap/gap.themes.ts` for the forced-tool pattern. Load the `claude-api` skill for the prompt. No long dashes. Do not commit unless asked.
+You are working on Loudnight. Follow `CLAUDE.md` exactly, section 5 especially. Read this plan, `modules/concepts/concepts.grounding.ts` and `modules/gap/gap.themes.ts` for the forced-tool pattern. Load the `claude-api` skill for the prompt. No long dashes. Do not commit unless asked.

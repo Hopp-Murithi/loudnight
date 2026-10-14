@@ -6,23 +6,31 @@ interface BrandLoaderProps {
   className?: string
 }
 
-// The Encore mark inside a turning spotlight ring. Announced to screen readers, still under reduced motion.
+// Heights and beats for the five equaliser bars; under reduced motion they hold these heights still.
+const BARS = [
+  { height: "45%", delay: "0ms" },
+  { height: "85%", delay: "-160ms" },
+  { height: "100%", delay: "-320ms" },
+  { height: "70%", delay: "-80ms" },
+  { height: "50%", delay: "-240ms" },
+]
+
+// The Loudnight mark over an equaliser that plays while the page loads. Announced to screen readers.
 export function BrandLoader({ label = "Loading", className }: BrandLoaderProps) {
   return (
     <div role="status" aria-live="polite" className={cn("flex flex-col items-center gap-4", className)}>
-      <div className="relative size-20">
-        <span className="absolute inset-0 rounded-full border-2 border-primary/15" />
-        <span className="absolute inset-0 animate-spin rounded-full border-2 border-transparent border-t-spotlight border-r-spotlight/40 motion-reduce:animate-none" />
-        <span className="absolute inset-3 grid place-items-center">
-          <Image
-            src="/logo.svg"
-            alt=""
-            width={40}
-            height={40}
-            priority
-            className="size-10 animate-pulse motion-reduce:animate-none"
+      <div className="relative grid place-items-center">
+        <span aria-hidden className="absolute size-24 rounded-full bg-spotlight/15 blur-xl" />
+        <Image src="/logo.svg" alt="" width={56} height={56} priority className="relative size-14" />
+      </div>
+      <div aria-hidden className="flex h-7 items-end gap-1">
+        {BARS.map((bar) => (
+          <span
+            key={bar.delay}
+            className="eq-bar w-1.5 bg-primary motion-reduce:animate-none"
+            style={{ height: bar.height, animationDelay: bar.delay }}
           />
-        </span>
+        ))}
       </div>
       <p className="text-sm text-muted-foreground">{label}</p>
     </div>

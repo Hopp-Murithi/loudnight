@@ -6,7 +6,7 @@ Rules for ALL code in this repository. They are mandatory. Code that breaks a ru
 
 ## What this is
 
-Encore: an AI programming director that fills a venue's empty nights. An owner enters their address and slow night; Encore reads the neighbourhood's taste through Qloo, finds what nobody nearby runs, invents a recurring event backed by evidence, finds talent, produces the launch kit, and measures who came. Requirements live in `docs/reference/encore-system-brief.pdf` (text copy beside it). Hackathon submission target: Oct 29, 2026.
+Loudnight: an AI programming director that fills a venue's empty nights. An owner enters their address and slow night; Loudnight reads the neighbourhood's taste through Qloo, finds what nobody nearby runs, invents a recurring event backed by evidence, finds talent, produces the launch kit, and measures who came. Requirements live in `docs/reference/encore-system-brief.pdf` (text copy beside it). Hackathon submission target: Oct 29, 2026.
 
 Roles. Platform: `owner` (everyone, anonymous visitors included) and `administrator`. Inside a venue (`venue_members`): `owner`, `manager`, `door`. Guests on event pages have no account.
 
@@ -41,7 +41,7 @@ src/
 supabase/migrations/      Every schema change, in order. seed.sql = demo venues. tests/*.sql = database rule tests.
 scripts/                  check-dashes, check-connections (day-one API gate), run-db-tests
 tests/                    Test setup and stubs. Unit tests sit beside the code as `*.test.ts`.
-docs/architecture/        ARCHITECTURE.md and plans/. docs/reference/ = the Encore brief.
+docs/architecture/        ARCHITECTURE.md and plans/. docs/reference/ = the Loudnight brief.
 ```
 
 Dependency direction is one way: `component -> hook -> api.ts -> /api/v1 route -> service -> repository -> Supabase`.
@@ -68,7 +68,7 @@ External calls go `service -> lib/<service>/client`. A layer may only call the l
 - Every new venue table MUST have: `venue_id` indexed on its own, a composite foreign key `(parent_id, venue_id)` to its parent so rows cannot point across venues, a covering index on `(parent_id, venue_id)` in that order for every such key (the performance advisor flags any that is missing), RLS enabled, policies built from the helpers above, explicit `GRANT`s (column lists for anything a session may insert or update), the three `no_*_while_previewing` restrictive policies, and assertions in `supabase/tests/rls.sql`.
 - Money (`venue_settings`, `spend_cents`) is for owners and managers only. Door staff see guest lists and check-ins, never money, never the plan editor.
 - Roles live in `profiles.role` and `venue_members.role`. **Never** in `user_metadata`. `app_metadata.role` is a routing hint copied by trigger; never trust a JWT claim for data access.
-- **Preview as.** An administrator can read Encore exactly as any non-administrator sees it. The server sends `x-encore-preview: <user id>`; `private.viewer_id()` honours it only for a real, active administrator and a non-administrator target. A preview only ever narrows, and nothing can be written while one is active (restrictive policies on every table, plus the route wrapper refuses writes). Starting and ending a preview is audited.
+- **Preview as.** An administrator can read Loudnight exactly as any non-administrator sees it. The server sends `x-encore-preview: <user id>`; `private.viewer_id()` honours it only for a real, active administrator and a non-administrator target. A preview only ever narrows, and nothing can be written while one is active (restrictive policies on every table, plus the route wrapper refuses writes). Starting and ending a preview is audited.
 - The service-role client (`createAdminSupabase`) is allowed only for: creating auth users and generating auth links (sign-up, confirmation, reset, team invites; all in `modules/auth/server/identity.ts`), finding an account by email for an invite or a reset, consuming rate limits (`lib/http/rate-limit.ts`), writing agent output (`agent_runs`, `run_steps`, `concepts`, `evidence`, `talent_candidates`), reading and writing the shared `qloo_cache`, maintaining demo venues and their precomputed plans, writing service-side audit rows, and changing a profile's role or status. Justify every other use in review.
 - Guests: RSVPs and self check-ins go through `publicApiRoute` with the caller's client. Guests can insert into a published night and read nothing back. The server generates check-in codes.
 
@@ -93,7 +93,7 @@ External calls go `service -> lib/<service>/client`. A layer may only call the l
 - The pipeline has a fixed spine of six steps (scout, read neighbourhood, find gap, generate concepts, score, plan). Claude chooses tools inside a step, never the order of steps. Each step is its own server call, streamed, so no request approaches the host's time limit.
 - Tools are typed, inputs and outputs are Zod-validated, prompts are versioned constants beside the service that uses them. Venue, guest and upstream content sent to a model is data, never instructions.
 - The score is computed by the database (`concepts.total_score`): 40 x audience fit + 20 x novelty + 20 x venue fit + 20 x cost fit. The model proposes the four inputs with evidence; it never writes the total.
-- In the interface the agent is "Encore" or "the planner". No AI jargon on screen.
+- In the interface the agent is "Loudnight" or "the planner". No AI jargon on screen.
 
 ## 6. Performance rules
 

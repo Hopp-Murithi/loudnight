@@ -47,7 +47,7 @@ export function ReceiptBody({ receipt }: { receipt: ReceiptView }) {
 
       <section aria-labelledby="receipt-question" className="space-y-2">
         <h3 id="receipt-question" className="text-sm font-semibold">
-          What Encore asked Qloo
+          What Loudnight asked Qloo
         </h3>
         <p className="font-mono text-xs">GET {receipt.endpoint}</p>
         <dl className="divide-y border text-xs">

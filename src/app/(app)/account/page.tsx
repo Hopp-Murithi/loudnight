@@ -12,7 +12,7 @@ export default async function AccountPage() {
 
   return (
     <>
-      <PageHeader title="Account" description={user.email ?? "Your Encore account"} />
+      <PageHeader title="Account" description={user.email ?? "Your Loudnight account"} />
       <div className="grid gap-6 lg:grid-cols-2">
         <SectionCard title="Your name" description="Shown to your venue team.">
           <AccountForm displayName={user.displayName ?? ""} />

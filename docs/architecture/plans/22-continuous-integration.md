@@ -46,4 +46,4 @@ Push the branch, open the Actions tab, confirm both jobs pass.
 
 ---
 
-You are working on Encore. Follow `CLAUDE.md` exactly. Read this plan, `package.json` scripts, `scripts/run-db-tests.mjs` and `src/lib/env`. Write the workflow, then ask the user to push so it can be seen running. Tick boxes only when the run is green. No long dashes. Do not commit unless asked.
+You are working on Loudnight. Follow `CLAUDE.md` exactly. Read this plan, `package.json` scripts, `scripts/run-db-tests.mjs` and `src/lib/env`. Write the workflow, then ask the user to push so it can be seen running. Tick boxes only when the run is green. No long dashes. Do not commit unless asked.

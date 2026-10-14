@@ -27,7 +27,7 @@ export function PlanIntro({
           Find the {night} nobody nearby is running.
         </h2>
         <p className="text-muted-foreground">
-          Encore reads your neighbourhood&apos;s taste, checks what is on around you, and invents nights backed by
+          Loudnight reads your neighbourhood&apos;s taste, checks what is on around you, and invents nights backed by
           evidence you can open.
         </p>
         {canRun && weekday ? (

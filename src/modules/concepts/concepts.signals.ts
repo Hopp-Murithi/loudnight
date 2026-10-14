@@ -63,7 +63,7 @@ export function buildSignals(fingerprint: TasteFingerprint): Signal[] {
     .map((signal, index) => ({ ...signal, id: `s${index + 1}` }))
 }
 
-// What the model sees: names and ids only. Numbers stay with Encore and reach the screen from receipts.
+// What the model sees: names and ids only. Numbers stay with Loudnight and reach the screen from receipts.
 export const signalsForModel = (signals: Signal[]) =>
   signals.map((signal) => ({ signalId: signal.id, category: signal.category, name: signal.name }))
 

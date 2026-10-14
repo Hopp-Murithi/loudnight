@@ -6,7 +6,7 @@ Phase: 1
 
 ## Goal
 
-A codebase anyone can pick up and extend without asking questions: the stack installed and pinned exactly as the UNoN portal, the Encore brand applied in light and dark, the rules written down, the whole data model migrated with RLS and tested, quality checked by one command, and every external service reachable through one thin client.
+A codebase anyone can pick up and extend without asking questions: the stack installed and pinned exactly as the UNoN portal, the Loudnight brand applied in light and dark, the rules written down, the whole data model migrated with RLS and tested, quality checked by one command, and every external service reachable through one thin client.
 
 ## Scope
 
@@ -17,7 +17,7 @@ Out: every product feature (plans 01 onward). Vercel deployment waits until the 
 ## Design
 
 - Layered modular monolith. Layer rules and folder map in `CLAUDE.md`, reasoning in `ARCHITECTURE.md`.
-- Same pinned versions as UNoN: Next.js 16.3.6, React 19.2.8, TypeScript 5.9.3, Tailwind 4.3.3, shadcn 4.21.0 on Base UI 1.8.0, Supabase JS 2.117.2 and SSR 0.12.7, Zod 4.6.5, TanStack Query 5.104.0, Anthropic SDK 0.131.0, Vitest 5.0.2. Packages UNoN used that Encore does not need yet (Leaflet, Recharts, Resend, TanStack Table) are left out until a plan needs them.
+- Same pinned versions as UNoN: Next.js 16.3.6, React 19.2.8, TypeScript 5.9.3, Tailwind 4.3.3, shadcn 4.21.0 on Base UI 1.8.0, Supabase JS 2.117.2 and SSR 0.12.7, Zod 4.6.5, TanStack Query 5.104.0, Anthropic SDK 0.131.0, Vitest 5.0.2. Packages UNoN used that Loudnight does not need yet (Leaflet, Recharts, Resend, TanStack Table) are left out until a plan needs them.
 - Brand tokens in `src/app/globals.css`: copper `#A4361C`, spotlight `#E8A33D`, warm white, late-night ink in dark mode.
 - Migrations: `identity_and_venues` (profiles, venues, venue team, settings, audit, viewer and access helpers), `agent_pipeline` (runs, steps, Qloo cache, concepts, evidence with the receipt trigger, talent, the run cap), `series_and_attendance` (series, nights, RSVPs, check-ins, realtime), `row_level_security` (grants, policies, read-only previews).
 - `lib/http/upstream.ts` gives every external call a timeout, a Zod-checked shape and safe errors.
@@ -80,7 +80,7 @@ Copy everything below the line into Claude Code.
 
 ---
 
-You are working on Encore. Follow `CLAUDE.md` exactly, every rule is mandatory. Read `CLAUDE.md`, `docs/architecture/ARCHITECTURE.md` and this plan first.
+You are working on Loudnight. Follow `CLAUDE.md` exactly, every rule is mandatory. Read `CLAUDE.md`, `docs/architecture/ARCHITECTURE.md` and this plan first.
 
 Close the open items in Deliverables:
 

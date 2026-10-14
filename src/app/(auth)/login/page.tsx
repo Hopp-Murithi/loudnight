@@ -12,7 +12,7 @@ export default function LoginPage() {
       <AuthHeading title="Sign in" description="Plan, launch and measure your quiet nights." />
       <LoginForm />
       <p className="text-center text-sm text-muted-foreground">
-        New to Encore?{" "}
+        New to Loudnight?{" "}
         <Link href={ROUTES.signup} className="font-medium text-link underline-offset-4 hover:underline">
           Create an account
         </Link>

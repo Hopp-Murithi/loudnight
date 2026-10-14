@@ -92,7 +92,7 @@ export function TalentCard({ act, onOpen, onReceipt }: TalentCardProps) {
             )}
           >
             {REACH_LABELS[act.reach]}
-            <span className="text-muted-foreground"> (Encore&apos;s estimate: ask the act)</span>
+            <span className="text-muted-foreground"> (Loudnight&apos;s estimate: ask the act)</span>
           </p>
         )}
         <p className="line-clamp-2 min-h-10 text-sm text-muted-foreground">{profile.tagline}</p>

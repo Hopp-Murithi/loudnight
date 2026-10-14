@@ -80,7 +80,7 @@ export default async function DemoPage({ params }: PageProps<"/demo/[venueId]">)
         ) : (
           <EmptyState
             title="This plan is still being prepared"
-            description="Encore has not finished planning this venue yet. You can run a plan for your own venue now."
+            description="Loudnight has not finished planning this venue yet. You can run a plan for your own venue now."
           />
         )}
         <TryYourOwn night={WEEKDAY_LABELS[venue.slowNight]} />

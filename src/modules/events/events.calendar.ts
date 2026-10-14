@@ -32,7 +32,7 @@ export function icsFile(event: CalendarEvent, now = new Date()): string {
   const lines = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//Encore//Event page//EN",
+    "PRODID:-//Loudnight//Event page//EN",
     "CALSCALE:GREGORIAN",
     "METHOD:PUBLISH",
     "BEGIN:VEVENT",

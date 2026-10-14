@@ -15,7 +15,7 @@ interface PlaceLike {
   timeZone?: { id?: string }
 }
 
-// Google's place types, most specific first, mapped to the venue types Encore plans for.
+// Google's place types, most specific first, mapped to the venue types Loudnight plans for.
 const TYPE_RULES: [VenueType, (type: string) => boolean][] = [
   ["music_venue", (type) => ["night_club", "live_music_venue", "concert_hall", "event_venue"].includes(type)],
   [

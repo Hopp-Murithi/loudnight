@@ -43,7 +43,7 @@ function readSubmission(input: unknown) {
   return { valid, problems }
 }
 
-// Step 4's tool loop. The model chooses which overlaps to check; Encore runs every call and keeps the receipts.
+// Step 4's tool loop. The model chooses which overlaps to check; Loudnight runs every call and keeps the receipts.
 export async function runConceptAgent(userMessage: string, signals: Signal[], deps: AgentDeps): Promise<AgentOutcome> {
   const byId = new Map(signals.map((signal) => [signal.id, signal]))
   const overlaps = new Map<string, OverlapResult>()

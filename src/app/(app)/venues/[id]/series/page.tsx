@@ -65,7 +65,7 @@ export default async function VenueSeriesPage({ params, searchParams }: PageProp
           description={
             status.shortlist.length > 0
               ? "Three nights are waiting. Pick one and it becomes a four-week series here."
-              : "Encore finds the night your neighbourhood is waiting for. Once you choose one, its four weeks appear here."
+              : "Loudnight finds the night your neighbourhood is waiting for. Once you choose one, its four weeks appear here."
           }
           action={
             venue.role === "door"

@@ -7,7 +7,7 @@ Judging criteria: Quality of the Idea (finds what nobody nearby offers), Potenti
 
 ## Goal
 
-For a venue and its target weekday, Encore knows what is already on nearby: competing venues from Google Places and events from Ticketmaster on that night over the next four weeks. Claude reduces them to a short list of covered themes, so concepts avoid them and Novelty can be scored. The owner sees the competition plainly, with sources.
+For a venue and its target weekday, Loudnight knows what is already on nearby: competing venues from Google Places and events from Ticketmaster on that night over the next four weeks. Claude reduces them to a short list of covered themes, so concepts avoid them and Novelty can be scored. The owner sees the competition plainly, with sources.
 
 ## Brief coverage
 
@@ -67,6 +67,6 @@ Out: scoring (plan 06), orchestration (plan 07).
 
 ---
 
-You are working on Encore. Follow `CLAUDE.md` exactly. Read this plan, `lib/places`, `lib/ticketmaster`, `lib/ai`, the step writer from plan 04, and the Places API (New) type list in Google's documentation. Load the `claude-api` skill before writing the theme prompt.
+You are working on Loudnight. Follow `CLAUDE.md` exactly. Read this plan, `lib/places`, `lib/ticketmaster`, `lib/ai`, the step writer from plan 04, and the Places API (New) type list in Google's documentation. Load the `claude-api` skill before writing the theme prompt.
 
 Order: weekday helper and tests, mapping helpers, service with mocked clients and tests, prompt with schema, step wiring, photo proxy route, card. Ask the user for `GOOGLE_PLACES_API_KEY`, `TICKETMASTER_API_KEY` and `ANTHROPIC_API_KEY` if missing. Run `npm run validate`. Tick boxes only when verified. No long dashes. Do not commit unless asked.

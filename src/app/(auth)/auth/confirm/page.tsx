@@ -11,12 +11,12 @@ export const metadata: Metadata = { title: "Confirm", robots: { index: false } }
 const COPY: Record<LinkType, { title: string; description: string; label: string }> = {
   signup: {
     title: "Confirm your email",
-    description: "Select Continue to confirm your address and open Encore.",
+    description: "Select Continue to confirm your address and open Loudnight.",
     label: "Continue",
   },
   magiclink: {
     title: "Confirm your email",
-    description: "Select Continue to confirm your address and open Encore.",
+    description: "Select Continue to confirm your address and open Loudnight.",
     label: "Continue",
   },
   recovery: {

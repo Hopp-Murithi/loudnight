@@ -86,7 +86,7 @@ Out: the public event page and RSVP (plan 12); direct posting to Meta or Google 
 
 ---
 
-You are working on Encore. Follow `CLAUDE.md` exactly. Read this plan, plans 06 and 10, and `event_nights.assets`. Load the `claude-api` skill for the prompts. Ask the user before adding `satori` and `@resvg/resvg-js`.
+You are working on Loudnight. Follow `CLAUDE.md` exactly. Read this plan, plans 06 and 10, and `event_nights.assets`. Load the `claude-api` skill for the prompts. Ask the user before adding `satori` and `@resvg/resvg-js`.
 
 Order: schemas and channel config with tests, pure builders (ad brief) with tests, validator, generation service, routes, poster templates and route, then the tab UI. If behind schedule, follow the cut-list: partner cross-promo, then posters. Run `npm run validate`. Tick boxes only when verified. No long dashes. Do not commit unless asked.
 

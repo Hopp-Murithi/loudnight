@@ -51,7 +51,7 @@ export function toToolLine(row: StepRowLike): ToolLine {
   return {
     id: row.id,
     tool: row.tool,
-    source: TOOL_SOURCES[row.tool] ?? "Encore",
+    source: TOOL_SOURCES[row.tool] ?? "Loudnight",
     label: describeTool(row.tool, input, summary),
     ok: row.status === "succeeded",
     latencyMs: row.latency_ms,

@@ -7,7 +7,7 @@ Judging criteria: Design (a complete, coherent product, not a proof of concept)
 
 ## Goal
 
-Before any feature page exists, Encore has one design system and one shell that every later plan builds into: tokens, type scale, spacing, motion, the shared components, the signed-in shell with venue switching and role-aware navigation, the public page frame, and a written map of every route in the product with its owner plan, its audience and its layout at each breakpoint. A dev-only component gallery lets anyone check every component in light and dark at every width.
+Before any feature page exists, Loudnight has one design system and one shell that every later plan builds into: tokens, type scale, spacing, motion, the shared components, the signed-in shell with venue switching and role-aware navigation, the public page frame, and a written map of every route in the product with its owner plan, its audience and its layout at each breakpoint. A dev-only component gallery lets anyone check every component in light and dark at every width.
 
 ## Brief coverage
 
@@ -71,7 +71,7 @@ Administrators additionally see "Admin" (`/admin`, plan 08). Navigation is a cou
 | `/`                             | Everyone         | 00, 09     | Hero, journey steps (1 / 2 / 3 columns), demo venues (1 / 2 / 3), call to action            |
 | `/start`                        | Visitors         | 03         | Single centred card at every width                                                          |
 | `/auth/confirm`                 | Email upgrade    | 03         | Single centred card, button POST (never consume a token on GET)                             |
-| `/demo/[venueId]`               | Everyone, judges | 09         | Venue header, Generic vs Encore toggle, trace replay, concept cards (1 / 1 / 3)             |
+| `/demo/[venueId]`               | Everyone, judges | 09         | Venue header, Generic vs Loudnight toggle, trace replay, concept cards (1 / 1 / 3)          |
 | `/venues`                       | Signed in        | 03         | Venue cards (1 / 2 / 3), "Add a venue"                                                      |
 | `/venues/new`                   | Signed in        | 03         | Stepped form, sticky action on phones, two-column review at 1280                            |
 | `/venues/[id]`                  | Owner, manager   | 03, 13     | Next night card, KPIs (1 / 2 / 4), plan status, quick actions                               |
@@ -127,6 +127,6 @@ Short sentences, second person, venue words ("night", "regulars", "door", "break
 
 ---
 
-You are working on Encore. Follow `CLAUDE.md` exactly, section 8 above all. Read `CLAUDE.md`, `ARCHITECTURE.md`, the plans README (Screen standard), this plan, and the existing `src/components`. Load the `frontend-design` skill before designing the shell. Read the Next.js guide in `node_modules/next/dist/docs/` for route groups, layouts and `notFound`.
+You are working on Loudnight. Follow `CLAUDE.md` exactly, section 8 above all. Read `CLAUDE.md`, `ARCHITECTURE.md`, the plans README (Screen standard), this plan, and the existing `src/components`. Load the `frontend-design` skill before designing the shell. Read the Next.js guide in `node_modules/next/dist/docs/` for route groups, layouts and `notFound`.
 
 Order: tokens and type in the gallery first, then the missing components with their states, then the shells, then navigation config and tests, then placeholder segment files. Reuse the shadcn primitives in `src/components/ui` (Base UI uses `render`, not `asChild`). Do not build feature content. Run `npm run validate`. Check every width and theme in a browser. Tick boxes only when verified. No long dashes. Do not commit unless asked.

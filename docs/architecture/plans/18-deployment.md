@@ -7,11 +7,11 @@ Judging criteria: all four depend on a working, publicly accessible app
 
 ## Goal
 
-Encore is live on Vercel from phase 2 onward, so every later plan is checked on the real host, not just locally. Production runs against the hosted Supabase project with every key set as a sensitive variable, deploys only after the checks pass, and survives the whole judging period (Nov 2 to 16) without anyone touching it.
+Loudnight is live on Vercel from phase 2 onward, so every later plan is checked on the real host, not just locally. Production runs against the hosted Supabase project with every key set as a sensitive variable, deploys only after the checks pass, and survives the whole judging period (Nov 2 to 16) without anyone touching it.
 
 ## Brief coverage
 
-"Working, publicly accessible app (hosted on Vercel, no local-only demo)". "Encore is one Next.js app on Vercel backed by Supabase". Never cut: live hosting. Risk: "Long runs time out on Vercel": one call per step.
+"Working, publicly accessible app (hosted on Vercel, no local-only demo)". "Loudnight is one Next.js app on Vercel backed by Supabase". Never cut: live hosting. Risk: "Long runs time out on Vercel": one call per step.
 
 ## Scope
 
@@ -53,6 +53,6 @@ Out: CI on GitHub Actions beyond what Vercel provides (optional enhancement in p
 
 ---
 
-You are working on Encore. Follow `CLAUDE.md` exactly. Read this plan and the Vercel and Next.js deployment guides in `node_modules/next/dist/docs/`.
+You are working on Loudnight. Follow `CLAUDE.md` exactly. Read this plan and the Vercel and Next.js deployment guides in `node_modules/next/dist/docs/`.
 
 Ask the user before creating the Vercel project, before setting any variable, before connecting the repository and before every production deploy. Never print secret values. Follow the deploy procedure exactly. Tick boxes only when verified. No long dashes. Do not commit unless asked.

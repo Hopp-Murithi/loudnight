@@ -19,7 +19,7 @@ export function QuietNightsPicker<T extends FieldValues>({ control, name }: { co
         return (
           <FieldSet>
             <FieldLegend>Which nights are quiet?</FieldLegend>
-            <FieldDescription>Choose up to {QUIET_NIGHTS_MAX}. Encore plans the first one first.</FieldDescription>
+            <FieldDescription>Choose up to {QUIET_NIGHTS_MAX}. Loudnight plans the first one first.</FieldDescription>
             <div className="flex flex-wrap gap-2">
               {WEEKDAYS.map((day) => {
                 const picked = nights.includes(day)

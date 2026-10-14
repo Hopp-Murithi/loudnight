@@ -102,7 +102,7 @@ export function AppSidebar({ venues, isAdministrator, currentVenueId: override }
       <SidebarContent className="px-2">
         {venue && <NavGroup label={venue.name} items={journey} pathname={pathname} homes={homes} />}
         {upkeep.length > 0 && <NavGroup label="Manage" items={upkeep} pathname={pathname} homes={homes} />}
-        <NavGroup label="Encore" items={general} pathname={pathname} homes={homes} />
+        <NavGroup label="Loudnight" items={general} pathname={pathname} homes={homes} />
       </SidebarContent>
       <SidebarRail />
     </Sidebar>

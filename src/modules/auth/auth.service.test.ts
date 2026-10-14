@@ -27,7 +27,7 @@ describe("signUp", () => {
     await authService.signUp({ displayName: "Ada", email: "ada@example.com", password: "quiet-night-7" })
 
     expect(sendEmail).toHaveBeenCalledWith(
-      expect.objectContaining({ to: "ada@example.com", subject: "Confirm your email for Encore" }),
+      expect.objectContaining({ to: "ada@example.com", subject: "Confirm your email for Loudnight" }),
     )
     expect(sendEmail.mock.calls[0][0].text).toContain(LINK)
   })
@@ -37,7 +37,7 @@ describe("signUp", () => {
     createSignUpLink.mockResolvedValue({ status: "exists" })
     await authService.signUp({ displayName: "Ada", email: "ada@example.com", password: "quiet-night-7" })
 
-    expect(sendEmail.mock.calls[0][0].subject).toBe("You already have an Encore account")
+    expect(sendEmail.mock.calls[0][0].subject).toBe("You already have a Loudnight account")
   })
 })
 
@@ -68,7 +68,7 @@ describe("sendPasswordReset", () => {
     await authService.sendPasswordReset("ada@example.com")
 
     expect(createAccountLink).toHaveBeenCalledWith("ada@example.com", "recovery")
-    expect(sendEmail.mock.calls[0][0].subject).toBe("Reset your Encore password")
+    expect(sendEmail.mock.calls[0][0].subject).toBe("Reset your Loudnight password")
   })
 
   it("sends nothing to an address that has no account, and says nothing about it", async () => {

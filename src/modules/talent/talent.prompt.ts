@@ -63,7 +63,7 @@ export interface OutreachBrief {
 export const outreachUserMessage = (brief: OutreachBrief) =>
   "Write one message for each act. Data:\n" + JSON.stringify(brief)
 
-// A draft passes only with no numbers of its own and all three markers, so every figure in it comes from Encore.
+// A draft passes only with no numbers of its own and all three markers, so every figure in it comes from Loudnight.
 export function fillOutreach(template: string, facts: OutreachFacts): string | null {
   const markers = Object.values(OUTREACH_TOKENS)
   if (hasDigits(template) || markers.some((marker) => !template.includes(marker))) return null

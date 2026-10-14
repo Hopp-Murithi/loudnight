@@ -7,7 +7,7 @@ Judging criteria: Technological Implementation (a working, trustworthy system), 
 
 ## Goal
 
-Encore is safe to leave open to the public through judging: every public and costly endpoint is rate limited, Qloo data is handled within the hackathon's terms, the API surface leaks nothing, dependencies are clean, and a security review of the whole codebase finds nothing open.
+Loudnight is safe to leave open to the public through judging: every public and costly endpoint is rate limited, Qloo data is handled within the hackathon's terms, the API surface leaks nothing, dependencies are clean, and a security review of the whole codebase finds nothing open.
 
 ## Brief coverage
 
@@ -70,6 +70,6 @@ Out: penetration testing by a third party.
 
 ---
 
-You are working on Encore. Follow `CLAUDE.md` exactly. Read this plan, `CLAUDE.md` sections 3 and 4, plan 06's receipt route, and the Qloo hackathon guide's caching rule quoted in plan 02.
+You are working on Loudnight. Follow `CLAUDE.md` exactly. Read this plan, `CLAUDE.md` sections 3 and 4, plan 06's receipt route, and the Qloo hackathon guide's caching rule quoted in plan 02.
 
 Build the limiter first (it is needed in phase 2), with its migration, assertions and tests, and add its allowed service-role use to `CLAUDE.md`. In phase 5, do the compliance migration, the scan script, the audits and the review. Ask the user before scanning or rewriting git history. Run `npm run validate` and `npm run db:test`. Tick boxes only when verified. No long dashes. Do not commit unless asked.

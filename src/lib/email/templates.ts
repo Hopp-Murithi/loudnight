@@ -67,7 +67,7 @@ export const emailTemplates = {
 
   accountExists: (params: { signInUrl: string; resetUrl: string }) =>
     render({
-      subject: `You already have an ${SITE.name} account`,
+      subject: `You already have a ${SITE.name} account`,
       heading: "You already have an account",
       paragraphs: [
         "Someone tried to sign up with this email address, but it already has an account.",

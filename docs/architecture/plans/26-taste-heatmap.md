@@ -48,4 +48,4 @@ Cell placement (north and east signs, distance), the radius filter, strength sca
 
 ---
 
-You are working on Encore. Follow `CLAUDE.md` exactly. Read this plan, plan 02's findings on heatmaps, `lib/qloo/requests.ts` and `modules/taste`. Fixtures are synthetic. No long dashes. Do not commit unless asked.
+You are working on Loudnight. Follow `CLAUDE.md` exactly. Read this plan, plan 02's findings on heatmaps, `lib/qloo/requests.ts` and `modules/taste`. Fixtures are synthetic. No long dashes. Do not commit unless asked.

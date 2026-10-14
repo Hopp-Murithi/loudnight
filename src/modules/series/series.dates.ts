@@ -64,5 +64,5 @@ export function nightSlug(name: string, localDate: string, conceptId: string): s
   return [words || "night", when, ending].filter(Boolean).join("-")
 }
 
-// The copywriter may not state numbers: dates, times and fees are filled in by Encore from stored values.
+// The copywriter may not state numbers: dates, times and fees are filled in by Loudnight from stored values.
 export const hasDigits = (text: string) => /\d/.test(text)

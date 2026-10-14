@@ -56,7 +56,9 @@ export async function executeStep(
       return {
         patch: { scout },
         findings: [
-          scout ? `${scout.type ?? "Venue"}${rated}` : "No Google listing linked, so Encore works from your address.",
+          scout
+            ? `${scout.type ?? "Venue"}${rated}`
+            : "No Google listing linked, so Loudnight works from your address.",
         ],
       }
     }

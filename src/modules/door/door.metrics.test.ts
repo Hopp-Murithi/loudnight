@@ -50,7 +50,7 @@ describe("the monthly sum", () => {
     expect(monthlyGain(30, 2000)).toBe(240000)
   })
 
-  it("says how many times that pays for Encore, and never goes below nothing", () => {
+  it("says how many times that pays for Loudnight, and never goes below nothing", () => {
     expect(paysFor(240000, 4900)).toBe(48)
     expect(paysFor(240000, 0)).toBe(0)
     expect(monthlyGain(-3, 2000)).toBe(0)

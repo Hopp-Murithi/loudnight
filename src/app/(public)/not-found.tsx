@@ -8,7 +8,7 @@ export default function PublicNotFound() {
     <div className="space-y-4">
       <EmptyState title="Nothing here" description="The link may be old, or the night may have been removed." />
       <Button nativeButton={false} render={<Link href={ROUTES.home} />}>
-        Back to Encore
+        Back to Loudnight
       </Button>
     </div>
   )

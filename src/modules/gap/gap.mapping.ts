@@ -6,7 +6,7 @@ import type { NearbyEvent, NearbyVenue, Scout } from "./gap.schemas"
 const NARROW_SPACES = new RegExp(`[${String.fromCharCode(0x202f, 0xa0)}]`, "g")
 const LONG_DASHES = new RegExp(String.raw`\s*[${String.fromCharCode(0x2013, 0x2014)}]\s*`, "g")
 
-// Google writes hours with a long dash and narrow spaces. Encore copy never uses long dashes.
+// Google writes hours with a long dash and narrow spaces. Loudnight copy never uses long dashes.
 export const tidyHours = (line: string) =>
   line.replace(NARROW_SPACES, " ").replace(LONG_DASHES, " to ").replace(/\s+/g, " ").trim()
 

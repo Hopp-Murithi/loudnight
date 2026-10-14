@@ -1,4 +1,4 @@
-// Every phrase Encore writes onto an ad or into a caption, in each language an ad can be made in.
+// Every phrase Loudnight writes onto an ad or into a caption, in each language an ad can be made in.
 // The night's name, the act's name and the owner's own line are theirs and are never translated.
 
 export const AD_LANGUAGES = [

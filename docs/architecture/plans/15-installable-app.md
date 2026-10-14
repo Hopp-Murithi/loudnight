@@ -7,7 +7,7 @@ Judging criteria: Design (a complete product on the device the venue actually us
 
 ## Goal
 
-Encore installs from the browser on a phone or tablet, so door staff open the door screen with one tap from the home screen and owners keep tonight's numbers close. A dropped connection at the door does not lose a check-in: scans made offline queue on the device and sync when the connection returns. As in UNoN, no venue page or API response is ever cached on the device.
+Loudnight installs from the browser on a phone or tablet, so door staff open the door screen with one tap from the home screen and owners keep tonight's numbers close. A dropped connection at the door does not lose a check-in: scans made offline queue on the device and sync when the connection returns. As in UNoN, no venue page or API response is ever cached on the device.
 
 ## Brief coverage
 
@@ -41,7 +41,7 @@ Out: web push (needs VAPID keys and a subscriptions table), offline guest pages.
 ## Deliverables
 
 - [ ] Installs on Android Chrome and desktop Chrome and Edge; iOS shows the steps
-- [ ] Opens standalone with the Encore icon and theme colour; shortcuts work
+- [ ] Opens standalone with the Loudnight icon and theme colour; shortcuts work
 - [ ] Offline navigation shows the offline page; no page or API response cached
 - [ ] Door check-ins made offline sync exactly once when back online
 - [ ] Install card rules tested; signed-in only, never in preview
@@ -55,6 +55,6 @@ Out: web push (needs VAPID keys and a subscriptions table), offline guest pages.
 
 ---
 
-You are working on Encore. Follow `CLAUDE.md` exactly. Read this plan and UNoN's `docs/architecture/plans/11-installable-app.md`, `src/modules/pwa`, `public/sw.js`, `public/install-capture.js`, `src/app/manifest.ts` and `scripts/generate-app-icons.mjs` in `../UNoN-hackathon`. Adapt names, brand and rules.
+You are working on Loudnight. Follow `CLAUDE.md` exactly. Read this plan and UNoN's `docs/architecture/plans/11-installable-app.md`, `src/modules/pwa`, `public/sw.js`, `public/install-capture.js`, `src/app/manifest.ts` and `scripts/generate-app-icons.mjs` in `../UNoN-hackathon`. Adapt names, brand and rules.
 
 Order: manifest and icons, worker and offline page, proxy and headers, install card with tests, idempotent check-in API, offline queue with tests. Run `npm run validate`. Test on a real phone. Tick boxes only when verified. No long dashes. Do not commit unless asked.

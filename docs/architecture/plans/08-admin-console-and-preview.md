@@ -7,7 +7,7 @@ Judging criteria: Technological Implementation (trust and governance), Design (a
 
 ## Goal
 
-An administrator runs Encore from one place: every venue and person, runs and their failures, the audit log, and the demo venues. They can open Encore exactly as any owner, manager or door person sees it, read only, to support them or check a problem. This carries over the UNoN portal's Preview as and audit log page, adapted to Encore's venue roles.
+An administrator runs Loudnight from one place: every venue and person, runs and their failures, the audit log, and the demo venues. They can open Loudnight exactly as any owner, manager or door person sees it, read only, to support them or check a problem. This carries over the UNoN portal's Preview as and audit log page, adapted to Loudnight's venue roles.
 
 ## Brief coverage
 
@@ -75,7 +75,7 @@ The owner asked for a role that oversees the whole platform, can disable venues 
 - **First administrator**: hoppmurithi@gmail.com was promoted on Oct 14 at the owner's request, by setting `profiles.role` on the hosted project (the existing trigger copied it to the sign-in account). `scripts/seed-admin.ts` remains the way to make further administrators; the UI never can.
 - **Suspend a venue**: `venues.suspended_at` and `suspended_reason` (migration with `rls.sql` assertions). A suspended venue's team can still read it but cannot write to it (a restrictive policy on every venue table, like the preview policies), its public event pages show "This venue is not taking bookings", and RSVPs and self check-ins are refused. Suspending and lifting are audited and need a reason.
 - **Deactivate a person** (already in scope) also signs them out everywhere through the auth admin API.
-- **Console overview** adds what an operator watches: venues by country and currency, nights published this week, RSVPs and check-ins today (live), runs and their failures, Qloo calls and cache hit rate, and the money Encore will bill once billing exists (roadmap).
+- **Console overview** adds what an operator watches: venues by country and currency, nights published this week, RSVPs and check-ins today (live), runs and their failures, Qloo calls and cache hit rate, and the money Loudnight will bill once billing exists (roadmap).
 - **Manage easily**: every list has search, filters and one-click actions (preview as, suspend, deactivate, refresh demo) with a confirm that says what will happen.
 
 New deliverables:
@@ -92,6 +92,6 @@ New deliverables:
 
 ---
 
-You are working on Encore. Follow `CLAUDE.md` exactly. Read this plan, `ARCHITECTURE.md` section 5, the helpers in the first migration, the preview assertions in `supabase/tests/rls.sql`, and the UNoN reference `../UNoN-hackathon/docs/architecture/plans/10-admin-preview-as.md`, `../UNoN-hackathon/src/modules/preview`, `../UNoN-hackathon/src/lib/http/route.ts` and its tests. Adapt names; do not copy what does not fit.
+You are working on Loudnight. Follow `CLAUDE.md` exactly. Read this plan, `ARCHITECTURE.md` section 5, the helpers in the first migration, the preview assertions in `supabase/tests/rls.sql`, and the UNoN reference `../UNoN-hackathon/docs/architecture/plans/10-admin-preview-as.md`, `../UNoN-hackathon/src/modules/preview`, `../UNoN-hackathon/src/lib/http/route.ts` and its tests. Adapt names; do not copy what does not fit.
 
 Order: cookie and tests, context and route wrapper changes with tests, proxy, service and audit, script, then console pages. Ask before adding `@tanstack/react-table` and before creating the `PREVIEW_COOKIE_SECRET` variable. Run `npm run validate` and `npm run db:test`. Tick boxes only when verified. No long dashes. Do not commit unless asked.
