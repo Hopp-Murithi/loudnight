@@ -42,7 +42,7 @@ export async function adminVenues(supabase: ServerSupabase, query: AdminListQuer
     rows.map((row) => ({
       id: row.id,
       name: row.name,
-      place: [row.city, row.country_code].filter(Boolean).join(", ") || row.address,
+      place: row.city ? [row.city, row.country_code].filter(Boolean).join(", ") : row.address,
       venueType: row.venue_type,
       isDemo: row.is_demo,
       createdAt: row.created_at,

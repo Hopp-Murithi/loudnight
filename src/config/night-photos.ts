@@ -67,3 +67,16 @@ export function adPhotoFor(venueId: string, week: number): NightPhoto {
   const sum = [...venueId].reduce((total, char) => total + char.charCodeAt(0), 0)
   return free[(sum + week) % free.length]
 }
+
+// The planning screen's backdrop follows the step: the bar while scouting, the crowd while reading the
+// neighbourhood, stages while checking what is on, and the floor filling up as the nights take shape.
+const STEP_PHOTOS: Record<string, number> = {
+  scout: 1,
+  read_neighbourhood: 4,
+  find_gap: 2,
+  generate_concepts: 3,
+  score: 0,
+  plan: 4,
+}
+
+export const photoForStep = (step: string | undefined): NightPhoto => NIGHT_PHOTOS[STEP_PHOTOS[step ?? ""] ?? 3]

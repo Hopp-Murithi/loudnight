@@ -3,7 +3,7 @@ import { PageHeader } from "@/components/layout/page-header"
 import { EmptyState } from "@/components/shared/empty-state"
 import { ROUTES } from "@/config/site"
 import { AdminNav, AdminPager, AdminSearch } from "@/modules/admin/components/admin-chrome"
-import { VenueAdminRow } from "@/modules/admin/components/venue-admin-row"
+import { VenuesTable } from "@/modules/admin/components/venues-table"
 import { adminListSchema } from "@/modules/admin/admin.schemas"
 import { adminVenues } from "@/modules/admin/admin.service"
 import { getPageContext } from "@/modules/auth/server/context"
@@ -25,11 +25,7 @@ export default async function AdminVenuesPage({ searchParams }: PageProps<"/admi
       {venues.rows.length === 0 ? (
         <EmptyState title="No venues match" description="Try another name or town." />
       ) : (
-        <ul className="grid gap-3 lg:grid-cols-2">
-          {venues.rows.map((venue) => (
-            <VenueAdminRow key={venue.id} venue={venue} />
-          ))}
-        </ul>
+        <VenuesTable venues={venues.rows} />
       )}
       <AdminPager path={ROUTES.adminVenues} q={query.q} page={venues.page} hasMore={venues.hasMore} />
     </>

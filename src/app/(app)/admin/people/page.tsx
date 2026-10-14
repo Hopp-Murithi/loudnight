@@ -3,7 +3,7 @@ import { PageHeader } from "@/components/layout/page-header"
 import { EmptyState } from "@/components/shared/empty-state"
 import { ROUTES } from "@/config/site"
 import { AdminNav, AdminPager, AdminSearch } from "@/modules/admin/components/admin-chrome"
-import { PersonAdminRow } from "@/modules/admin/components/person-admin-row"
+import { PeopleTable } from "@/modules/admin/components/people-table"
 import { adminListSchema } from "@/modules/admin/admin.schemas"
 import { adminPeople } from "@/modules/admin/admin.service"
 import { getPageContext } from "@/modules/auth/server/context"
@@ -22,11 +22,7 @@ export default async function AdminPeoplePage({ searchParams }: PageProps<"/admi
       {people.rows.length === 0 ? (
         <EmptyState title="Nobody matches" description="Try another name or email." />
       ) : (
-        <ul className="grid gap-3">
-          {people.rows.map((person) => (
-            <PersonAdminRow key={person.id} person={person} isMe={person.id === ctx.user.id} />
-          ))}
-        </ul>
+        <PeopleTable people={people.rows} myId={ctx.user.id} />
       )}
       <AdminPager path={ROUTES.adminPeople} q={query.q} page={people.page} hasMore={people.hasMore} />
     </>

@@ -60,7 +60,7 @@ Out: acting on behalf of someone, previewing another administrator, editing othe
 ## Deliverables
 
 - [ ] Administrator created by script only; `/admin` refused to everyone else at all three gates
-- [ ] Console lists venues, people, runs and audit, paginated, with detail sheets
+- [x] Console lists venues, people and audit, paginated, with detail sheets (runs list still to come)
 - [ ] Preview as owner, manager and door person shows exactly their menu, pages and figures
 - [ ] Every write refused during a preview by the API and by the database
 - [ ] Preview start and end audited; 60-minute expiry and sign out end it
@@ -96,4 +96,4 @@ You are working on Loudnight. Follow `CLAUDE.md` exactly. Read this plan, `ARCHI
 
 Order: cookie and tests, context and route wrapper changes with tests, proxy, service and audit, script, then console pages. Ask before adding `@tanstack/react-table` and before creating the `PREVIEW_COOKIE_SECRET` variable. Run `npm run validate` and `npm run db:test`. Tick boxes only when verified. No long dashes. Do not commit unless asked.
 
-Built Oct 14: `/admin` (overview counts and the latest changes everywhere), `/admin/venues` (search, suspend with a reason, lift), `/admin/people` (search, deactivate, reactivate; never yourself or another administrator), `/admin/audit` (every change, paginated). Lists are cards, 25 a page, at every width. Not yet: Preview as in the interface (needs the `PREVIEW_COOKIE_SECRET` variable, to be agreed), a runs list, detail sheets.
+Built Oct 14: `/admin` (overview counts and the latest changes everywhere), `/admin/venues` (search, suspend with a reason, lift), `/admin/people` (search, deactivate, reactivate; never yourself or another administrator), `/admin/audit` (every change, paginated). Lists are cards, 25 a page, at every width. Venues and people are tables on wider screens and cards on phones; each row opens a detail panel (venue: activity, room, team with who joined or is still only invited, suspend or lift; person: sign-in state, venues and roles, deactivate or reactivate). Not yet: Preview as in the interface (needs the `PREVIEW_COOKIE_SECRET` variable, to be agreed) and a runs list.

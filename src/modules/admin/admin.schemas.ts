@@ -53,3 +53,20 @@ export interface AdminPage<T> {
   page: number
   hasMore: boolean
 }
+
+// Where a person stands with signing in: invited people who never signed in have not joined yet.
+export type SignInState = "joined" | "invited" | "not_signed_in" | "guest"
+
+export interface AdminVenueDetail {
+  venue: AdminVenue & { currency: string; timeZone: string }
+  team: { id: string; name: string; email: string | null; role: string; state: SignInState }[]
+  settings: { quietNights: string[]; capacity: number; breakEven: number; talentBudgetCents: number } | null
+  activity: { plans: number; lastPlanAt: string | null; publishedNights: number; rsvps: number; checkins: number }
+}
+
+export interface AdminPersonDetail {
+  person: AdminPerson
+  state: SignInState
+  lastSignInAt: string | null
+  venues: { id: string; name: string; role: string }[]
+}

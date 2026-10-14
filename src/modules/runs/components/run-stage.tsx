@@ -4,6 +4,7 @@ import { PIPELINE } from "@/config/runs"
 import { cn } from "@/lib/utils"
 import type { StepView } from "../runs.schemas"
 import { RunTrace } from "./run-trace"
+import { StageBackdrop, StageBeat } from "./stage-backdrop"
 
 interface RunStageProps {
   steps: StepView[]
@@ -25,12 +26,13 @@ export function RunStage({ steps, error, onRetry, retrying }: RunStageProps) {
       aria-labelledby="trace-heading"
       className="dark poster-glow grid gap-10 p-6 text-foreground sm:p-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)]"
     >
-      <div className="flex min-w-0 flex-col gap-6">
-        <p className="flex items-center gap-2 text-sm text-muted-foreground">
-          {!error && <span aria-hidden className="live-dot size-2 rounded-full bg-success" />}
+      <div className="relative -mx-6 -mt-6 flex min-h-[22rem] min-w-0 flex-col gap-6 overflow-hidden p-6 sm:-mx-10 sm:-mt-10 sm:p-10 lg:mr-0 lg:-mb-10 lg:min-h-[28rem]">
+        <StageBackdrop step={current?.step} />
+        <p className="relative flex items-center gap-2 text-sm text-muted-foreground">
+          {!error && <StageBeat />}
           {error ? "The plan stopped part way" : "Loudnight is planning"}, step {position} of {steps.length}
         </p>
-        <div className="space-y-3">
+        <div className="relative space-y-3">
           <h2
             id="trace-heading"
             className="font-display text-5xl leading-[0.9] font-extrabold text-balance sm:text-6xl"
@@ -48,7 +50,7 @@ export function RunStage({ steps, error, onRetry, retrying }: RunStageProps) {
           aria-valuemax={steps.length}
           aria-valuenow={done}
           aria-valuetext={`${done} of ${steps.length} steps finished`}
-          className="mt-auto flex gap-1.5"
+          className="relative mt-auto flex gap-1.5"
         >
           {steps.map((step) => (
             <span
@@ -62,7 +64,7 @@ export function RunStage({ steps, error, onRetry, retrying }: RunStageProps) {
             />
           ))}
         </div>
-        <p className="text-sm text-muted-foreground">
+        <p className="relative text-sm text-muted-foreground">
           About a minute. Your three nights appear here when they pass the evidence check. If you leave, the plan picks
           up where it stopped.
         </p>

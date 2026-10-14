@@ -61,3 +61,31 @@ export async function setSignInBlocked(userId: string, blocked: boolean): Promis
   })
   if (error) throw upstreamFailed("sign-in")
 }
+
+export interface SignInStatus {
+  lastSignInAt: string | null
+  invitedAt: string | null
+  confirmed: boolean
+}
+
+// For the administrator console: whether people have signed in, or were invited and have not joined yet.
+export async function signInStatuses(userIds: string[]): Promise<Map<string, SignInStatus>> {
+  const admin = createAdminSupabase()
+  const found = await Promise.all(
+    userIds.map(async (id) => {
+      const { data } = await admin.auth.admin.getUserById(id)
+      const user = data.user
+      return user
+        ? ([
+            id,
+            {
+              lastSignInAt: user.last_sign_in_at ?? null,
+              invitedAt: user.invited_at ?? null,
+              confirmed: Boolean(user.email_confirmed_at),
+            },
+          ] as const)
+        : null
+    }),
+  )
+  return new Map(found.flatMap((entry) => (entry ? [entry] : [])))
+}

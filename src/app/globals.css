@@ -213,6 +213,16 @@
   }
 }
 /* A soft pulse for something happening now: a plan in progress, a door that is open. */
+/* The planning backdrop fades in when the step changes. */
+.stage-photo {
+  animation: stage-photo-in 0.45s ease-out;
+}
+@keyframes stage-photo-in {
+  from {
+    opacity: 0;
+  }
+}
+
 /* The loader's equaliser: each bar breathes on its own beat, like a sound meter at the back of a room. */
 .eq-bar {
   transform-origin: bottom;
