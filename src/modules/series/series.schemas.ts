@@ -44,6 +44,7 @@ export interface NightView {
   localTime: string
   variation: string
   status: Enums<"night_status">
+  slug: string
 }
 
 export interface TalentView {

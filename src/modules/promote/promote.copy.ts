@@ -1,5 +1,6 @@
 import { AD_COPY } from "@/config/ad-copy"
 import { CAPTION_CHANNELS, type CaptionChannelId } from "@/config/promote"
+import { eventUrl } from "@/modules/events/events.links"
 import type { AdContent, PromoBoard, PromoNight } from "./promote.schemas"
 
 const capital = (text: string) => text.charAt(0).toUpperCase() + text.slice(1)
@@ -31,7 +32,8 @@ export function adContent(board: PromoBoard, night: PromoNight): AdContent {
   const month = capital(datePart(night.localDate, copy.locale, { month: "short" }))
   const day = datePart(night.localDate, copy.locale, { day: "numeric" })
   const typed = night.design.line.trim()
-  const link = ticketLink(night.design.link)
+  // The owner's own ticket link wins; a published night otherwise points at its own event page.
+  const link = ticketLink(night.design.link) ?? (night.status === "published" ? eventUrl(night.slug) : null)
   return {
     kicker: board.venue.city ? `${board.venue.name}, ${board.venue.city}` : board.venue.name,
     title: board.night.name,

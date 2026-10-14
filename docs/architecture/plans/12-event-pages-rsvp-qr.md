@@ -1,6 +1,6 @@
 # Plan 12: Event pages, RSVP and QR
 
-Status: In progress (Oct 14). Migration applied and tested; pages being built.
+Status: Built (Oct 14). Verified end to end on the hosted database; Lighthouse not yet run.
 Depends on: 11
 Phase: 4
 Judging criteria: Design (the guest side is finished too), Potential Impact (people through the door)
@@ -46,11 +46,11 @@ Out: check-in handling and dashboard (plan 13).
 
 ## Deliverables
 
-- [ ] Managers publish, unpublish and cancel nights; door staff cannot
-- [ ] Public event page loads logged out on a phone with poster, details, RSVP, calendar and share
-- [ ] RSVP returns a ticket with a scannable QR; duplicates handled kindly
-- [ ] Draft nights 404; cancelled nights show a notice and take no RSVPs
-- [ ] RSVP limited per IP and per night; honeypot catches simple bots
+- [x] Managers publish, unpublish and cancel nights; door staff cannot (published Union Pool's opening night from its card; RLS assertions for door staff)
+- [x] Public event page loads logged out on a phone with poster, details, RSVP, calendar and share
+- [x] RSVP returns a ticket with a scannable QR; duplicates handled kindly (a signed-out guest's RSVP stored; the ticket's QR decoded to its own code; duplicate contact tested in service and database)
+- [x] Draft nights 404; cancelled nights show a notice and take no RSVPs (database assertions and service tests)
+- [x] RSVP limited per IP (10 in ten minutes) and once per contact per night; the trap field refuses simple bots
 - [ ] Mobile Lighthouse performance 90 or more on the event page
 - [ ] Screen standard met for the event and ticket pages
 

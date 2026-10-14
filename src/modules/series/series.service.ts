@@ -77,6 +77,7 @@ export async function readSeries(
           localTime: local.time,
           variation: night.variation,
           status: night.status,
+          slug: night.public_slug,
         }
       }),
   }

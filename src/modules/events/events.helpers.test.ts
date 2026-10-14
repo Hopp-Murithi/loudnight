@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 import { googleCalendarLink, icsFile, type CalendarEvent } from "./events.calendar"
-import { checkinCode, codeFrom, isCheckinCode, ticketPayload } from "./events.codes"
+import { checkinCode, codeFrom, isCheckinCode } from "./events.codes"
 import { rsvpSchema } from "./events.schemas"
 
 describe("check-in codes", () => {
@@ -19,7 +19,7 @@ describe("check-in codes", () => {
 
   it("are read back from the QR, the ticket link, or typed by hand", () => {
     const code = "ab2c3d4e5f6g"
-    expect(codeFrom(ticketPayload(code))).toBe(code)
+    expect(codeFrom(`encore:checkin:${code}`)).toBe(code)
     expect(codeFrom(`https://encore.example/e/low-light/ticket/${code}?x=1`)).toBe(code)
     expect(codeFrom(" AB2C 3D4E 5F6G ")).toBe(code)
     expect(codeFrom("not a code")).toBeNull()

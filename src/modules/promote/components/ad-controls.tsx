@@ -110,7 +110,9 @@ export function AdControls({ studio, canEdit }: { studio: Studio; canEdit: boole
         <p id={`${linkId}-hint`} className={cn("text-xs", linkWrong ? "text-destructive" : "text-muted-foreground")}>
           {linkWrong
             ? "Use a full link that starts with https://"
-            : "Optional. Adds a QR code to the ad and the link to your captions."}
+            : studio.night.status === "published"
+              ? "Left empty, the ad links to this night's event page, where guests save a place."
+              : "Optional. Adds a QR code to the ad and the link to your captions. Publish the night to link its event page."}
         </p>
       </div>
 

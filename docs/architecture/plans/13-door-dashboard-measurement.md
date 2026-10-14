@@ -1,6 +1,6 @@
 # Plan 13: Door check-in, live dashboard and measurement
 
-Status: Not started
+Status: Built (Oct 14). Verified on the hosted database; a real phone camera test is still to do.
 Depends on: 12
 Phase: 4
 Judging criteria: Potential Impact (proof the night worked, in the owner's own numbers), Design (works at a busy door on a phone)
@@ -55,13 +55,23 @@ Out: the keep, tweak or swap decision (plan 14); offline door mode (plan 15).
 
 ## Deliverables
 
-- [ ] Door screen scans, searches and records walk-ins; duplicates are clear
-- [ ] Guests can self check-in during the night's window only
-- [ ] Dashboard and door count update live without reload
-- [ ] Show-up rate, break-even distance and revenue estimate correct against worked examples
-- [ ] Calculator reproduces the brief's unit logic from the owner's own inputs
-- [ ] Door staff never see contact details or money; managers log spend
+- [x] Door screen scans, searches and records walk-ins; duplicates are clear (service tests; a team member's tap on a scanned ticket checked a party of 2 in on the hosted database)
+- [x] Guests can self check-in during the night's window only (database policy and service tests)
+- [x] Dashboard and door count update live without reload (Results went from 12 to 15 the moment another phone counted a walk-in of 3)
+- [x] Show-up rate, break-even distance and revenue estimate correct against worked examples
+- [x] Calculator reproduces the brief's unit logic from the owner's own inputs (30 guests at $20 over four weeks is $2,400, tested)
+- [x] Door staff never see contact details or money; managers log spend (rls.sql on hosted)
 - [ ] Screen standard met, with 48px targets on door screens
+
+## Revision, Oct 14: decisions made while building
+
+- **Tickets hold their own link.** The ticket QR is the ticket page's address, so door staff can scan with any phone's own camera (iPhone included) and no decoder library is needed. The ticket page shows a team member the guest's name, party size and a Check in button; a guest sees only their ticket. The door screen also scans with the camera where the browser has `BarcodeDetector` (Chrome on Android), and the code can always be typed.
+- **A ticket counts once.** `checkins.rsvp_id` is unique: a second scan says when the guest first came in, even when two phones scan at the same moment.
+- **Self check-in** from a printable door QR (`/e/[slug]/here`) works from an hour before the start to six hours after; the database enforces the same window. One check-in per device is remembered on the device; the per-IP limit stops floods.
+- **Takings** are one figure per night in `night_spend`, owners and managers only, updated in place.
+- **Live** uses Supabase Realtime on `rsvps` and `checkins`, filtered to the night. The browser hands Realtime the signed-in session before subscribing; without that, the subscription ran as an anonymous visitor and the database rules hid every event.
+- **Door staff** see the count without the break-even target (it lives in the venue's settings, which are owners' and managers' only).
+- The Results page shows tonight live, a row per published night with takings entry, and the monthly sum in the owner's own numbers with "pays for Encore N times" where a price is set for the currency.
 
 ## Verification
 

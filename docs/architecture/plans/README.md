@@ -44,8 +44,8 @@ If the day-one Qloo probe fails (thin location data), switch neighbourhoods or l
 | 09  | [Demo venues and the judge path](09-demo-venues-judge-path.md)                    | 3     | First pass live   | 07         |
 | 10  | [Series planner and talent finder](10-series-and-talent.md)                       | 4     | Built, live       | 06         |
 | 11  | [Launch kit and distribution](11-launch-kit-and-distribution.md)                  | 4     | In progress       | 10         |
-| 12  | [Event pages, RSVP and QR](12-event-pages-rsvp-qr.md)                             | 4     | Not started       | 11         |
-| 13  | [Door check-in, live dashboard and measurement](13-door-dashboard-measurement.md) | 4     | Not started       | 12         |
+| 12  | [Event pages, RSVP and QR](12-event-pages-rsvp-qr.md)                             | 4     | Built, live       | 11         |
+| 13  | [Door check-in, live dashboard and measurement](13-door-dashboard-measurement.md) | 4     | Built, live       | 12         |
 | 14  | [Learning loop](14-learning-loop.md)                                              | 4     | Not started       | 13         |
 | 15  | [Installable app for door staff](15-installable-app.md)                           | 5     | Not started       | 13         |
 | 16  | [Security hardening and Qloo data compliance](16-security-and-compliance.md)      | 5     | Not started       | 12, 13     |

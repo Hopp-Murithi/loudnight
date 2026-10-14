@@ -21,6 +21,7 @@ const NIGHTS: NightView[] = ["2026-10-20", "2026-10-27", "2026-11-03", "2026-11-
   localTime: "20:00",
   variation: TWISTS[index],
   status: index === 0 ? "published" : "draft",
+  slug: `sample-night-${index + 1}`,
 }))
 
 const act = (id: string, name: string, tier: TalentView["tier"], overlap: number): TalentView => ({

@@ -10,10 +10,8 @@ export function checkinCode(random: (bytes: Uint8Array) => Uint8Array = (bytes) 
 
 export const isCheckinCode = (value: string) => CODE.test(value)
 
-// What the ticket's QR holds. Scanning it at the door yields the code and nothing else.
-export const ticketPayload = (code: string) => `${PREFIX}${code}`
-
-// The door accepts the QR text, the ticket's link, or the code typed by hand, in any case and with stray spaces.
+// The door accepts the ticket's link (what its QR holds), the bare code typed by hand, or an older "encore:checkin:"
+// QR, in any case and with stray spaces.
 export function codeFrom(scanned: string): string | null {
   const text = scanned.trim().toLowerCase()
   const candidate = text.startsWith(PREFIX)

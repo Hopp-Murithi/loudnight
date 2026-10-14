@@ -3,51 +3,44 @@ import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { PageHeader } from "@/components/layout/page-header"
 import { ROUTES } from "@/config/site"
-import { formatMoney } from "@/lib/format"
 import { getPageContext } from "@/modules/auth/server/context"
+import { GainCalculator } from "@/modules/door/components/gain-calculator"
+import { LiveTonight } from "@/modules/door/components/live-tonight"
+import { NightResults } from "@/modules/door/components/night-results"
+import { readResults } from "@/modules/door/door.results"
+import { readDoor } from "@/modules/door/door.service"
 import { StageEmpty } from "@/modules/series/components/stage-empty"
-import { toCents } from "@/modules/venues/venues.schemas"
 import { venueForPage } from "@/modules/venues/venues.page"
 
 export const metadata: Metadata = { title: "Results" }
 
+// Who came, against break-even, night by night, with tonight live. Money, so owners and managers only.
 export default async function VenueResultsPage({ params }: PageProps<"/venues/[id]/results">) {
   const ctx = await getPageContext()
   const venue = await venueForPage(ctx, (await params).id)
-  // Results carry money, so they are for owners and managers only.
   if (!venue.settings) notFound()
-  const { breakEvenHeadcount, averageSpend } = venue.settings
-  const measures = [
-    { label: "Guests", value: "0", hint: `of ${breakEvenHeadcount} to break even` },
-    {
-      label: "Extra takings",
-      value: formatMoney(0, venue.currency),
-      hint: `at ${formatMoney(toCents(averageSpend), venue.currency)} a guest`,
-    },
-    { label: "Next week", value: "Night 1", hint: "after it: keep, tweak or swap, by turnout" },
-  ]
+  const [results, tonight] = await Promise.all([readResults(ctx, venue.id), readDoor(ctx, venue.id)])
+  const best = Math.max(0, ...results.nights.map((night) => night.numbers.arrived))
 
   return (
     <>
-      <PageHeader title="Results" description="Who came, against break-even, night by night." />
-      <StageEmpty
-        icon={ChartColumn}
-        title="Results start after your first night"
-        description="Check-ins at the door become turnout, takings and a clear call for next week. Nothing to guess, nothing to type in."
-        action={{ label: "See the series", href: ROUTES.venueSeries(venue.id) }}
-      >
-        <dl className="grid gap-px border bg-border sm:grid-cols-3" aria-label="What each night will show">
-          {measures.map((item) => (
-            <div key={item.label} className="bg-card p-5">
-              <dt className="text-xs text-muted-foreground">{item.label}</dt>
-              <dd className="font-display text-4xl leading-tight font-bold text-muted-foreground/60 tabular-nums">
-                {item.value}
-              </dd>
-              <dd className="text-xs text-muted-foreground">{item.hint}</dd>
-            </div>
-          ))}
-        </dl>
-      </StageEmpty>
+      <PageHeader title="Results" description="Who came, against break-even, night by night. Tonight updates live." />
+      {tonight && <LiveTonight initial={tonight} />}
+      {results.nights.length > 0 ? (
+        <NightResults nights={results.nights} currency={results.currency} timeZone={venue.timeZone} />
+      ) : (
+        <StageEmpty
+          icon={ChartColumn}
+          title="Results start with your first published night"
+          description="Check-ins at the door become turnout and takings here, night by night. Nothing to guess."
+          action={{ label: "See the series", href: ROUTES.venueSeries(venue.id) }}
+        />
+      )}
+      <GainCalculator
+        currency={results.currency}
+        averageSpendCents={results.averageSpendCents}
+        extraGuests={best || Math.round(results.breakEven / 2) || 30}
+      />
     </>
   )
 }

@@ -13,6 +13,7 @@ const night: PromoNight = {
   localTime: "20:00",
   variation: "Opening night: the idea in full, with a welcome for everyone who walks in.",
   status: "draft",
+  slug: "low-light-tuesdays-one",
   design: { ...AD_DEFAULT },
 }
 const spanish: PromoNight = { ...night, design: { ...night.design, language: "es" } }
@@ -70,6 +71,13 @@ describe("adContent", () => {
     expect(content.weekday).toBe("Martes")
     expect(content.dateLine).toMatch(/^Martes 20 de Oct, 8/)
     expect(content.line).toBe("Con Sample Act")
+  })
+
+  it("points a published night's ad at its own event page unless the owner gave another link", () => {
+    const published = { ...night, status: "published" as const }
+    expect(adContent(board, published).link).toBe("http://localhost:3000/e/low-light-tuesdays-one")
+    expect(adContent(board, { ...published, design: linked.design }).link).toBe("https://tickets.example/low-light")
+    expect(adContent(board, night).link).toBeNull()
   })
 
   it("carries a ticket link and its scan label only when the link is a full https address", () => {

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { WEEK_NAMES } from "@/config/series"
 import { formatLocalDate, formatNightTime } from "@/lib/format"
 import type { NightView } from "../series.schemas"
+import { NightPublish } from "@/modules/events/components/night-publish"
 import { NightEditSheet } from "./night-edit-sheet"
 
 interface NightStripProps {
@@ -53,11 +54,16 @@ export function NightStrip({ nights, timeZone, canEdit }: NightStripProps) {
               </p>
             </div>
             <p className="text-sm">{night.variation}</p>
-            {canEdit && night.status === "draft" && (
-              <Button variant="outline" className="mt-auto self-start" onClick={() => setEditing(night)}>
-                Edit
-                <span className="sr-only">{WEEK_NAMES[night.sequence - 1]}</span>
-              </Button>
+            {canEdit && (
+              <div className="mt-auto flex flex-wrap gap-2">
+                {night.status === "draft" && (
+                  <Button variant="outline" onClick={() => setEditing(night)}>
+                    Edit
+                    <span className="sr-only">{WEEK_NAMES[night.sequence - 1]}</span>
+                  </Button>
+                )}
+                <NightPublish nightId={night.id} slug={night.slug} status={night.status} />
+              </div>
             )}
           </li>
         ))}

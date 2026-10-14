@@ -26,6 +26,10 @@ export function formatNightTime(iso: string, timeZone: string): string {
   }).format(new Date(iso))
 }
 
+// A time of day such as "8:14 PM", on the device's own clock: the door is at the venue, so the two agree.
+export const formatClock = (iso: string) =>
+  new Intl.DateTimeFormat("en-US", { hour: "numeric", minute: "2-digit" }).format(new Date(iso))
+
 export const formatPercent = (ratio: number) => `${Math.round(ratio * 100)}%`
 
 export const plural = (count: number, one: string, many = `${one}s`) => `${count} ${count === 1 ? one : many}`
