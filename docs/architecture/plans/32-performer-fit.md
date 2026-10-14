@@ -1,6 +1,6 @@
 # Plan 32: The right performers for this room, this budget, this town
 
-Status: Parts A, B, D and E built (Oct 14). Part C next.
+Status: Parts A to E built (Oct 14). Part C live-checked for MusicBrainz in Brooklyn; Wikidata checked by probe, in-app check in the simulation.
 Depends on: 10, 11, 29
 Phase: 5 (the owner's requests of Oct 14)
 Judging criteria: Potential Impact, Technological Implementation (Qloo used where it is strongest, other sources only where it is not)
@@ -43,6 +43,14 @@ So Qloo stays the source for what the crowd loves and for musicians; other sourc
 Each act shown from these sources carries a source label ("From Wikidata: born in Nyeri") and never a Qloo receipt it does not have. Qloo still provides the evidence that the crowd loves the style.
 
 For the hackathon: Wikidata and MusicBrainz. After launch: Spotify, YouTube and Ticketmaster for size and touring.
+
+Built (Oct 14, migration `20261014081659_open_data_talent`):
+
+- Which source fits a night: DJs (Wikidata) for DJ nights, town musicians (MusicBrainz) for live music, poets and comedians (Wikidata) when the night's name says so or an open-format night happens in a room that hosts them.
+- Wikidata: living people in the role born within 50 km, best known first but capped at 20 Wikipedia languages so household names stay out; the whole country when the town has few. MusicBrainz: working, style-tagged artists from the town.
+- Up to four open acts join the shortlist after Qloo's, labelled "From Wikidata" or "From MusicBrainz" with a link to the record. The database refuses a Qloo receipt on them. The household-name check runs first and leaves open-data stars out entirely.
+- Answers are cached a week in `open_data_cache` (server only) and a failing source adds nobody rather than failing the search.
+- Probe (Oct 14): Nairobi gives poets and comedians (Warsan Shire, Shailja Patel, Elsa Majimbo); Nyeri gives none nearby, so Kenya-wide (Philo Ikonya, Abel Mutua); Brooklyn without the fame cap gives Eddie Murphy, with it Wyatt Cenac and Sarah Kay. Queries take 10 to 40 seconds, hence the cache.
 
 ## Part D: more than one quiet night
 

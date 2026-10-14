@@ -94,6 +94,8 @@ async function planTheNights(admin: AdminSupabase, row: UpkeepVenue, venue: RunV
       talentBudgetCents: venue.brief.talentBudgetCents,
       currency: venue.brief.currency,
       countryCode: row.country_code,
+      town: venue.brief.town,
+      hosts: venue.brief.hosts,
     },
     {
       conceptId,

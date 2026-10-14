@@ -417,6 +417,36 @@ export type Database = {
           },
         ]
       }
+      open_data_cache: {
+        Row: {
+          expires_at: string
+          fetched_at: string
+          id: string
+          request: Json
+          request_hash: string
+          response: Json
+          source: string
+        }
+        Insert: {
+          expires_at: string
+          fetched_at?: string
+          id?: string
+          request: Json
+          request_hash: string
+          response: Json
+          source: string
+        }
+        Update: {
+          expires_at?: string
+          fetched_at?: string
+          id?: string
+          request?: Json
+          request_hash?: string
+          response?: Json
+          source?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string

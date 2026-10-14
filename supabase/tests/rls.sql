@@ -377,6 +377,21 @@ begin
   exception when sqlstate 'EA429' then failed := true; end;
   assert failed, 'a seventh run within the hour is refused';
 
+  -- open data acts never carry a Qloo receipt, and sessions never read the open data cache
+  failed := false;
+  begin
+    insert into public.talent_candidates (concept_id, venue_id, qloo_entity_id, qloo_cache_id, name, popularity_tier, overlap_score, source)
+      values (concept_two, v_mine, 'wikidata:Q1', cache_id, 'Open Act', 'local', 0, 'wikidata');
+  exception when check_violation then failed := true; end;
+  assert failed, 'an open data act cannot borrow a Qloo receipt';
+  insert into public.talent_candidates (concept_id, venue_id, qloo_entity_id, name, popularity_tier, overlap_score, source)
+    values (concept_two, v_mine, 'wikidata:Q2', 'Open Act', 'local', 0, 'wikidata');
+  perform set_config('request.jwt.claims', json_build_object('sub', u_owner, 'role', 'authenticated')::text, true);
+  set local role authenticated;
+  failed := false;
+  begin perform 1 from public.open_data_cache; exception when insufficient_privilege then failed := true; end;
+  assert failed, 'sessions never read the open data cache';
+  reset role;
   -- what a room hosts: owners and managers set it, door staff cannot, and nonsense is refused
   perform set_config('request.jwt.claims', json_build_object('sub', u_manager, 'role', 'authenticated')::text, true);
   set local role authenticated;

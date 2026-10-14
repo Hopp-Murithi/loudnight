@@ -1,6 +1,7 @@
 import "server-only"
 import { countryName } from "@/config/countries"
-import { MUSIC_FORMATS, TALENT, type TalentSource } from "@/config/series"
+import { MUSIC_FORMATS, OPEN_TALENT, TALENT, type TalentSource } from "@/config/series"
+import { townOf } from "@/lib/address"
 import { formatMoney } from "@/lib/format"
 import { conflict, notFound } from "@/lib/http/errors"
 import { talentRequest, type GeoPoint } from "@/lib/qloo/requests"
@@ -16,6 +17,8 @@ import { cachedQloo } from "@/modules/taste/taste.service"
 import { managedVenue } from "@/modules/venues/venues.access"
 import { toCents } from "@/modules/venues/venues.schemas"
 import { actReceiptPath, actsFrom, conceptAnchors, messageTastes } from "./talent.anchors"
+import { openSearchFor } from "./talent.open"
+import { openActs } from "./talent.open-data"
 import { writeOutreach } from "./talent.outreach"
 import { householdNames } from "./talent.stars"
 import { talentRepository, type TalentInsert } from "./talent.repository"
@@ -37,6 +40,8 @@ export interface TalentVenue {
   talentBudgetCents: number
   currency: string
   countryCode: string | null
+  town: string | null
+  hosts: string[]
 }
 
 export interface TalentNight {
@@ -65,6 +70,7 @@ export async function findTalent(admin: AdminSupabase, venue: TalentVenue, night
   const type = music ? "urn:entity:artist" : "urn:entity:person"
   const band = { max: TALENT.tierCeilings.regional }
   const kept = new Set(current.filter((row) => row.booked_at || row.outreach_edited).map((row) => row.qloo_entity_id))
+  const openAnswer = openActs(admin, openSearchFor(night.format, venue.hosts, night.conceptName), venue)
   const usable = (acts: RankedAct[]) => (music ? activeMusicians(acts) : acts).filter((act) => !kept.has(act.entityId))
   const look = async (page: number) => {
     const [fits, area] = await Promise.all([
@@ -87,40 +93,45 @@ export async function findTalent(admin: AdminSupabase, venue: TalentVenue, night
     ? styleReferences(actsFrom(famous.response), [...shortlist.map((act) => act.entityId), ...kept])
     : []
 
+  const taken = new Set([...kept, ...shortlist.map((act) => act.entityId)])
+  const names = new Set(shortlist.map((act) => act.name.toLowerCase()))
+  const pool = (await openAnswer).filter((act) => !taken.has(act.entityId) && !names.has(act.name.toLowerCase()))
+  // Open records carry no Qloo evidence, so a household name among them is simply left out.
+  const stars = await householdNames(
+    [...shortlist, ...pool].map((act) => act.name),
+    countryName(venue.countryCode ?? "US"),
+  )
+  const open = pool.filter((act) => !stars.has(act.name)).slice(0, OPEN_TALENT.keep)
+  const offered = [...shortlist, ...open]
+
   const fitSignals = anchors.map((anchor) => anchor.name)
   const sharedTastes = messageTastes(anchors)
-  const [messages, stars] = await Promise.all([
-    writeOutreach(
-      {
-        venue: venue.name,
-        night: night.conceptName,
-        acts: shortlist.map((act) => ({ actId: act.entityId, name: act.name, sharedTastes })),
-      },
-      {
-        date: when(night.firstNight, venue.timeZone, { weekday: "long", month: "long", day: "numeric" }),
-        time: when(night.firstNight, venue.timeZone, { hour: "numeric", minute: "2-digit" }),
-        fee:
-          venue.talentBudgetCents > 0
-            ? `up to ${formatMoney(venue.talentBudgetCents, venue.currency)}`
-            : "a fee we agree together",
-      },
-    ),
-    householdNames(
-      shortlist.map((act) => act.name),
-      countryName(venue.countryCode ?? "US"),
-    ),
-  ])
+  const messages = await writeOutreach(
+    {
+      venue: venue.name,
+      night: night.conceptName,
+      acts: offered.map((act) => ({ actId: act.entityId, name: act.name, sharedTastes })),
+    },
+    {
+      date: when(night.firstNight, venue.timeZone, { weekday: "long", month: "long", day: "numeric" }),
+      time: when(night.firstNight, venue.timeZone, { hour: "numeric", minute: "2-digit" }),
+      fee:
+        venue.talentBudgetCents > 0
+          ? `up to ${formatMoney(venue.talentBudgetCents, venue.currency)}`
+          : "a fee we agree together",
+    },
+  )
 
-  const row = (act: RankedAct, source: TalentSource, cacheId: string): TalentInsert => ({
+  const row = (act: RankedAct, source: TalentSource, cacheId: string | null): TalentInsert => ({
     concept_id: night.conceptId,
     venue_id: venue.id,
     qloo_entity_id: act.entityId,
     qloo_cache_id: cacheId,
-    response_path: actReceiptPath(act.index),
+    response_path: cacheId ? actReceiptPath(act.index) : [],
     name: act.name.slice(0, 200),
     popularity_tier: tierOf(act.popularity),
     overlap_score: overlapOf(act.affinity),
-    fit_signals: source === "area" ? [] : fitSignals,
+    fit_signals: source === "night" || source === "both" ? fitSignals : [],
     outreach_draft: messages.get(act.entityId) ?? null,
     profile: { ...act.profile, star: stars.has(act.name) } as unknown as Json,
     source,
@@ -128,9 +139,10 @@ export async function findTalent(admin: AdminSupabase, venue: TalentVenue, night
   })
   await talentRepository.refreshForConcept(admin, night.conceptId, [
     ...shortlist.map((act) => row(act, act.source, act.source === "area" && area ? area.cacheId : fits.cacheId)),
+    ...open.map((act) => row(act, act.source, null)),
     ...references.map((act) => row(act, "night", famous?.cacheId ?? fits.cacheId)),
   ])
-  return shortlist.length
+  return offered.length
 }
 
 export const talentService = {
@@ -151,6 +163,8 @@ export const talentService = {
         talentBudgetCents: toCents(venue.settings.talentBudget),
         currency: venue.currency,
         countryCode: venue.countryCode,
+        town: townOf(venue),
+        hosts: venue.settings.hosts,
       },
       {
         conceptId: concept.id,

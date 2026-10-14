@@ -10,7 +10,7 @@ import { readProfile } from "./talent.profile"
 import { reachOf } from "./talent.reach"
 import { talentRepository } from "./talent.repository"
 
-const SOURCE_ORDER: TalentSource[] = ["both", "area", "night"]
+const SOURCE_ORDER: TalentSource[] = ["both", "area", "wikidata", "musicbrainz", "night"]
 
 const sourceOf = (value: string): TalentSource => SOURCE_ORDER.find((source) => source === value) ?? "night"
 

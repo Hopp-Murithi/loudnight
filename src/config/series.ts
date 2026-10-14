@@ -31,8 +31,27 @@ export const TALENT = {
   pages: 3,
 } as const
 
-// Why an act is on the shortlist: the night's tastes, the area's own favourites, or both.
-export type TalentSource = "night" | "area" | "both"
+// Why an act is on the shortlist: the night's tastes, the area's own favourites, both, or an open data record.
+export type TalentSource = "night" | "area" | "both" | "wikidata" | "musicbrainz"
+
+export const OPEN_SOURCES = ["wikidata", "musicbrainz"] as const satisfies readonly TalentSource[]
+export type OpenSource = (typeof OPEN_SOURCES)[number]
+export const isOpenSource = (source: string): source is OpenSource => OPEN_SOURCES.some((open) => open === source)
+
+export const OPEN_SOURCE_LABELS: Record<OpenSource, string> = { wikidata: "Wikidata", musicbrainz: "MusicBrainz" }
+
+// Open data fills in the kinds of act Qloo knows few of. Wikidata occupations by item id; fame is capped by how many
+// Wikipedia languages describe a person, so household names stay out.
+export const OPEN_TALENT = {
+  roles: { poet: ["Q49757"], comedian: ["Q245068", "Q18545066"], dj: ["Q130857"] },
+  nearbyKm: 50,
+  maxLanguages: 20,
+  bornAfter: 1955,
+  fetch: 12,
+  keep: 4,
+} as const
+
+export type OpenRole = keyof typeof OPEN_TALENT.roles
 
 export const TIER_LABELS: Record<PopularityTier, string> = {
   emerging: "Emerging",

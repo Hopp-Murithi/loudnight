@@ -15,6 +15,8 @@ vi.mock("./talent.repository", () => ({ talentRepository: talentRepo }))
 const householdNames = vi.fn()
 vi.mock("./talent.outreach", () => ({ writeOutreach }))
 vi.mock("./talent.stars", () => ({ householdNames }))
+const openActs = vi.fn(async (): Promise<unknown[]> => [])
+vi.mock("./talent.open-data", () => ({ openActs }))
 vi.mock("@/modules/taste/taste.service", () => ({ cachedQloo }))
 vi.mock("@/modules/runs/runs.repository", () => ({ runsRepository: { findRun } }))
 vi.mock("@/modules/series/series.repository", () => ({ seriesRepository: {} }))
@@ -22,6 +24,7 @@ vi.mock("@/modules/venues/venues.access", () => ({ managedVenue: vi.fn() }))
 vi.mock("@/lib/supabase/admin", () => ({ createAdminSupabase: vi.fn() }))
 
 const { findTalent, talentService } = await import("./talent.service")
+const { EMPTY_PROFILE } = await import("./talent.profile")
 
 // Made-up values in the shape the pipeline stores. Never real Qloo data.
 const admin = {} as AdminSupabase
@@ -47,6 +50,8 @@ const venue = {
   talentBudgetCents: 30000,
   currency: "USD",
   countryCode: "KE",
+  town: "Nyeri",
+  hosts: ["poetry"],
 }
 const night = {
   conceptId: "c1",
@@ -225,5 +230,57 @@ describe("talentService.update", () => {
     expect(talentRepo.updateOwn.mock.calls[0][2].booked_at).toMatch(/^\d{4}-\d{2}-\d{2}T/)
     await talentService.update(ctx, "1", { booked: false })
     expect(talentRepo.updateOwn.mock.calls[1][2]).toEqual({ booked_at: null })
+  })
+})
+
+describe("findTalent with open data", () => {
+  const openAct = (id: string, name: string) => ({
+    entityId: `wikidata:${id}`,
+    name,
+    popularity: 0.2,
+    affinity: 0,
+    index: 0,
+    source: "wikidata",
+    profile: { ...EMPTY_PROFILE, origin: "Sample Town" },
+  })
+
+  it("adds people from open records after Qloo's acts, with no receipt and no repeats", async () => {
+    openActs.mockResolvedValueOnce([openAct("Q1", "Sample Poet"), openAct("Q2", "sample act a")])
+    expect(await findTalent(admin, venue, { ...night, format: "talk", conceptName: "Poetry Supper" })).toBe(4)
+    expect(openActs).toHaveBeenCalledWith(admin, { roles: ["poet"], townMusicians: false }, venue)
+    const poet = stored().find((row) => row.qloo_entity_id === "wikidata:Q1")
+    expect(poet).toMatchObject({ source: "wikidata", qloo_cache_id: null, response_path: [], fit_signals: [] })
+    expect(stored().some((row) => row.qloo_entity_id === "wikidata:Q2")).toBe(false)
+    expect(householdNames.mock.calls[0][0]).toContain("Sample Poet")
+  })
+})
+
+describe("findTalent with open data and stars", () => {
+  it("leaves household names from open records out entirely", async () => {
+    openActs.mockResolvedValueOnce([
+      {
+        entityId: "musicbrainz:1",
+        name: "Sample Star",
+        popularity: null,
+        affinity: 0,
+        index: 0,
+        source: "musicbrainz",
+        profile: EMPTY_PROFILE,
+      },
+      {
+        entityId: "musicbrainz:2",
+        name: "Sample Band",
+        popularity: null,
+        affinity: 0,
+        index: 1,
+        source: "musicbrainz",
+        profile: EMPTY_PROFILE,
+      },
+    ])
+    householdNames.mockResolvedValueOnce(new Set(["Sample Star"]))
+    await findTalent(admin, venue, night)
+    const ids = stored().map((row) => row.qloo_entity_id)
+    expect(ids).toContain("musicbrainz:2")
+    expect(ids).not.toContain("musicbrainz:1")
   })
 })

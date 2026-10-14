@@ -5,7 +5,7 @@ import Image from "next/image"
 import { ToneBadge } from "@/components/shared/tone-badge"
 import type { Tone } from "@/components/shared/tone"
 import { Button } from "@/components/ui/button"
-import { TIER_LABELS, type PopularityTier } from "@/config/series"
+import { isOpenSource, OPEN_SOURCE_LABELS, TIER_LABELS, type PopularityTier } from "@/config/series"
 import { REACH_LABELS } from "@/config/talent-reach"
 import { initials } from "@/lib/text"
 import { cn } from "@/lib/utils"
@@ -31,7 +31,8 @@ export function TalentCard({ act, onOpen, onReceipt }: TalentCardProps) {
   const { profile } = act
   const listeners = listenersText(profile.listeners)
   const from = hometown(profile.origin)
-  const nearby = act.source !== "night"
+  const nearby = act.source === "area" || act.source === "both"
+  const record = isOpenSource(act.source) ? OPEN_SOURCE_LABELS[act.source] : null
 
   return (
     <li className="flex min-w-0 flex-col overflow-hidden border bg-card">
@@ -66,6 +67,7 @@ export function TalentCard({ act, onOpen, onReceipt }: TalentCardProps) {
             <span className="bg-spotlight px-2 py-0.5 text-xs font-medium text-primary-foreground">Booked</span>
           )}
           {nearby && <span className="bg-background/85 px-2 py-0.5 text-xs font-medium">Popular near you</span>}
+          {record && <span className="bg-background/85 px-2 py-0.5 text-xs font-medium">From {record}</span>}
         </span>
         <span className="absolute inset-x-4 bottom-3 space-y-1">
           <span className="block font-display text-3xl leading-none font-bold text-balance">{act.name}</span>
