@@ -248,6 +248,11 @@
   }
 }
 
+/* A country's flag, drawn with the flag font so it shows on Windows too. */
+.flag {
+  font-family: var(--font-flag), sans-serif;
+}
+
 /* The landing stage: one pinned screen; scroll moves the story on, and each layer reads its own visibility. */
 /* One wheel notch, swipe or trackpad flick moves exactly one scene and settles there. */
 html:has(.stage-track) {

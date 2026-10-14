@@ -8,7 +8,7 @@ declare
   u_owner uuid := gen_random_uuid(); u_manager uuid := gen_random_uuid(); u_door uuid := gen_random_uuid();
   u_other uuid := gen_random_uuid(); u_admin uuid := gen_random_uuid();
   v_mine uuid; v_other uuid; v_demo uuid := gen_random_uuid();
-  run_id uuid; concept_id uuid; cache_id uuid; series_id uuid; night_draft uuid; night_live uuid; v_rsvp uuid; i int;
+  run_id uuid; concept_id uuid; cache_id uuid; series_id uuid; night_draft uuid; night_live uuid; night_later uuid; v_rsvp uuid; i int;
   n int; failed boolean; new_venue uuid; before_count int; cache_old uuid; cache_new uuid; concept_two uuid; concept_out uuid; started_run uuid; made_series uuid; talent_id uuid;
   four_nights jsonb := '[{"starts_at":"2030-01-01T01:00:00Z","variation":"Opening night","slug":"made-night-one"},{"starts_at":"2030-01-08T01:00:00Z","variation":"Week two","slug":"made-night-two"},{"starts_at":"2030-01-15T01:00:00Z","variation":"Week three","slug":"made-night-three"},{"starts_at":"2030-01-22T01:00:00Z","variation":"Finale","slug":"made-night-four"}]';
   demo_count int := (select count(*) from public.venues where is_demo);
@@ -102,7 +102,7 @@ begin
   exception when foreign_key_violation then failed := true; end;
   assert failed, 'a concept cannot point at another venue''s run';
 
-  -- the team plans a series: one draft night, one published night
+  -- the team plans a series: tonight's published night, a draft, and a published night three weeks out
   perform set_config('request.jwt.claims', json_build_object('sub', u_manager, 'role', 'authenticated')::text, true);
   set local role authenticated;
   select count(*) into n from public.concepts where venue_id = v_mine; assert n = 3, 'managers read agent output';
@@ -116,10 +116,12 @@ begin
   insert into public.series (venue_id, concept_id, weekday, starts_on) values (v_mine, concept_id, 'tuesday', current_date + 7)
     returning id into series_id;
   insert into public.event_nights (series_id, venue_id, sequence, starts_at, variation, public_slug, status) values
-    (series_id, v_mine, 1, now() + interval '7 days', 'Opening night', 'afrobeats-tuesday-one', 'published'),
-    (series_id, v_mine, 2, now() + interval '14 days', 'Week two', 'afrobeats-tuesday-two', 'draft');
+    (series_id, v_mine, 1, now() + interval '30 minutes', 'Opening night', 'afrobeats-tuesday-one', 'published'),
+    (series_id, v_mine, 2, now() + interval '14 days', 'Week two', 'afrobeats-tuesday-two', 'draft'),
+    (series_id, v_mine, 3, now() + interval '21 days', 'Week three', 'afrobeats-tuesday-three', 'published');
   select id into night_live from public.event_nights where public_slug = 'afrobeats-tuesday-one';
   select id into night_draft from public.event_nights where public_slug = 'afrobeats-tuesday-two';
+  select id into night_later from public.event_nights where public_slug = 'afrobeats-tuesday-three';
   select count(*) into n from public.venue_settings where venue_id = v_mine; assert n = 1, 'managers see the money';
   perform public.choose_concept(concept_id);
   assert (select chosen_at is not null from public.concepts where id = concept_id), 'managers choose a night';
@@ -166,14 +168,14 @@ begin
   -- an anonymous guest on the public event page
   perform set_config('request.jwt.claims', '{"role":"anon"}', true);
   set local role anon;
-  select count(*) into n from public.event_nights where venue_id = v_mine; assert n = 1, 'guests see published nights only, got ' || n;
+  select count(*) into n from public.event_nights where venue_id = v_mine; assert n = 2, 'guests see published nights only, got ' || n;
   select count(*) into n from public.venues where id = v_mine; assert n = 1, 'and the venue behind a published night';
   select count(*) into n from public.venue_settings where venue_id = v_mine; assert n = 0, 'but never its money';
   select count(*) into n from public.concepts where venue_id = v_mine; assert n = 0, 'nor its plan';
   select count(*) into n from public.concepts where venue_id = v_demo; assert n = 0, 'demo plans are readable (none seeded here)';
   select count(*) into n from public.venue_settings where venue_id = v_demo; assert n = 1, 'demo settings are open to judges';
-  insert into public.rsvps (event_night_id, venue_id, guest_name, guest_contact, checkin_code)
-    values (night_live, v_mine, 'Ada', 'ada@example.com', 'code-guest-1');
+  perform public.reserve_place(night_live, 'Ada', 2::smallint, 'ada@example.com', 'code-guest-1');
+  perform public.reserve_place(night_live, 'Ben', 1::smallint, null, 'code-guest-2');
   failed := false;
   begin perform public.choose_concept(concept_id); exception when insufficient_privilege then failed := true; end;
   assert failed, 'guests cannot choose a night';
@@ -184,15 +186,27 @@ begin
   begin perform public.create_series(concept_two, date '2029-12-31', four_nights); exception when insufficient_privilege then failed := true; end;
   assert failed, 'guests cannot make a series';
   failed := false;
-  begin insert into public.rsvps (event_night_id, venue_id, guest_name) values (night_draft, v_mine, 'Early'); exception when insufficient_privilege then failed := true; end;
+  begin perform public.reserve_place(night_draft, 'Early', 1::smallint, null, 'code-early'); exception when insufficient_privilege then failed := true; end;
   assert failed, 'guests cannot RSVP to a draft night';
   failed := false;
-  begin insert into public.rsvps (event_night_id, venue_id, guest_name, guest_contact) values (night_live, v_mine, 'Ada again', 'ADA@example.com'); exception when unique_violation then failed := true; end;
+  begin perform public.reserve_place(night_live, 'Ada again', 1::smallint, 'ADA@example.com', 'code-guest-3'); exception when unique_violation then failed := true; end;
   assert failed, 'one RSVP per contact per night';
+  failed := false;
+  begin insert into public.rsvps (event_night_id, venue_id, guest_name, checkin_code) values (night_draft, v_mine, 'Sneaky', 'code-sneaky'); exception when insufficient_privilege then failed := true; end;
+  assert failed, 'and not around the function either';
+  failed := false;
+  begin perform 1 from public.rsvp_contacts; exception when insufficient_privilege then failed := true; end;
+  assert failed, 'guests never read contacts';
   failed := false;
   begin perform 1 from public.rsvps; exception when insufficient_privilege then failed := true; end;
   assert failed, 'guests never read the guest list';
   insert into public.checkins (event_night_id, venue_id, party_size) values (night_live, v_mine, 2);
+  failed := false;
+  begin insert into public.checkins (event_night_id, venue_id, party_size) values (night_later, v_mine, 1); exception when insufficient_privilege then failed := true; end;
+  assert failed, 'guests check themselves in only around the night''s start';
+  failed := false;
+  begin perform 1 from public.night_spend; exception when insufficient_privilege then failed := true; end;
+  assert failed, 'guests never see what a night took';
   failed := false;
   begin insert into public.checkins (event_night_id, venue_id, spend_cents) values (night_live, v_mine, 5000); exception when insufficient_privilege then failed := true; end;
   assert failed, 'guests cannot log spend';
@@ -221,6 +235,12 @@ begin
   assert v_rsvp is not null, 'door staff read the guest list';
   insert into public.checkins (event_night_id, venue_id, rsvp_id) values (night_live, v_mine, v_rsvp);
   select count(*) into n from public.venue_settings where venue_id = v_mine; assert n = 0, 'door staff never see money';
+  select count(*) into n from public.rsvps where venue_id = v_mine; assert n = 2, 'door staff see every name on the list';
+  select count(*) into n from public.rsvp_contacts where venue_id = v_mine; assert n = 0, 'but never a guest''s contact';
+  select count(*) into n from public.night_spend where venue_id = v_mine; assert n = 0, 'nor what a night took';
+  failed := false;
+  begin insert into public.night_spend (event_night_id, venue_id, spend_cents) values (night_live, v_mine, 100); exception when insufficient_privilege then failed := true; end;
+  assert failed, 'door staff cannot log a night''s takings';
   update public.checkins set spend_cents = 4000 where venue_id = v_mine; get diagnostics n = row_count;
   assert n = 0, 'door staff cannot log spend';
   update public.event_nights set status = 'cancelled' where id = night_live; get diagnostics n = row_count;
@@ -273,6 +293,22 @@ begin
   select count(*) into n from public.checkins where venue_id = v_mine; assert n = 2, 'the owner sees both arrivals, got ' || n;
   update public.checkins set spend_cents = 4000 where rsvp_id = v_rsvp; get diagnostics n = row_count;
   assert n = 1, 'the owner logs spend';
+  select count(*) into n from public.rsvp_contacts where venue_id = v_mine; assert n = 1, 'the owner reads guest contacts';
+  insert into public.night_spend (event_night_id, venue_id, spend_cents) values (night_live, v_mine, 182000);
+  update public.night_spend set spend_cents = 190000 where event_night_id = night_live; get diagnostics n = row_count;
+  assert n = 1, 'the owner logs and corrects a night''s takings';
+  update public.event_nights set status = 'cancelled' where id = night_later;
+  reset role;
+  perform set_config('request.jwt.claims', '{"role":"anon"}', true);
+  set local role anon;
+  select count(*) into n from public.event_nights where venue_id = v_mine and status = 'cancelled'; assert n = 1, 'guests still see a cancelled night, for its notice';
+  select count(*) into n from public.event_nights where venue_id = v_mine and status = 'draft'; assert n = 0, 'never a draft';
+  failed := false;
+  begin perform public.reserve_place(night_later, 'Late', 1::smallint, null, 'code-late'); exception when insufficient_privilege then failed := true; end;
+  assert failed, 'a cancelled night takes no RSVPs';
+  reset role;
+  perform set_config('request.jwt.claims', json_build_object('sub', u_owner, 'role', 'authenticated')::text, true);
+  set local role authenticated;
   select count(*) into n from public.audit_log where venue_id = v_mine and action = 'venues.insert'; assert n = 1, 'venue creation is audited';
   select count(*) into n from public.audit_log where venue_id = v_other; assert n = 0, 'no one reads another venue''s history';
   failed := false;

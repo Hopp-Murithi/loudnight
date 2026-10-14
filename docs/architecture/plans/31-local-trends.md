@@ -1,6 +1,6 @@
 # Plan 31: What is trending near the venue
 
-Status: Research plan (Oct 14). Nothing is built. Each source needs checking before it is promised.
+Status: Roadmap (owner's decision, Oct 14). Qloo only for the hackathon; chart and search trends after launch.
 Depends on: 04 (taste fingerprint), 06 (concepts), 29
 Phase: after the hackathon (roadmap), with one slice possible before it
 Judging criteria: Potential Impact
@@ -39,13 +39,15 @@ Qloo trends only, because the key already covers them and the receipts work as t
 - Cost: paid tiers (X) and data vendors (TikTok) cost more than the rest of a plan together. Worth it only once owners pay (see the roadmap's money section).
 - Noise: a trend in a country is not a trend on one street. Encore says which level a trend is from (country, city) and never presents a national trend as local.
 
-## Questions for the owner
+## The owner's answers (Oct 14)
 
-1. Which matters most to your first users: TikTok sounds, the country's music chart, or what people search for?
-2. Is a paid data source acceptable after launch, once there is revenue, or should trends stay free sources only?
-3. Should the Qloo trends slice go in before the submission, or after?
+1. **What matters most:** the country's music chart and what people search for. TikTok and social trends come after those.
+2. **Paid sources:** acceptable after launch, once there is revenue.
+3. **For the hackathon:** Qloo only, as it is today. Trends stay on the roadmap; nothing from this plan is built before the submission.
 
-## Deliverables (first slice)
+So the order after launch is: Google Trends (apply for access), a country chart source (Apple Music charts first; a paid chart vendor where Apple has no storefront), then social trends through a licensed vendor.
+
+## Deliverables (after launch)
 
 - [ ] Qloo trends probed for one US and one Kenyan area, findings recorded here
 - [ ] "Rising near you" on the taste card, each item with a receipt

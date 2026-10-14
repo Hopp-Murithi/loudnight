@@ -62,7 +62,7 @@ If the day-one Qloo probe fails (thin location data), switch neighbourhoods or l
 | 27  | [Ask about this plan](27-plan-assistant.md)                                       | 5     | Not started       | 07         |
 | 28  | [Spanish where it matters](28-spanish-ads.md)                                     | 5     | Built, live       | 11         |
 | 29  | [Venues anywhere in the world](29-venues-worldwide.md)                            | 5     | In progress       | 03, 05     |
-| 30  | [Find your venue, in your country](30-venue-search-by-country.md)                 | 5     | Plan ready        | 03, 29     |
+| 30  | [Find your venue, in your country](30-venue-search-by-country.md)                 | 5     | Built, live       | 03, 29     |
 | 31  | [What is trending near the venue](31-local-trends.md)                             | later | Research          | 04, 06     |
 
 ## Official judging criteria and how the plans answer them

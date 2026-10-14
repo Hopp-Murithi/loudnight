@@ -1,5 +1,6 @@
 import { z } from "zod"
 import type { VenueRole } from "@/config/navigation"
+import { isCountryCode } from "@/config/countries"
 import { isCurrency } from "@/config/currencies"
 import { isTimeZone } from "@/config/time-zones"
 import {
@@ -55,13 +56,37 @@ export const venueOnboardingSchema = venueIdentitySchema.extend(venueSettingsSch
 
 export const deleteVenueSchema = z.object({ confirmName: z.string().trim().min(1, "Type the venue's name.") })
 
-export const placeSearchSchema = z.object({ query: z.string().trim().min(3, "Type at least 3 characters.").max(200) })
+const country = z.string().refine(isCountryCode, "Choose a country.")
+const session = z.uuid()
+
+export const placeSearchSchema = z.object({
+  query: z.string().trim().min(3, "Type at least 3 characters.").max(200),
+  country,
+  session,
+})
+
+export const placePickSchema = z.object({ placeId: z.string().min(1).max(300), session })
 
 export type VenueIdentityInput = z.infer<typeof venueIdentitySchema>
 export type VenueSettingsInput = z.infer<typeof venueSettingsSchema>
 export type VenueOnboardingInput = z.infer<typeof venueOnboardingSchema>
 export type DeleteVenueInput = z.infer<typeof deleteVenueSchema>
 export type PlaceSearchInput = z.infer<typeof placeSearchSchema>
+export type PlacePickInput = z.infer<typeof placePickSchema>
+
+// One suggestion while the owner types: enough to recognise the place, not yet its details.
+export interface PlaceSuggestion {
+  placeId: string
+  name: string
+  detail: string
+  kind: string | null
+}
+
+export interface PlaceSuggestions {
+  places: PlaceSuggestion[]
+  // True when no bar, club, restaurant, cafe or pub matched and every kind of place is shown instead.
+  broadened: boolean
+}
 
 export interface PlaceOption {
   googlePlaceId: string

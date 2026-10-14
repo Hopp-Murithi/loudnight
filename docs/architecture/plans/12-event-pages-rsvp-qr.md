@@ -1,6 +1,6 @@
 # Plan 12: Event pages, RSVP and QR
 
-Status: Not started
+Status: In progress (Oct 14). Migration applied and tested; pages being built.
 Depends on: 11
 Phase: 4
 Judging criteria: Design (the guest side is finished too), Potential Impact (people through the door)
@@ -53,6 +53,18 @@ Out: check-in handling and dashboard (plan 13).
 - [ ] RSVP limited per IP and per night; honeypot catches simple bots
 - [ ] Mobile Lighthouse performance 90 or more on the event page
 - [ ] Screen standard met for the event and ticket pages
+
+## Revision, Oct 14: decisions made while building
+
+- **One migration for plans 12 and 13** (`event_pages_and_door`), applied and checked with the full `rls.sql` on the hosted project.
+- **The public face is copied onto the night when it is published**: `title` (the night's name), `blurb` (its pitch), `lineup` (booked acts, in booking order) and `published_at`. The event page reads only the night and the venue's public columns, so a private venue's plan, scores and costs are never exposed. Republishing refreshes them.
+- **Cancelled nights are public** (status `published` or `cancelled`), so guests see the notice; drafts never are.
+- **Contacts have their own table** (`rsvp_contacts`), readable by owners and managers only. Postgres cannot hide one column from door staff but not from managers, so the contact left `rsvps`. Door staff read names and party sizes.
+- **`reserve_place`** (security invoker) writes the RSVP and its contact in one transaction under the guest's own rights. A second RSVP with the same contact for the same night is refused by a unique index.
+- **The ticket needs no read-back.** Guests cannot read RSVPs, so the ticket page shows the night (public) and the QR for the code in its own link. The door looks the code up. A made-up code shows a QR that the door will not recognise.
+- **No new QR library**: `qrcode-generator` (already pinned for the ad studio) draws the ticket as SVG on the server.
+- **Calendar files are built in the browser** from a tested helper, so no extra route is needed.
+- **Publish rules**: draft or cancelled to published; published to cancelled; published back to draft only while nobody has RSVP'd (otherwise cancel, so guests see a notice).
 
 ## Verification
 

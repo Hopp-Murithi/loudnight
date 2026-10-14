@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next"
-import { Big_Shoulders, Geist, Geist_Mono } from "next/font/google"
+import { Big_Shoulders, Geist, Geist_Mono, Noto_Color_Emoji } from "next/font/google"
 import { AppProviders } from "@/components/providers/app-providers"
 import { SITE } from "@/config/site"
 import "./globals.css"
@@ -15,6 +15,9 @@ const bigShoulders = Big_Shoulders({
   adjustFontFallback: false,
   fallback: ["Arial Narrow", "sans-serif"],
 })
+
+// Country flags only. Windows has no flag emoji of its own; the browser fetches just the slice that holds the flags.
+const flagFont = Noto_Color_Emoji({ variable: "--font-flag", subsets: ["emoji"], weight: "400", preload: false })
 
 export const metadata: Metadata = {
   title: { default: `${SITE.name}: ${SITE.tagline}`, template: `%s | ${SITE.name}` },
@@ -35,7 +38,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} ${bigShoulders.variable}`}
+      className={`${geistSans.variable} ${geistMono.variable} ${bigShoulders.variable} ${flagFont.variable}`}
     >
       <body className="min-h-dvh">
         <AppProviders>{children}</AppProviders>

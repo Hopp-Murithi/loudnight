@@ -24,7 +24,7 @@ export const ONBOARDING_STEPS: { label: string; fields: Fields[] }[] = [
   { label: "Check and save", fields: ["name", "timeZone"] },
 ]
 
-export function OnboardingWizard() {
+export function OnboardingWizard({ initialCountry }: { initialCountry: string }) {
   const [step, setStep] = useState(0)
   const create = useCreateVenue()
   const form = useForm<VenueOnboardingInput>({
@@ -62,7 +62,7 @@ export function OnboardingWizard() {
         Step {step + 1} of {ONBOARDING_STEPS.length}: {ONBOARDING_STEPS[step].label}
       </p>
       <form noValidate onSubmit={submit} className="min-w-0 space-y-8">
-        <OnboardingStep step={step} form={form} />
+        <OnboardingStep step={step} form={form} initialCountry={initialCountry} />
         <StickyActionBar>
           {step > 0 && (
             <Button type="button" variant="ghost" onClick={() => setStep((current) => current - 1)}>

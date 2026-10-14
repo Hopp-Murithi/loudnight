@@ -265,45 +265,57 @@ export type Database = {
       event_nights: {
         Row: {
           assets: Json
+          blurb: string | null
           created_at: string
           decided_at: string | null
           decision: Database["public"]["Enums"]["night_decision"] | null
           id: string
+          lineup: string[]
           public_slug: string
+          published_at: string | null
           sequence: number
           series_id: string
           starts_at: string
           status: Database["public"]["Enums"]["night_status"]
+          title: string | null
           updated_at: string
           variation: string
           venue_id: string
         }
         Insert: {
           assets?: Json
+          blurb?: string | null
           created_at?: string
           decided_at?: string | null
           decision?: Database["public"]["Enums"]["night_decision"] | null
           id?: string
+          lineup?: string[]
           public_slug: string
+          published_at?: string | null
           sequence: number
           series_id: string
           starts_at: string
           status?: Database["public"]["Enums"]["night_status"]
+          title?: string | null
           updated_at?: string
           variation: string
           venue_id: string
         }
         Update: {
           assets?: Json
+          blurb?: string | null
           created_at?: string
           decided_at?: string | null
           decision?: Database["public"]["Enums"]["night_decision"] | null
           id?: string
+          lineup?: string[]
           public_slug?: string
+          published_at?: string | null
           sequence?: number
           series_id?: string
           starts_at?: string
           status?: Database["public"]["Enums"]["night_status"]
+          title?: string | null
           updated_at?: string
           variation?: string
           venue_id?: string
@@ -362,6 +374,45 @@ export type Database = {
             columns: ["qloo_cache_id"]
             isOneToOne: false
             referencedRelation: "qloo_cache"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      night_spend: {
+        Row: {
+          event_night_id: string
+          noted_by: string | null
+          spend_cents: number
+          updated_at: string
+          venue_id: string
+        }
+        Insert: {
+          event_night_id: string
+          noted_by?: string | null
+          spend_cents: number
+          updated_at?: string
+          venue_id: string
+        }
+        Update: {
+          event_night_id?: string
+          noted_by?: string | null
+          spend_cents?: number
+          updated_at?: string
+          venue_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "night_spend_event_night_id_venue_id_fkey"
+            columns: ["event_night_id", "venue_id"]
+            isOneToOne: false
+            referencedRelation: "event_nights"
+            referencedColumns: ["id", "venue_id"]
+          },
+          {
+            foreignKeyName: "night_spend_noted_by_fkey"
+            columns: ["noted_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -432,12 +483,50 @@ export type Database = {
         }
         Relationships: []
       }
+      rsvp_contacts: {
+        Row: {
+          contact: string
+          created_at: string
+          event_night_id: string
+          rsvp_id: string
+          venue_id: string
+        }
+        Insert: {
+          contact: string
+          created_at?: string
+          event_night_id: string
+          rsvp_id: string
+          venue_id: string
+        }
+        Update: {
+          contact?: string
+          created_at?: string
+          event_night_id?: string
+          rsvp_id?: string
+          venue_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rsvp_contacts_event_night_id_venue_id_fkey"
+            columns: ["event_night_id", "venue_id"]
+            isOneToOne: false
+            referencedRelation: "event_nights"
+            referencedColumns: ["id", "venue_id"]
+          },
+          {
+            foreignKeyName: "rsvp_contacts_rsvp_id_event_night_id_fkey"
+            columns: ["rsvp_id", "event_night_id"]
+            isOneToOne: false
+            referencedRelation: "rsvps"
+            referencedColumns: ["id", "event_night_id"]
+          },
+        ]
+      }
       rsvps: {
         Row: {
           checkin_code: string
           created_at: string
           event_night_id: string
-          guest_contact: string | null
           guest_name: string
           id: string
           party_size: number
@@ -447,7 +536,6 @@ export type Database = {
           checkin_code?: string
           created_at?: string
           event_night_id: string
-          guest_contact?: string | null
           guest_name: string
           id?: string
           party_size?: number
@@ -457,7 +545,6 @@ export type Database = {
           checkin_code?: string
           created_at?: string
           event_night_id?: string
-          guest_contact?: string | null
           guest_name?: string
           id?: string
           party_size?: number
@@ -838,6 +925,16 @@ export type Database = {
           p_venue_type: Database["public"]["Enums"]["venue_type"]
         }
         Returns: string
+      }
+      reserve_place: {
+        Args: {
+          p_checkin_code: string
+          p_contact: string
+          p_guest_name: string
+          p_night_id: string
+          p_party_size: number
+        }
+        Returns: undefined
       }
       store_qloo_answer: {
         Args: {

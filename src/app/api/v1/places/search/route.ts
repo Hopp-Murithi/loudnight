@@ -5,5 +5,5 @@ import { searchVenuePlaces } from "@/modules/venues/venues.search"
 
 export const POST = apiRoute<PlaceSearchInput>(
   { body: placeSearchSchema, rateLimit: RATE_LIMITS.placesSearch },
-  async ({ body }) => searchVenuePlaces(body.query),
+  async ({ body }) => searchVenuePlaces(body),
 )

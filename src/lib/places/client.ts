@@ -30,7 +30,25 @@ const detailsSchema = placeSchema.extend({
   websiteUri: z.string().optional(),
 })
 
+const suggestionsSchema = z.object({
+  suggestions: z
+    .array(
+      z.object({
+        placePrediction: z
+          .object({
+            placeId: z.string(),
+            types: z.array(z.string()).optional(),
+            structuredFormat: z.object({ mainText: text, secondaryText: text.optional() }).optional(),
+            text: text.optional(),
+          })
+          .optional(),
+      }),
+    )
+    .default([]),
+})
+
 export type Place = z.infer<typeof placeSchema>
+export type PlaceSuggestions = z.infer<typeof suggestionsSchema>
 export type PlaceDetails = z.infer<typeof detailsSchema>
 
 const LIST_FIELDS = [
@@ -76,14 +94,6 @@ function placesCall<T>(path: string, fieldMask: string, schema: ZodType<T>, body
 }
 
 const listMask = LIST_FIELDS.map((field) => `places.${field}`).join(",")
-// Choosing a venue also needs its town, country and time zone. The nearby scan does not, so it does not pay for them.
-const searchMask = [...LIST_FIELDS, "addressComponents", "timeZone"].map((field) => `places.${field}`).join(",")
-
-export async function searchPlaces(query: string): Promise<Place[]> {
-  return (await placesCall("/places:searchText", searchMask, placesSchema, { textQuery: query, maxResultCount: 5 }))
-    .places
-}
-
 // Matches on the primary type only. `includedTypes` also matches secondary types, which pulled in bakeries for "bar".
 export async function placesNearby(
   center: { latitude: number; longitude: number },
@@ -96,6 +106,30 @@ export async function placesNearby(
     locationRestriction: { circle: { center, radius: radiusM } },
   }
   return (await placesCall("/places:searchNearby", listMask, placesSchema, body)).places
+}
+
+// Suggestions as the owner types, only inside one country and, when given, only among the kinds of place listed.
+// The session token groups the typing and the final pick into one billed search.
+export async function autocompletePlaces(input: {
+  text: string
+  country: string
+  session: string
+  types?: readonly string[]
+}): Promise<PlaceSuggestions> {
+  return placesCall("/places:autocomplete", "*", suggestionsSchema, {
+    input: input.text,
+    includedRegionCodes: [input.country.toLowerCase()],
+    sessionToken: input.session,
+    ...(input.types ? { includedPrimaryTypes: input.types } : {}),
+  })
+}
+
+const VENUE_FIELDS = [...LIST_FIELDS, "addressComponents", "timeZone"].join(",")
+
+// The place an owner picked, with what onboarding fills in from it. Same session token as the typing that found it.
+export async function placeForVenue(placeId: string, session: string): Promise<Place> {
+  const query = new URLSearchParams({ sessionToken: session })
+  return placesCall(`/places/${encodeURIComponent(placeId)}?${query.toString()}`, VENUE_FIELDS, placeSchema)
 }
 
 export async function placeDetails(placeId: string): Promise<PlaceDetails> {

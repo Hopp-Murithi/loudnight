@@ -114,6 +114,6 @@ All of these already exist as rows (runs, steps, series, bookings, assets, RSVPs
 
 **What it needs from outside.** Sources differ a lot: Qloo's own trends are already in our key; Google Trends has an official API in limited access; TikTok and Meta offer no trends API for products like ours (research access only), so they would need a partnership or a licensed vendor; X sells trends on paid tiers; Apple Music serves country charts. Every source's terms must be read before any code, because most forbid storing or reselling their data.
 
-**The first slice.** Qloo trends: "Rising near you" on the taste card, each item with a receipt, and concepts allowed to cite it. No new provider, no new terms.
+**The order (owner's decision, Oct 14).** Qloo only for the hackathon. After launch: search trends (Google Trends access), then the country's music chart (Apple Music charts, a paid chart vendor elsewhere), then social trends through a licensed vendor. Paid sources are acceptable once there is revenue.
 
 **The risk.** Terms and cost, and mistaking a national trend for a local one. Encore always says which level a trend is from. Full research plan: [plan 31](architecture/plans/31-local-trends.md).

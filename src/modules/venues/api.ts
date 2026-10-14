@@ -2,6 +2,9 @@ import { apiFetch } from "@/lib/http/client"
 import type {
   DeleteVenueInput,
   PlaceOption,
+  PlacePickInput,
+  PlaceSearchInput,
+  PlaceSuggestions,
   VenueIdentityInput,
   VenueOnboardingInput,
   VenueSettingsInput,
@@ -15,5 +18,7 @@ export const venuesApi = {
     apiFetch<{ saved: true }>(`/venues/${id}/settings`, { method: "PATCH", body: input }),
   remove: (id: string, input: DeleteVenueInput) =>
     apiFetch<{ deleted: true }>(`/venues/${id}`, { method: "DELETE", body: input }),
-  searchPlaces: (query: string) => apiFetch<PlaceOption[]>("/places/search", { method: "POST", body: { query } }),
+  searchPlaces: (input: PlaceSearchInput) =>
+    apiFetch<PlaceSuggestions>("/places/search", { method: "POST", body: input }),
+  pickPlace: (input: PlacePickInput) => apiFetch<PlaceOption>("/places/pick", { method: "POST", body: input }),
 }

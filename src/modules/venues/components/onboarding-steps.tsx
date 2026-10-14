@@ -16,6 +16,7 @@ import { CapabilityPicker, NightPicker } from "./venue-fields"
 interface StepProps {
   step: number
   form: UseFormReturn<VenueOnboardingInput>
+  initialCountry: string
 }
 
 function Heading({ title, description }: { title: string; description: string }) {
@@ -27,7 +28,7 @@ function Heading({ title, description }: { title: string; description: string })
   )
 }
 
-export function OnboardingStep({ step, form }: StepProps) {
+export function OnboardingStep({ step, form, initialCountry }: StepProps) {
   const { control, setValue, formState } = form
   const values = useWatch({ control })
   const currency = values.currency ?? DEFAULT_CURRENCY
@@ -51,7 +52,12 @@ export function OnboardingStep({ step, form }: StepProps) {
     return (
       <section className="space-y-6">
         <Heading title="Find your venue" description="We use its location to read what your neighbourhood loves." />
-        <PlaceSearch selected={selected} onSelect={choosePlace} error={formState.errors.googlePlaceId?.message} />
+        <PlaceSearch
+          selected={selected}
+          onSelect={choosePlace}
+          initialCountry={values.countryCode ?? initialCountry}
+          error={formState.errors.googlePlaceId?.message}
+        />
       </section>
     )
   }

@@ -6,6 +6,7 @@ import { showApiError } from "@/components/forms/api-errors"
 import { SubmitButton } from "@/components/forms/submit-button"
 import { TextField } from "@/components/forms/text-field"
 import { FieldGroup } from "@/components/ui/field"
+import { DEFAULT_COUNTRY } from "@/config/countries"
 import { DEFAULT_CURRENCY, isCurrency } from "@/config/currencies"
 import { DEFAULT_TIME_ZONE, isTimeZone } from "@/config/time-zones"
 import { useDeleteVenue, useUpdateVenueIdentity, useUpdateVenueSettings } from "../hooks/use-venue-mutations"
@@ -57,6 +58,7 @@ export function VenueIdentityForm({ venue }: { venue: VenueDetail }) {
           selected={values.googlePlaceId ? ({ ...values } as PlaceOption) : null}
           onSelect={choose}
           error={form.formState.errors.googlePlaceId?.message}
+          initialCountry={venue.countryCode ?? DEFAULT_COUNTRY}
         />
         <TimeZoneField control={form.control} name="timeZone" />
         <CurrencyField control={form.control} name="currency" />

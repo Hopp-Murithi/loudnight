@@ -22,4 +22,9 @@ export const RATE_LIMITS = {
   seriesCreate: { name: "series-create", max: 10, windowSeconds: HOUR },
   seriesEdit: { name: "series-edit", max: 120, windowSeconds: TEN_MINUTES },
   talentFind: { name: "talent-find", max: 10, windowSeconds: HOUR },
+  rsvp: { name: "rsvp", max: 10, windowSeconds: TEN_MINUTES },
+  nightStatus: { name: "night-status", max: 60, windowSeconds: TEN_MINUTES },
+  checkin: { name: "checkin", max: 600, windowSeconds: TEN_MINUTES },
+  selfCheckin: { name: "self-checkin", max: 10, windowSeconds: TEN_MINUTES },
+  nightSpend: { name: "night-spend", max: 60, windowSeconds: TEN_MINUTES },
 } as const satisfies Record<string, RateLimitRule>

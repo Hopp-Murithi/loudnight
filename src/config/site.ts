@@ -30,6 +30,7 @@ export const ROUTES = {
   venueHistory: (id: string) => `/venues/${id}/history`,
   demo: (id: string) => `/demo/${id}`,
   eventPage: (slug: string) => `/e/${slug}`,
+  ticket: (slug: string, code: string) => `/e/${slug}/ticket/${code}`,
 } as const
 
 // Where a signed-in person lands when nothing else was asked for.

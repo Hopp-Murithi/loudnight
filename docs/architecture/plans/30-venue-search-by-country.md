@@ -1,6 +1,6 @@
 # Plan 30: Find your venue, in your country
 
-Status: Plan ready (Oct 14). Waiting on the owner's answers below before building.
+Status: Built (Oct 14). The owner asked for the country first; defaults were taken for the other questions (below).
 Depends on: 03, 29
 Phase: 5 (added Oct 14 at the owner's request)
 Judging criteria: Potential Impact (works where the owner is), Design (the first thing an owner does)
@@ -59,17 +59,15 @@ Probed Oct 14 with the project's Google key (output in `.probe/`, not committed)
 
 ## Deliverables
 
-- [ ] A country picker with flags, searchable, detected and changeable
-- [ ] Search scoped to the chosen country and to venue types, with the fallback
-- [ ] Picking a place fills address, town, country, time zone and currency
-- [ ] "quiver" in Kenya finds the Nairobi Quivers; "carnivore" finds The Carnivore (verified on hosted)
+- [x] A country picker with flags, searchable, detected and changeable (flags drawn with Noto Color Emoji so Windows shows them too)
+- [x] Search scoped to the chosen country and to venue types, with the fallback
+- [x] Picking a place fills address, town, country, time zone and currency
+- [x] "quiver" in Kenya finds the five Nairobi Quivers (verified in the app with real keyboard input, Oct 14)
 - [ ] Screen standard met for onboarding step one and Settings
 
-## Questions for the owner
+## Decisions (Oct 14)
 
-1. **Which places can be a venue?** Proposal: bars, night clubs, restaurants, cafes and pubs first (Google allows five), and every other kind of place when those find nothing. Should event spaces, hotels or rooftops be in the first five instead of pubs?
-2. **One venue, one country.** Is that right for your first users, or do you expect groups with venues in several countries on one account (they would still pick a country per venue)?
-3. **Default country** when we cannot tell where someone is: the United States (as on the landing page), or Kenya?
+The owner asked for the country to be picked before typing, detected and changeable. For the other questions the proposals were taken: bars, night clubs, restaurants, cafes and pubs first, every kind of place as the fallback; one venue sits in one country; the United States when the country cannot be told. Each can be changed in `config/countries.ts`.
 
 ## Verification
 
