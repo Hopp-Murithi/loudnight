@@ -8,6 +8,7 @@ export const personStatusSchema = z.object({ active: z.boolean() })
 
 export const adminListSchema = z.object({
   q: z.string().trim().max(100).optional().catch(undefined),
+  status: z.enum(["failed"]).optional().catch(undefined),
   page: z.coerce.number().int().min(1).max(1000).optional().catch(undefined),
 })
 
@@ -69,4 +70,15 @@ export interface AdminPersonDetail {
   state: SignInState
   lastSignInAt: string | null
   venues: { id: string; name: string; role: string }[]
+}
+
+export interface AdminRun {
+  id: string
+  venueId: string
+  venueName: string
+  weekday: string
+  status: "queued" | "running" | "succeeded" | "failed"
+  step: string | null
+  error: string | null
+  startedAt: string
 }

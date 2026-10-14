@@ -1,6 +1,6 @@
 # Plan 32: The right performers for this room, this budget, this town
 
-Status: Parts A to E built (Oct 14). Part C live-checked for MusicBrainz in Brooklyn; Wikidata checked by probe, in-app check in the simulation.
+Status: Built (Oct 14). Parts A to E live; the home-grown-first revision below was checked on a Nairobi test venue.
 Depends on: 10, 11, 29
 Phase: 5 (the owner's requests of Oct 14)
 Judging criteria: Potential Impact, Technological Implementation (Qloo used where it is strongest, other sources only where it is not)

@@ -22,6 +22,7 @@ export const ROUTES = {
   adminVenues: "/admin/venues",
   adminPeople: "/admin/people",
   adminAudit: "/admin/audit",
+  adminRuns: "/admin/runs",
   venues: "/venues",
   newVenue: "/venues/new",
   venue: (id: string, night?: string) => withNight(`/venues/${id}`, night),
@@ -52,6 +53,12 @@ export const API_BASE = "/api/v1"
 
 // Set when a reset or invite link is accepted; until a password is saved, every page leads to the password form.
 export const PASSWORD_PENDING_COOKIE = "encore_password_pending"
+
+// Preview as: an administrator reads Loudnight as someone else, read only, for an hour at most. The database
+// honours the header only for a real, active administrator.
+export const PREVIEW_COOKIE = "loudnight_preview"
+export const PREVIEW_HEADER = "x-encore-preview"
+export const PREVIEW_MAX_AGE_SECONDS = 3600
 
 // Only same-site paths, so a crafted link cannot send anyone elsewhere.
 export function safeNextPath(next: string | null | undefined): string | null {

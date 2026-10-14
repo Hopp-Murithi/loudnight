@@ -3,7 +3,15 @@ import { notFound } from "@/lib/http/errors"
 import type { RequestContext } from "@/modules/auth/types"
 import { signInStatuses, type SignInStatus } from "@/modules/auth/server/identity"
 import { adminDetailRepository } from "./admin-detail.repository"
-import type { AdminPersonDetail, AdminVenueDetail, SignInState } from "./admin.schemas"
+import { ADMIN_PAGE_SIZE } from "@/config/admin"
+import type {
+  AdminListQuery,
+  AdminPage,
+  AdminPersonDetail,
+  AdminRun,
+  AdminVenueDetail,
+  SignInState,
+} from "./admin.schemas"
 
 const one = <T>(value: T | T[] | null): T | null => (Array.isArray(value) ? (value[0] ?? null) : value)
 
@@ -86,5 +94,26 @@ export async function adminPersonDetail(ctx: RequestContext, personId: string): 
       const venue = one(membership.venue)
       return venue ? [{ id: venue.id, name: venue.name, role: membership.role }] : []
     }),
+  }
+}
+
+// Every plan made on Loudnight, newest first, or only the ones that stopped part way.
+export async function adminRuns(ctx: RequestContext, query: AdminListQuery): Promise<AdminPage<AdminRun>> {
+  const page = query.page ?? 1
+  const from = (page - 1) * ADMIN_PAGE_SIZE
+  const rows = await adminDetailRepository.runs(ctx.supabase, query.status === "failed", from, from + ADMIN_PAGE_SIZE)
+  return {
+    page,
+    hasMore: rows.length > ADMIN_PAGE_SIZE,
+    rows: rows.slice(0, ADMIN_PAGE_SIZE).map((row) => ({
+      id: row.id,
+      venueId: row.venue_id,
+      venueName: one(row.venue)?.name ?? "A venue",
+      weekday: row.target_weekday,
+      status: row.status as AdminRun["status"],
+      step: row.current_step,
+      error: row.error_message,
+      startedAt: row.created_at,
+    })),
   }
 }

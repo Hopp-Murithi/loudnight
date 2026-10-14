@@ -56,3 +56,7 @@ Out: CI on GitHub Actions beyond what Vercel provides (optional enhancement in p
 You are working on Loudnight. Follow `CLAUDE.md` exactly. Read this plan and the Vercel and Next.js deployment guides in `node_modules/next/dist/docs/`.
 
 Ask the user before creating the Vercel project, before setting any variable, before connecting the repository and before every production deploy. Never print secret values. Follow the deploy procedure exactly. Tick boxes only when verified. No long dashes. Do not commit unless asked.
+
+## Revision, Oct 14: environment
+
+Production and development on Vercel carry every key in `.env.example`, including `PREVIEW_COOKIE_SECRET` (added Oct 14 for Preview as; a random 32-byte value, never printed or committed). The preview environment is not used: every deploy goes to production after a local check.

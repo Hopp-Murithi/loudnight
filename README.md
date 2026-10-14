@@ -101,14 +101,15 @@ Built and live (Oct 14), in the order an owner meets them:
 - **Venues anywhere**: pick the country first, then search inside it. Time zone, town, country and currency come from the Google place, and money is shown in the venue's own currency.
 - **The room**: what it can host (live music, DJs, poetry, comedy and more), seated or standing, and up to three quiet nights, each with its own plan, series and ads.
 - **Planning**: the six-step planner streams its trace, reads the area's taste through Qloo, scans what nearby venues and events already run, and proposes three scored nights with a receipt on every number.
-- **Series and performers**: four weeks on the calendar; performers popular near the venue first, a fresh list on each look, booking messages ready to send. Each act is labelled for the budget, household names are kept out, and Wikidata and MusicBrainz add poets, comedians, DJs and town musicians.
+- **Series and performers**: four weeks on the calendar; performers popular near the venue first, a fresh list on each look, booking messages ready to send. Acts from the venue's own country come first, household names and non-performers are left out, each act is labelled for the budget, and Wikidata and MusicBrainz add local musicians, poets, comedians and DJs where Qloo knows few.
 - **Promote**: posters, banners and short videos drawn in the browser, with the booked acts' photos, a ticket QR, Spanish copy and captions for each channel.
 - **Event pages and tickets**: publish a night, and guests save a place signed out. Their ticket's QR opens on any camera, and staff check them in from it.
 - **The door and results**: scan, find a name or count walk-ins. Counts update live on every phone, and results show each night against break-even.
 - **Readiness**: what is ready for the chosen night and what is not, on Home.
 - **Demo venues**: finished plans anyone can open without an account.
+- **Running the platform**: an administrator console with venues and people as tables with detail panels, plans, the audit log, venue suspension, deactivation, and Preview as (read only, audited, one hour).
 
-Next: the administrator console (plan 08), the learning loop (plan 14), and the installable app (plan 15). Every plan, its status and its gate: [`docs/architecture/plans/README.md`](docs/architecture/plans/README.md).
+Next: the door app in React Native for scanning and using up tickets at the door (plan 15), and the learning loop (plan 14). Every plan, its status and its gate: [`docs/architecture/plans/README.md`](docs/architecture/plans/README.md).
 
 ## Tech stack
 
@@ -189,13 +190,13 @@ docs               architecture (ARCHITECTURE.md, plans) and reference (the brie
 
 ## Roles
 
-| Role          | Who                        | Can                                                              |
-| ------------- | -------------------------- | ---------------------------------------------------------------- |
-| Administrator | Runs Loudnight             | Everything; previews anyone read only                            |
-| Venue owner   | Whoever created the venue  | Everything at their venue, including the team and money settings |
-| Venue manager | Invited by the owner       | Plans, series, nights, settings, spend                           |
-| Door staff    | Invited by the owner       | Guest list and check-ins; never money                            |
-| Guest         | Anyone with the event link | RSVP and check in; reads nothing back                            |
+| Role          | Who                        | Can                                                                        |
+| ------------- | -------------------------- | -------------------------------------------------------------------------- |
+| Administrator | Runs Loudnight             | Everything; suspends venues, deactivates people, previews anyone read only |
+| Venue owner   | Whoever created the venue  | Everything at their venue, including the team and money settings           |
+| Venue manager | Invited by the owner       | Plans, series, nights, settings, spend                                     |
+| Door staff    | Invited by the owner       | Guest list and check-ins; never money                                      |
+| Guest         | Anyone with the event link | RSVP and check in; reads nothing back                                      |
 
 Judges and new owners need no account: demo venues are open to everyone, and starting a plan creates an anonymous session that can later be kept with an email.
 
@@ -210,8 +211,8 @@ Judges and new owners need no account: demo venues are open to everyone, and sta
 
 - [`CLAUDE.md`](CLAUDE.md): the rules
 - [`docs/architecture/ARCHITECTURE.md`](docs/architecture/ARCHITECTURE.md): the design and why
-- [`docs/architecture/plans`](docs/architecture/plans): the schedule, gates, judging criteria, traceability and plans 00 to 31
-- [`docs/roadmap.md`](docs/roadmap.md): how Loudnight makes money, point-of-sale onboarding, posting to social networks, local trends
+- [`docs/architecture/plans`](docs/architecture/plans): the schedule, gates, judging criteria, traceability and plans 00 to 32
+- [`docs/roadmap.md`](docs/roadmap.md): how Loudnight makes money, the door app, point-of-sale onboarding, posting to social networks, local trends
 - [`docs/reference`](docs/reference): the Loudnight system brief
 
 ## Licence

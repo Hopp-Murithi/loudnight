@@ -98,6 +98,10 @@ All of these already exist as rows (runs, steps, series, bookings, assets, RSVPs
 
 **The risk.** Money regulation differs by country; a partner that holds the funds and pays out keeps Loudnight out of money transmission. Chargebacks: the wallet keeps a reserve set by the provider.
 
+## The door app
+
+A React Native app (Expo, iOS and Android) for door staff: sign in once, pick tonight, scan tickets with the camera. A valid ticket turns the screen green with the guest's name and is used up on the spot; a used, cancelled or wrong-night ticket turns it red and says why. Counts update live on every phone, and scans made without a connection sync exactly once. It reuses the web app's rules: tickets are single use in the database, door staff never see money or contacts. The one server change is accepting the app's session as a bearer token. Full plan: [plan 15](architecture/plans/15-installable-app.md).
+
 ## Point-of-sale integration
 
 **The problem.** Loudnight counts who came (check-ins at the door) and asks the owner for an average spend per guest. The till knows the truth: what the room actually took on an event night against a normal night. Until Loudnight reads the till, "this night earned you $X more" is an estimate.

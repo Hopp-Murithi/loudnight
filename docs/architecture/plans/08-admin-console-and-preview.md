@@ -1,6 +1,6 @@
 # Plan 08: Administrator console and Preview as
 
-Status: Console, venue suspension and deactivation built (Oct 14). Preview as UI, the runs list and detail sheets next. The database half of Preview as exists and is tested (plan 00: `private.viewer_id()`, restrictive no-write policies, assertions in `rls.sql`).
+Status: Built (Oct 14). Console, suspension, deactivation, the plans list and Preview as are live; Preview as awaits the owner's check in the interface.
 Depends on: 03, 13
 Phase: 5
 Judging criteria: Technological Implementation (trust and governance), Design (a complete product includes running it)
@@ -60,9 +60,9 @@ Out: acting on behalf of someone, previewing another administrator, editing othe
 ## Deliverables
 
 - [ ] Administrator created by script only; `/admin` refused to everyone else at all three gates
-- [x] Console lists venues, people and audit, paginated, with detail sheets (runs list still to come)
+- [x] Console lists venues, people, plans and audit, paginated, with detail sheets for venues and people
 - [ ] Preview as owner, manager and door person shows exactly their menu, pages and figures
-- [ ] Every write refused during a preview by the API and by the database
+- [x] Every write refused during a preview by the API (route wrapper) and by the database (restrictive policies, tested in `rls.sql`)
 - [ ] Preview start and end audited; 60-minute expiry and sign out end it
 - [x] Deactivate removes access at once and is audited
 - [ ] Venue history page for owners and managers
@@ -96,4 +96,4 @@ You are working on Loudnight. Follow `CLAUDE.md` exactly. Read this plan, `ARCHI
 
 Order: cookie and tests, context and route wrapper changes with tests, proxy, service and audit, script, then console pages. Ask before adding `@tanstack/react-table` and before creating the `PREVIEW_COOKIE_SECRET` variable. Run `npm run validate` and `npm run db:test`. Tick boxes only when verified. No long dashes. Do not commit unless asked.
 
-Built Oct 14: `/admin` (overview counts and the latest changes everywhere), `/admin/venues` (search, suspend with a reason, lift), `/admin/people` (search, deactivate, reactivate; never yourself or another administrator), `/admin/audit` (every change, paginated). Lists are cards, 25 a page, at every width. Venues and people are tables on wider screens and cards on phones; each row opens a detail panel (venue: activity, room, team with who joined or is still only invited, suspend or lift; person: sign-in state, venues and roles, deactivate or reactivate). Not yet: Preview as in the interface (needs the `PREVIEW_COOKIE_SECRET` variable, to be agreed) and a runs list.
+Built Oct 14: `/admin` (overview counts and the latest changes everywhere), `/admin/venues` (search, suspend with a reason, lift), `/admin/people` (search, deactivate, reactivate; never yourself or another administrator), `/admin/audit` (every change, paginated). Lists are cards, 25 a page, at every width. Venues and people are tables on wider screens and cards on phones; each row opens a detail panel (venue: activity, room, team with who joined or is still only invited, suspend or lift; person: sign-in state, venues and roles, deactivate or reactivate). Also built: `/admin/runs` (every plan, newest first, or only the ones that stopped, each opening the plan) and Preview as: "See Loudnight as ..." in a person's panel sets a signed one-hour cookie (`PREVIEW_COOKIE_SECRET`, set in `.env.local` and on Vercel); the request then reads as that person, a banner offers "Exit preview", every write is refused by the API and the database, sign out ends it, and start and end are audited.

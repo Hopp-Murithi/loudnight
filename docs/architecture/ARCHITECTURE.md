@@ -17,24 +17,26 @@ Why it wins for this project: it is the smallest design that is still correct fo
 
 ## 2. What the brief asks for and where it lives
 
-| Requirement (brief)                         | Where it is handled                                                                                                             |
-| ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| Two-minute onboarding, no signup for judges | Anonymous Supabase sessions; demo venues readable by anyone (`is_demo`). Plans 03, 09.                                          |
-| Neighbourhood taste fingerprint             | `modules/taste` over `lib/qloo`, cached in `qloo_cache` (private, refreshed after seven days, never exposed raw). Plans 02, 04. |
-| Competitor gap scan                         | `modules/gap` over Google Places nearby and Ticketmaster events on the target weekday. Plan 05.                                 |
-| Three scored concepts with evidence chips   | `modules/concepts`: generation, Qloo re-check, validator, `evidence` rows with receipts. Plan 06.                               |
-| Score formula                               | `concepts.total_score`, a generated column: 40 x audience + 20 x novelty + 20 x venue fit + 20 x cost fit.                      |
-| Grounding rule                              | Validator in code plus the `evidence_requires_receipt` trigger in the database. Plans 06, 16.                                   |
-| Live agent trace                            | One server call per step, streamed as NDJSON; `run_steps` rows record each tool call. Plan 07.                                  |
-| Generic AI vs Loudnight toggle              | A `generic` run mode: a plain model answer for the same venue, stored beside the Loudnight run. Plan 07.                        |
-| Preloaded demo venues, instant              | Three seeded venues; their plans are precomputed by the real pipeline, never typed in. Plan 09.                                 |
-| 4-week series, talent, launch kit, ad brief | `modules/series`, `modules/talent`, `modules/launch-kit`. Plans 10, 11.                                                         |
-| Event page, RSVP, QR, door check-in         | Public pages and `publicApiRoute`; guests write, never read. Plans 12, 13.                                                      |
-| Learning loop and dashboard                 | Check-ins against break-even set the next night's decision (keep, tweak, swap). Plans 13, 14.                                   |
-| Abuse and cost control                      | Per-person run cap in the database, per-IP limits on public endpoints, Qloo cache reuse. Plans 07, 16.                          |
-| Open source, keys only in env               | MIT licence, `lib/env/server.ts` behind `server-only`.                                                                          |
+| Requirement (brief)                         | Where it is handled                                                                                                                                                           |
+| ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Two-minute onboarding, no signup for judges | Anonymous Supabase sessions; demo venues readable by anyone (`is_demo`). Plans 03, 09.                                                                                        |
+| Neighbourhood taste fingerprint             | `modules/taste` over `lib/qloo`, cached in `qloo_cache` (private, refreshed after seven days, never exposed raw). Plans 02, 04.                                               |
+| Competitor gap scan                         | `modules/gap` over Google Places nearby and Ticketmaster events on the target weekday. Plan 05.                                                                               |
+| Three scored concepts with evidence chips   | `modules/concepts`: generation, Qloo re-check, validator, `evidence` rows with receipts. Plan 06.                                                                             |
+| Score formula                               | `concepts.total_score`, a generated column: 40 x audience + 20 x novelty + 20 x venue fit + 20 x cost fit.                                                                    |
+| Grounding rule                              | Validator in code plus the `evidence_requires_receipt` trigger in the database. Plans 06, 16.                                                                                 |
+| Live agent trace                            | One server call per step, streamed as NDJSON; `run_steps` rows record each tool call. Plan 07.                                                                                |
+| Generic AI vs Loudnight toggle              | A `generic` run mode: a plain model answer for the same venue, stored beside the Loudnight run. Plan 07.                                                                      |
+| Preloaded demo venues, instant              | Three seeded venues; their plans are precomputed by the real pipeline, never typed in. Plan 09.                                                                               |
+| 4-week series, talent, launch kit, ad brief | `modules/series`, `modules/talent` (Qloo first, Wikidata and MusicBrainz where Qloo is thin, each act vetted for home country and fame), `modules/promote`. Plans 10, 11, 32. |
+| Venues anywhere, up to three quiet nights   | Country-first Google Places search; time zone, town, country and currency from the place; `venue_settings.quiet_nights`. Plans 29, 30, 32.                                    |
+| Event page, RSVP, QR, door check-in         | Public pages and `publicApiRoute`; guests write, never read. Plans 12, 13.                                                                                                    |
+| Learning loop and dashboard                 | Check-ins against break-even set the next night's decision (keep, tweak, swap). Plans 13, 14.                                                                                 |
+| Abuse and cost control                      | Per-person run cap in the database, per-IP limits on public endpoints, Qloo cache reuse. Plans 07, 16.                                                                        |
+| Open source, keys only in env               | MIT licence, `lib/env/server.ts` behind `server-only`.                                                                                                                        |
+| Running the platform                        | `/admin`: overview, venues (suspend with a reason), people (deactivate), plans, audit log, Preview as. Plan 08.                                                               |
 
-Carried over from the UNoN portal because they earned their place there: administrator **Preview as** (plan 08), the **audit log** page (plan 08), the **installable app** for door staff (plan 15), and the three-gate authorization model (section 4).
+Carried over from the UNoN portal because they earned their place there: administrator **Preview as** (plan 08), the **audit log** page (plan 08), an app for door staff (plan 15, now planned as a React Native app), and the three-gate authorization model (section 4).
 
 ## 3. Layers
 
@@ -109,6 +111,14 @@ Every policy is built from these, wrapped as `(select ...)` so Postgres evaluate
 2. Route wrappers: verify the token, read the profile, check the platform role, validate the body.
 3. RLS: the last word. Even a bug in the two above cannot leak data.
 
+### Suspending a venue
+
+An administrator can suspend a venue with a reason (`venues.suspended_at`, `suspended_reason`, `suspended_by`). Its team keeps read access, but restrictive `no_insert_while_suspended` and `no_update_while_suspended` policies on every venue table refuse their writes, guests cannot RSVP or check themselves in, and the event page says it is not taking bookings. A trigger lets only administrators set or lift a suspension and records who did; the audit trigger records when. Tested in `supabase/tests/suspension.sql`.
+
+### Deactivating a person
+
+`profiles.is_active = false` (service role, audited as `person.deactivated`) makes every RLS helper ignore the person at once, and the auth admin API blocks their sign-in, so sessions end at their next refresh. Sign-in is blocked first, so a failure changes nothing.
+
 ## 5. Preview as
 
 An administrator can open Loudnight exactly as any owner, manager or door person sees it, read only. This is the UNoN pattern, built in from the first migration:
@@ -117,27 +127,32 @@ An administrator can open Loudnight exactly as any owner, manager or door person
 - `private.viewer_id()` honours the header only if the real caller is an active administrator and the target is an active non-administrator. Otherwise it returns `auth.uid()`. A preview can only narrow what an administrator sees.
 - Every helper reads the viewer, so every policy follows without being touched.
 - Restrictive `no_insert_while_previewing`, `no_update_while_previewing` and `no_delete_while_previewing` policies sit on every table. The route wrapper also refuses writes with a clear message, and the UI hides actions.
-- Starting and ending a preview is audited. The UI, cookie and audit rows are plan 08; the database half is already tested in `supabase/tests/rls.sql`.
+- The cookie `loudnight_preview` holds the person previewed and an expiry one hour ahead, signed with HMAC and the server secret `PREVIEW_COOKIE_SECRET`. A tampered or expired cookie is ignored. Signing out deletes it.
+- The request context then carries `preview: { adminId, adminName }` and the previewed person as `user`, so pages, menus and figures are exactly theirs. A banner on every signed-in page says whose view it is, with "Exit preview".
+- Starting (`POST /api/v1/admin/preview`) and ending (`DELETE /api/v1/preview`) are audited as `preview.started` and `preview.ended`. The database half is tested in `supabase/tests/rls.sql`.
 
 ## 6. Data model
 
-| Table               | Holds                                                                                                                             |
-| ------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| `profiles`          | One per auth user, anonymous ones included: display name, platform role, anonymous flag, active flag                              |
-| `venues`            | Public face: name, address, coordinates, type, time zone, demo flag                                                               |
-| `venue_members`     | Who works where and as what. Exactly one owner, added by trigger in the same statement as the venue                               |
-| `venue_settings`    | Capacity, capabilities, slow night, break-even headcount, talent budget, average spend, search radius                             |
-| `agent_runs`        | One planning run per venue and night, Loudnight or generic mode, status and timing                                                |
-| `run_steps`         | Each tool call: step, tool, input, summarised output, latency, and the Qloo cache row it used                                     |
-| `qloo_cache`        | Request hash, canonical request, full response, fetch time, refresh-after time (seven days). Shared by all; private to the server |
-| `concepts`          | Name, pitch, why it beats nearby, the four sub-scores, the generated total, estimated cost                                        |
-| `evidence`          | Claim, value, the `qloo_cache` row and JSON path that prove it. Refused by trigger without a receipt                              |
-| `talent_candidates` | Qloo entity, popularity tier, audience overlap, outreach draft                                                                    |
-| `series`            | The chosen concept as a weekly series: weekday, start date, status                                                                |
-| `event_nights`      | Four dates, each with a variation, generated assets, public slug, status, and the learning decision                               |
-| `rsvps`             | Guest name, optional contact (unique per night), party size, server-generated check-in code                                       |
-| `checkins`          | One row per arrival, optionally linked to an RSVP, spend logged later by a manager                                                |
-| `audit_log`         | Append only. Venue, team, settings, series and night changes, written by trigger in the same transaction                          |
+| Table               | Holds                                                                                                                                                                                                                                                        |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `profiles`          | One per auth user, anonymous ones included: display name, platform role, anonymous flag, active flag                                                                                                                                                         |
+| `venues`            | Public face: name, address, coordinates, type, time zone, country, town, currency, demo flag, suspension (when, why, by whom)                                                                                                                                |
+| `venue_members`     | Who works where and as what. Exactly one owner, added by trigger in the same statement as the venue                                                                                                                                                          |
+| `venue_settings`    | Capacity, capabilities, what the room hosts, seated or standing, up to three quiet nights (the first is `slow_night`), break-even headcount, talent budget, average spend, search radius                                                                     |
+| `agent_runs`        | One planning run per venue and night, Loudnight or generic mode, status and timing                                                                                                                                                                           |
+| `run_steps`         | Each tool call: step, tool, input, summarised output, latency, and the Qloo cache row it used                                                                                                                                                                |
+| `qloo_cache`        | Request hash, canonical request, full response, fetch time, refresh-after time (seven days). Shared by all; private to the server                                                                                                                            |
+| `concepts`          | Name, pitch, why it beats nearby, the four sub-scores, the generated total, estimated cost                                                                                                                                                                   |
+| `evidence`          | Claim, value, the `qloo_cache` row and JSON path that prove it. Refused by trigger without a receipt                                                                                                                                                         |
+| `talent_candidates` | An act for a night: Qloo entity or open record, source (night, area, both, Wikidata, MusicBrainz), tier, overlap, profile with home country and star flag, outreach draft or the owner's wording, booked time. Open-data acts can never carry a Qloo receipt |
+| `open_data_cache`   | Wikidata and MusicBrainz answers, shared and server only, refreshed after a week                                                                                                                                                                             |
+| `series`            | The chosen concept as a weekly series: weekday, start date, status                                                                                                                                                                                           |
+| `event_nights`      | Four dates, each with a variation, generated assets, public slug, status, and the learning decision                                                                                                                                                          |
+| `rsvps`             | Guest name, party size, server-generated check-in code (the ticket)                                                                                                                                                                                          |
+| `rsvp_contacts`     | A guest's optional email or phone, kept apart so door staff never see it; owners and managers only                                                                                                                                                           |
+| `night_spend`       | What a night took at the till, logged by an owner or manager                                                                                                                                                                                                 |
+| `checkins`          | One row per arrival, optionally linked to an RSVP, spend logged later by a manager                                                                                                                                                                           |
+| `audit_log`         | Append only. Venue, team, settings, series and night changes, written by trigger in the same transaction                                                                                                                                                     |
 
 ## 7. The planning pipeline
 
@@ -148,7 +163,7 @@ Six steps, each its own server call:
 3. **Find the gap.** Places lists nearby competing venues; Ticketmaster lists events nearby on the target weekday. Claude extracts the themes already covered.
 4. **Generate concepts.** Claude combines two or three high-affinity signals from different domains, re-queries Qloo to confirm the overlap is real, makes six candidates and keeps three.
 5. **Score and explain.** Each concept gets its four sub-scores; each evidence chip stores the Qloo request and response it came from. The validator drops any claim without a receipt.
-6. **Plan and equip.** The chosen concept becomes a four-week series, a talent shortlist, a launch kit and an ad brief.
+6. **Plan and equip.** The chosen concept becomes a four-week series, a talent shortlist, a launch kit and an ad brief. Performers come from Qloo (fans of the night's tastes, the area's own favourites, the area's own sound), plus Wikidata and MusicBrainz where Qloo is thin; one check by the reasoning model gives each act a home country, a star flag and a kind of act, so household names and non-performers are left out and home-grown acts come first.
 
 The client drives the steps in order and renders the stream; the server never holds a request open for the whole run. Every step writes `run_steps`, so the trace survives a reload and the "Powered by Qloo" panel lists every call.
 
@@ -162,7 +177,8 @@ The client drives the steps in order and renders the stream; the server never ho
 ## 9. Security summary
 
 - RLS on every table, with tested assertions for owners, managers, door staff, strangers, guests, administrators and previews.
-- The service-role key is server only, used for agent output, the shared Qloo cache and demo upkeep.
+- The service-role key is server only, used for agent output, the shared Qloo and open data caches, demo upkeep, service-side audit rows, and changing a profile's role or status.
+- The preview cookie is HMAC-signed with `PREVIEW_COOKIE_SECRET` and honoured only for a real administrator; the database independently checks the same.
 - Roles never come from user-editable metadata. Tokens are verified (`getClaims`), not just decoded.
 - Inputs validated with Zod. Database and upstream errors are mapped to safe messages; URLs that carry keys are never logged.
 - Security headers and a Content Security Policy in `next.config.ts`; the camera is allowed on our own pages only, for the door scanner.
@@ -191,7 +207,10 @@ The MCP tools cannot change Auth settings. Do these once for the hosted project 
 | Agent shape   | Fixed six-step spine, tools chosen per step     | Free agent loop               | Fast, predictable, streamable, testable                           |
 | Grounding     | Receipt trigger in the database plus validator  | Prompt instructions only      | The promise has to hold even if the code has a bug                |
 | Models        | Sonnet 5.5 for reasoning, Haiku 5.5 for copy    | One model for everything      | Cost and latency on bulk copy                                     |
-| Posters       | HTML/SVG templates rendered by Satori           | Image generation model        | Fast, consistent, on-brand                                        |
+| Posters       | Canvas drawing in the browser (image and video) | Image model, server rendering | Instant, consistent, on-brand, no server cost                     |
+| Performers    | Qloo first, open data where thin, model-vetted  | Qloo alone                    | Qloo's popularity is global and its local artist coverage uneven  |
+| Preview as    | Signed cookie plus a header the database checks | Impersonating the session     | Read only by construction; can only narrow what is seen           |
+| Door app      | React Native (Expo), plan 15                    | Installable web app           | Instant camera, haptics, offline queue that survives a restart    |
 | API style     | Versioned route handlers `/api/v1`              | Server Actions                | Testable, documented, usable by a future POS integration          |
 | Validation    | Zod, shared by form, API and upstream responses | Manual checks                 | One schema, three uses                                            |
 | Session check | `getClaims()` then profile read                 | `getSession()`                | Verifies the token signature, and role is always fresh            |

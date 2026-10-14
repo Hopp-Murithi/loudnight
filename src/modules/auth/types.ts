@@ -13,4 +13,6 @@ export interface CurrentUser {
 export interface RequestContext {
   user: CurrentUser
   supabase: ServerSupabase
+  // Set while an administrator previews someone: user is the person previewed, and nothing may be written.
+  preview?: { adminId: string; adminName: string }
 }

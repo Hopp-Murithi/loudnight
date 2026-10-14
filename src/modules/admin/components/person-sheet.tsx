@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { ROLES } from "@/config/roles"
 import { ROUTES } from "@/config/site"
 import { VENUE_ROLE_LABELS } from "@/modules/team/team.schemas"
+import { PreviewButton } from "@/modules/preview/components/preview-button"
 import { useAdminPerson, useSetPersonActive } from "../hooks/use-admin"
 import { PersonStatus, SignInBadge } from "./admin-badges"
 
@@ -89,6 +90,7 @@ export function PersonSheet({
               </ul>
             )}
           </section>
+          {canChange && data.person.isActive && <PreviewButton userId={data.person.id} name={data.person.name} />}
           {canChange && (
             <Button
               variant={data.person.isActive ? "outline" : "default"}

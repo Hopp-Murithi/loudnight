@@ -9,7 +9,7 @@ export default async function SignedInLayout({ children }: LayoutProps<"/">) {
   const defaultOpen = cookieStore.get("sidebar_state")?.value !== "false"
 
   return (
-    <AppShell user={ctx.user} defaultOpen={defaultOpen} venues={venues}>
+    <AppShell user={ctx.user} defaultOpen={defaultOpen} venues={venues} preview={ctx.preview}>
       {children}
     </AppShell>
   )

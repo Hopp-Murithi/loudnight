@@ -16,6 +16,8 @@ export const HISTORY_ACTIONS: Record<string, string> = {
   "profiles.update": "changed a profile",
   "person.deactivated": "deactivated a person",
   "person.reactivated": "reactivated a person",
+  "preview.started": "started previewing someone's view",
+  "preview.ended": "ended a preview",
 }
 
 // Column names in the change list, said the way an owner would.

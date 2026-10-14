@@ -79,6 +79,20 @@ export const adminDetailRepository = {
     return { plans, lastPlanAt: last.data?.created_at ?? null, published, rsvps, checkins }
   },
 
+  async runs(supabase: ServerSupabase, failedOnly: boolean, from: number, to: number) {
+    const query = supabase
+      .from("agent_runs")
+      .select(
+        "id, venue_id, target_weekday, status, current_step, error_message, created_at, venue:venues!agent_runs_venue_id_fkey(name)",
+      )
+      .eq("mode", "encore")
+    const { data, error } = await (failedOnly ? query.eq("status", "failed") : query)
+      .order("created_at", { ascending: false })
+      .range(from, to)
+    check(error)
+    return data ?? []
+  },
+
   async person(supabase: ServerSupabase, personId: string) {
     const { data, error } = await supabase
       .from("profiles")

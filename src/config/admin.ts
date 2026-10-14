@@ -7,5 +7,6 @@ export const ADMIN_SECTIONS = [
   { label: "Overview", href: ROUTES.admin },
   { label: "Venues", href: ROUTES.adminVenues },
   { label: "People", href: ROUTES.adminPeople },
+  { label: "Plans", href: ROUTES.adminRuns },
   { label: "Audit log", href: ROUTES.adminAudit },
 ] as const

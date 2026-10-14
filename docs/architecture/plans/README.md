@@ -15,13 +15,13 @@ How work happens: **one plan per feature, one plan at a time.** A plan is the si
 
 Submissions close Oct 30, 11:45 pm EDT (Oct 31, 6:45 am Nairobi). Target Oct 29; Oct 30 is buffer. Judging Nov 2 to 16, winners Nov 23.
 
-| Phase | Dates     | Plans                      | Gate (must pass to move on)                                                                            |
-| ----- | --------- | -------------------------- | ------------------------------------------------------------------------------------------------------ |
-| 1     | Oct 12-14 | 00, 01, 02                 | `npm run validate` green; app shell and design system in place; Qloo probe passes for 2 of 3 areas     |
-| 2     | Oct 15-18 | 03, 04, 05, 18 (preview)   | An owner onboards in two minutes; fingerprint and gap scan stored with receipts; first Vercel preview  |
-| 3     | Oct 19-22 | 06, 07, 09                 | A fresh run streams six steps to three scored concepts in about a minute; generic toggle; demo instant |
-| 4     | Oct 23-26 | 10, 11, 12, 13, 14         | Core complete: series, talent, launch kit, event page, RSVP, QR check-in, dashboard, learning on phone |
-| 5     | Oct 27-29 | 08, 15, 16, 17, 18, 19, 20 | Live on Vercel, logged-out judge path on desktop and phone, audits passed, submission filed            |
+| Phase | Dates     | Plans                    | Gate (must pass to move on)                                                                            |
+| ----- | --------- | ------------------------ | ------------------------------------------------------------------------------------------------------ |
+| 1     | Oct 12-14 | 00, 01, 02               | `npm run validate` green; app shell and design system in place; Qloo probe passes for 2 of 3 areas     |
+| 2     | Oct 15-18 | 03, 04, 05, 18 (preview) | An owner onboards in two minutes; fingerprint and gap scan stored with receipts; first Vercel preview  |
+| 3     | Oct 19-22 | 06, 07, 09               | A fresh run streams six steps to three scored concepts in about a minute; generic toggle; demo instant |
+| 4     | Oct 23-26 | 10, 11, 12, 13, 14       | Core complete: series, talent, launch kit, event page, RSVP, QR check-in, dashboard, learning on phone |
+| 5     | Oct 27-29 | 08, 16, 17, 18, 19, 20   | Live on Vercel, logged-out judge path on desktop and phone, audits passed, submission filed            |
 
 If the day-one Qloo probe fails (thin location data), switch neighbourhoods or lean on interest signals before writing pipeline code (plan 02 records the decision).
 
@@ -40,14 +40,14 @@ If the day-one Qloo probe fails (thin location data), switch neighbourhoods or l
 | 05  | [Competitor gap scan](05-competitor-gap-scan.md)                                  | 2     | Done              | 03, 04     |
 | 06  | [Concepts, scoring and grounding](06-concepts-scoring-grounding.md)               | 3     | Done              | 04, 05     |
 | 07  | [Pipeline runs, live trace and generic toggle](07-runs-live-trace-generic.md)     | 3     | Built, live       | 06         |
-| 08  | [Administrator console and Preview as](08-admin-console-and-preview.md)           | 5     | Not started       | 03, 13     |
+| 08  | [Administrator console and Preview as](08-admin-console-and-preview.md)           | 5     | Built, live       | 03, 13     |
 | 09  | [Demo venues and the judge path](09-demo-venues-judge-path.md)                    | 3     | First pass live   | 07         |
 | 10  | [Series planner and talent finder](10-series-and-talent.md)                       | 4     | Built, live       | 06         |
 | 11  | [Launch kit and distribution](11-launch-kit-and-distribution.md)                  | 4     | In progress       | 10         |
 | 12  | [Event pages, RSVP and QR](12-event-pages-rsvp-qr.md)                             | 4     | Built, live       | 11         |
 | 13  | [Door check-in, live dashboard and measurement](13-door-dashboard-measurement.md) | 4     | Built, live       | 12         |
 | 14  | [Learning loop](14-learning-loop.md)                                              | 4     | Not started       | 13         |
-| 15  | [Installable app for door staff](15-installable-app.md)                           | 5     | Not started       | 13         |
+| 15  | [The door app (React Native)](15-installable-app.md)                              | later | Plan written      | 12, 13     |
 | 16  | [Security hardening and Qloo data compliance](16-security-and-compliance.md)      | 5     | Not started       | 12, 13     |
 | 17  | [Quality: end-to-end, accessibility, performance, observability](17-quality.md)   | 5     | Not started       | 09, 13     |
 | 18  | [Deployment and environments](18-deployment.md)                                   | 2, 5  | Live, in progress | 00         |
@@ -61,21 +61,21 @@ If the day-one Qloo probe fails (thin location data), switch neighbourhoods or l
 | 26  | [Taste heatmap](26-taste-heatmap.md)                                              | 5     | Not started       | 04         |
 | 27  | [Ask about this plan](27-plan-assistant.md)                                       | 5     | Not started       | 07         |
 | 28  | [Spanish where it matters](28-spanish-ads.md)                                     | 5     | Built, live       | 11         |
-| 29  | [Venues anywhere in the world](29-venues-worldwide.md)                            | 5     | In progress       | 03, 05     |
+| 29  | [Venues anywhere in the world](29-venues-worldwide.md)                            | 5     | Built, live       | 03, 05     |
 | 30  | [Find your venue, in your country](30-venue-search-by-country.md)                 | 5     | Built, live       | 03, 29     |
 | 31  | [What is trending near the venue](31-local-trends.md)                             | later | Research          | 04, 06     |
-| 32  | [The right performers for this room](32-performer-fit.md)                         | 5     | Plan written      | 10, 11, 29 |
+| 32  | [The right performers for this room](32-performer-fit.md)                         | 5     | Built, live       | 10, 11, 29 |
 
 ## Official judging criteria and how the plans answer them
 
 From the hackathon page (these replace the five criteria in the brief, which predates them). Every plan names the criteria it serves; plan 19 turns them into the write-up and the video.
 
-| Criterion                                                                                                                | What the judges look for                 | Where Loudnight earns it                                                                                                                                                                       | Plans                  |
-| ------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
-| **Technological Implementation**: how thoroughly and skilfully the project uses Qloo; genuine, working, non-trivial code | Depth of Qloo use; a real working system | Six Qloo surfaces (location insights, demographics, cross-domain affinity, entity search, tags, popularity) drive decisions; cache and receipts; grounding trigger; streamed agent; RLS; tests | 02, 04, 06, 07, 16, 17 |
-| **Design**: a complete, coherent product experience, not a proof of concept                                              | End-to-end flow that feels finished      | Two-minute onboarding to launched night to measured turnout, every state designed, mobile first, light and dark, one design system                                                             | 01, 03, 09-15, 17      |
-| **Potential Impact**: a credible, specific case for a real problem and audience, addressed by what is demonstrated       | Real venues, real money, real attendance | Break-even input drives the maths; check-ins prove turnout; pilot venue result; unit economics on screen                                                                                       | 13, 14, 19             |
-| **Quality of the Idea**: creative, non-obvious use of Qloo; genuine understanding of the problem space                   | Not another consumer recommender         | Supply-side taste AI (helps the venue, not the consumer); cross-domain concepts; Generic vs Loudnight toggle shows why Qloo matters; closes decide, execute, promote, measure                  | 06, 07, 09, 19         |
+| Criterion                                                                                                                | What the judges look for                 | Where Loudnight earns it                                                                                                                                                                                                                                                                     | Plans                  |
+| ------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| **Technological Implementation**: how thoroughly and skilfully the project uses Qloo; genuine, working, non-trivial code | Depth of Qloo use; a real working system | Qloo drives every decision: location insights across eleven areas of taste, demographics, cross-domain affinity checks chosen by the planner, genre filters for the area's own sound, and popularity tiers for performers; cache and receipts; grounding trigger; streamed agent; RLS; tests | 02, 04, 06, 07, 16, 17 |
+| **Design**: a complete, coherent product experience, not a proof of concept                                              | End-to-end flow that feels finished      | Two-minute onboarding to launched night to measured turnout, every state designed, mobile first, light and dark, one design system                                                                                                                                                           | 01, 03, 09-15, 17      |
+| **Potential Impact**: a credible, specific case for a real problem and audience, addressed by what is demonstrated       | Real venues, real money, real attendance | Break-even input drives the maths; check-ins prove turnout; pilot venue result; unit economics on screen                                                                                                                                                                                     | 13, 14, 19             |
+| **Quality of the Idea**: creative, non-obvious use of Qloo; genuine understanding of the problem space                   | Not another consumer recommender         | Supply-side taste AI (helps the venue, not the consumer); cross-domain concepts; Generic vs Loudnight toggle shows why Qloo matters; closes decide, execute, promote, measure                                                                                                                | 06, 07, 09, 19         |
 
 Proof points each criterion needs on screen during judging: the "Powered by Qloo" panel and evidence receipts (Technological Implementation), the logged-out judge path on a phone (Design), the dashboard and break-even calculator with pilot numbers (Potential Impact), the Generic vs Loudnight toggle (Quality of the Idea).
 
@@ -112,40 +112,40 @@ Proof points each criterion needs on screen during judging: the "Powered by Qloo
 
 ## Traceability: every part of the brief and where it ships
 
-| Brief item                                                                                                                    | Plan(s)                |
-| ----------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
-| Venue onboarding: address autocomplete, slow night, break-even, capabilities, budget, Places fill-in                          | 03                     |
-| Neighbourhood taste profile across 8+ domains, demographic skew, "taste fingerprint"                                          | 02, 04                 |
-| Competitor gap scan: nearby venues (Places), nearby events (Ticketmaster) on that night                                       | 05                     |
-| Concept generator: 6 candidates from cross-domain affinity overlaps, re-checked with Qloo, top 3 kept                         | 06                     |
-| Concept score formula (40/20/20/20) and its four inputs                                                                       | 06                     |
-| Evidence chips; grounding rule; validator; "no number without a receipt"                                                      | 06, 16                 |
-| Live agent trace streaming each step and finding with its source                                                              | 07                     |
-| Fixed six-step spine; Claude picks tools inside a step; one server call per step                                              | 07                     |
-| Generic AI vs Loudnight toggle                                                                                                | 07, 09                 |
-| "Powered by Qloo" panel listing every call in a run                                                                           | 07                     |
-| Preloaded demo venues: 3 real US neighbourhoods, instant, no signup                                                           | 09                     |
-| 4-week series calendar with weekly variations                                                                                 | 10                     |
-| Talent finder: audience overlap, right popularity tier, outreach drafts                                                       | 10                     |
-| Launch kit: poster (Satori), posts for Instagram, Facebook, TikTok, Google Business Profile, menu specials, event description | 11                     |
-| Ad targeting brief: Qloo affinities as Meta/TikTok interests, radius, age band, daily budget                                  | 11                     |
-| Performer promo kit, partner cross-promo, regulars SMS/email text                                                             | 11                     |
-| Event page with RSVP, add-to-calendar, share links, QR code                                                                   | 12                     |
-| Door check-in by QR, owner logs spend                                                                                         | 13                     |
-| Dashboard: RSVPs, check-ins, show-up rate, distance to break-even                                                             | 13                     |
-| Break-even calculator and the unit logic for the pitch                                                                        | 13, 19                 |
-| Learning loop: keep, tweak or swap the next date                                                                              | 14                     |
-| Models: Sonnet 5.5 for orchestration, Haiku 5.5 for bulk copy                                                                 | 06, 07, 11             |
-| Abuse and cost control: per-IP limits on fresh runs, Qloo cache reuse                                                         | 07, 16                 |
-| Open source, MIT, keys only in env                                                                                            | 00, 16, 19             |
-| Live, publicly accessible app on Vercel                                                                                       | 18                     |
-| Mobile-first, two-minute onboarding, one-tap launch kit                                                                       | 01, 03, 11             |
-| Demo script (two minutes) and the hook "trivia night"                                                                         | 09, 19                 |
-| Submission checklist: live URL, demo venues, repo, README, Devpost write-up, screenshots, video, pilot result                 | 19                     |
-| Confirm eligibility for Kenya, prize payment, start date, Qloo key access                                                     | 02, 19                 |
-| Roadmap: auto-posting, POS integration, talent marketplace, multi-venue dashboard, brand sponsorship (written up, not built)  | 20                     |
-| Risks: thin Qloo data, rate limits, famous talent, hallucinated numbers, Vercel timeouts, scope creep, no pilot               | 02, 06, 07, 10, 16, 19 |
-| Carried over from UNoN: Preview as, audit log page, roles, installable app                                                    | 08, 15                 |
+| Brief item                                                                                                                                                     | Plan(s)                |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| Venue onboarding: address autocomplete, slow night, break-even, capabilities, budget, Places fill-in                                                           | 03                     |
+| Neighbourhood taste profile across 8+ domains, demographic skew, "taste fingerprint"                                                                           | 02, 04                 |
+| Competitor gap scan: nearby venues (Places), nearby events (Ticketmaster) on that night                                                                        | 05                     |
+| Concept generator: 6 candidates from cross-domain affinity overlaps, re-checked with Qloo, top 3 kept                                                          | 06                     |
+| Concept score formula (40/20/20/20) and its four inputs                                                                                                        | 06                     |
+| Evidence chips; grounding rule; validator; "no number without a receipt"                                                                                       | 06, 16                 |
+| Live agent trace streaming each step and finding with its source                                                                                               | 07                     |
+| Fixed six-step spine; Claude picks tools inside a step; one server call per step                                                                               | 07                     |
+| Generic AI vs Loudnight toggle                                                                                                                                 | 07, 09                 |
+| "Powered by Qloo" panel listing every call in a run                                                                                                            | 07                     |
+| Preloaded demo venues: 3 real US neighbourhoods, instant, no signup                                                                                            | 09                     |
+| 4-week series calendar with weekly variations                                                                                                                  | 10                     |
+| Talent finder: audience overlap, right popularity tier, outreach drafts                                                                                        | 10                     |
+| Launch kit: posters, stories and videos drawn in the browser, posts for Instagram, Facebook, TikTok, Google Business Profile, menu specials, event description | 11                     |
+| Ad targeting brief: Qloo affinities as Meta/TikTok interests, radius, age band, daily budget                                                                   | 11                     |
+| Performer promo kit, partner cross-promo, regulars SMS/email text                                                                                              | 11                     |
+| Event page with RSVP, add-to-calendar, share links, QR code                                                                                                    | 12                     |
+| Door check-in by QR, owner logs spend                                                                                                                          | 13                     |
+| Dashboard: RSVPs, check-ins, show-up rate, distance to break-even                                                                                              | 13                     |
+| Break-even calculator and the unit logic for the pitch                                                                                                         | 13, 19                 |
+| Learning loop: keep, tweak or swap the next date                                                                                                               | 14                     |
+| Models: Sonnet 5.5 for orchestration, Haiku 5.5 for bulk copy                                                                                                  | 06, 07, 11             |
+| Abuse and cost control: per-IP limits on fresh runs, Qloo cache reuse                                                                                          | 07, 16                 |
+| Open source, MIT, keys only in env                                                                                                                             | 00, 16, 19             |
+| Live, publicly accessible app on Vercel                                                                                                                        | 18                     |
+| Mobile-first, two-minute onboarding, one-tap launch kit                                                                                                        | 01, 03, 11             |
+| Demo script (two minutes) and the hook "trivia night"                                                                                                          | 09, 19                 |
+| Submission checklist: live URL, demo venues, repo, README, Devpost write-up, screenshots, video, pilot result                                                  | 19                     |
+| Confirm eligibility for Kenya, prize payment, start date, Qloo key access                                                                                      | 02, 19                 |
+| Roadmap: auto-posting, POS integration, talent marketplace, multi-venue dashboard, brand sponsorship (written up, not built)                                   | 20                     |
+| Risks: thin Qloo data, rate limits, famous talent, hallucinated numbers, Vercel timeouts, scope creep, no pilot                                                | 02, 06, 07, 10, 16, 19 |
+| Carried over from UNoN: Preview as, audit log page, roles; the door app (now planned native)                                                                   | 08, 15                 |
 
 ## Template for a new plan
 

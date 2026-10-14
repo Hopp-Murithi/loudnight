@@ -1,6 +1,6 @@
 # Plan 29: Venues anywhere in the world
 
-Status: In progress. Data, forms, money and performers built (Oct 14); the coverage line and a full Nairobi plan are next.
+Status: Built (Oct 14). Data, forms, money and performers built; a full Nairobi plan and performer search checked on Oct 14 (Kenyan acts first).
 Depends on: 03, 04, 05
 Phase: 5 (added Oct 14 at the owner's request)
 Judging criteria: Potential Impact (the brief's go-to-market names Kenya and other markets), Technological Implementation

@@ -6,7 +6,7 @@ import type { AppRole } from "@/config/roles"
 import { createServerSupabase, type ServerSupabase } from "@/lib/supabase/server"
 import { getApiContext } from "@/modules/auth/server/context"
 import type { RequestContext } from "@/modules/auth/types"
-import { AppError, validationFailed } from "./errors"
+import { AppError, forbidden, validationFailed } from "./errors"
 import { enforceRateLimit } from "./rate-limit"
 import { NDJSON } from "./stream"
 
@@ -26,6 +26,8 @@ interface PublicHandlerArgs<TBody, TParams> {
 
 interface RouteOptions<TBody> {
   roles?: AppRole[]
+  // Only the route that ends a preview may write while one is active.
+  ignorePreview?: boolean
   body?: ZodType<TBody>
   rateLimit?: RateLimitRule
 }
@@ -54,6 +56,12 @@ async function parseBody<TBody>(request: NextRequest, schema?: ZodType<TBody>): 
   return parsed.data
 }
 
+// Nothing is written while an administrator previews someone. The database refuses too; this says why.
+function refusePreviewWrites(ctx: RequestContext, request: NextRequest, ignore: boolean | undefined) {
+  if (ctx.preview && request.method !== "GET" && !ignore)
+    throw forbidden("You are previewing as someone else. Exit preview to make changes.")
+}
+
 export function apiRoute<TBody = undefined, TParams = Record<string, never>>(
   options: RouteOptions<TBody>,
   handler: (args: HandlerArgs<TBody, TParams>) => Promise<unknown>,
@@ -61,6 +69,7 @@ export function apiRoute<TBody = undefined, TParams = Record<string, never>>(
   return async (request: NextRequest, route: RouteParams<TParams>) => {
     try {
       const ctx = await getApiContext(options.roles)
+      refusePreviewWrites(ctx, request, options.ignorePreview)
       if (options.rateLimit) await enforceRateLimit(request.headers, options.rateLimit)
       const body = await parseBody(request, options.body)
       const data = await handler({ ctx, body, params: await route.params, request })
@@ -79,6 +88,7 @@ export function apiStreamRoute<TBody = undefined, TParams = Record<string, never
   return async (request: NextRequest, route: RouteParams<TParams>) => {
     try {
       const ctx = await getApiContext(options.roles)
+      refusePreviewWrites(ctx, request, options.ignorePreview)
       if (options.rateLimit) await enforceRateLimit(request.headers, options.rateLimit)
       const body = await parseBody(request, options.body)
       const stream = await handler({ ctx, body, params: await route.params, request })

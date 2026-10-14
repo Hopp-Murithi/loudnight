@@ -1,6 +1,7 @@
 import type { ReactNode } from "react"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { ROLES } from "@/config/roles"
+import { PreviewBanner } from "@/modules/preview/components/preview-banner"
 import type { CurrentUser } from "@/modules/auth/types"
 import { AccountMenu } from "./account-menu"
 import { AppSidebar, type ShellVenue } from "./app-sidebar"
@@ -15,16 +16,21 @@ interface AppShellProps {
   defaultOpen: boolean
   venues: ShellVenue[]
   currentVenueId?: string
+  // Set while an administrator previews someone; the banner shows above every page.
+  preview?: { adminName: string }
   children: ReactNode
 }
 
 // The signed-in frame: a tab bar on phones, an icon rail on tablets, a full sidebar from laptop width.
-export function AppShell({ user, defaultOpen, venues, currentVenueId, children }: AppShellProps) {
+export function AppShell({ user, defaultOpen, venues, currentVenueId, preview, children }: AppShellProps) {
   return (
     <SidebarProvider defaultOpen={defaultOpen}>
       <SkipLink />
       <AppSidebar venues={venues} isAdministrator={user.role === ROLES.administrator} currentVenueId={currentVenueId} />
       <SidebarInset className="min-w-0">
+        {preview && (
+          <PreviewBanner name={user.displayName ?? user.email ?? "this person"} adminName={preview.adminName} />
+        )}
         <header className="sticky top-0 z-20 flex h-14 items-center gap-2 border-b bg-background/90 px-3 backdrop-blur sm:px-4">
           <SidebarToggle />
           <Brand nameClassName="text-xl" className="md:hidden" />
