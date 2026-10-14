@@ -129,8 +129,8 @@ export function drawDateBand(frame: AdFrame, options: BandOptions): number {
   return width
 }
 
-// A line of body type gives up at most a fifth of its size before it is shortened.
-const LINE_SHRINK = 0.8
+// A line of body type gives up at most 30 percent of its size before it is shortened.
+const LINE_SHRINK = 0.7
 
 interface TextOptions {
   x: number
