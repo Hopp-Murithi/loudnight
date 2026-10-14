@@ -36,3 +36,25 @@ export function fitActs<T extends { name: string }>(
     .slice(0, keep)
     .map(({ act, verdict }) => ({ ...act, home: verdict?.home ?? null }))
 }
+
+// A list for a venue's own country: once there are enough home-grown acts, or the night is about the country itself,
+// acts from elsewhere are left out; otherwise a couple may fill in, after the home-grown ones.
+export function homeGrownFirst<T extends { home: string | null }>(
+  acts: T[],
+  country: string | null,
+  nightIsAboutCountry: boolean,
+  enough = 4,
+  foreignAllowed = 2,
+): T[] {
+  if (!country) return acts
+  const foreign = (act: T) => act.home !== null && act.home !== country
+  const homeGrown = acts.filter((act) => act.home === country).length
+  if (nightIsAboutCountry || homeGrown >= enough) return acts.filter((act) => !foreign(act))
+  let kept = 0
+  return acts.filter((act) => !foreign(act) || kept++ < foreignAllowed)
+}
+
+// Whether a night's name or pitch names the venue's country, such as "Underrated Kenya Open Stage" in Kenya.
+export const aboutCountry = (text: string, countryName: string) =>
+  countryName.length >= 4 &&
+  text.toLowerCase().includes(countryName.slice(0, Math.max(4, countryName.length - 1)).toLowerCase())

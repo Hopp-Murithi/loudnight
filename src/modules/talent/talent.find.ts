@@ -14,7 +14,7 @@ import { openSearchFor } from "./talent.open"
 import { openActs } from "./talent.open-data"
 import { writeOutreach } from "./talent.outreach"
 import { vetActs } from "./talent.vet"
-import { fitActs } from "./talent.fit"
+import { aboutCountry, fitActs, homeGrownFirst } from "./talent.fit"
 import { talentRepository, type TalentInsert } from "./talent.repository"
 import {
   activeMusicians,
@@ -126,11 +126,17 @@ export async function findTalent(admin: AdminSupabase, venue: TalentVenue, night
     [...shortlist, ...pool].map((act) => act.name),
     countryName(venue.countryCode ?? "US"),
   )
-  const fromQloo = fitActs(shortlist, verdicts, venue.countryCode, night.format, TALENT.shortlistSize)
+  const country = venue.countryCode
+  const fittedQloo = fitActs(shortlist, verdicts, country, night.format, Number.POSITIVE_INFINITY)
+  const fittedOpen = fitActs(pool, verdicts, country, night.format, Number.POSITIVE_INFINITY)
+  // Enough home-grown acts, or a night about the country itself, and acts from elsewhere are left out altogether.
+  const about = aboutCountry(night.conceptName, countryName(country ?? "US"))
+  const welcome = new Set(homeGrownFirst([...fittedQloo, ...fittedOpen], country, about).map((act) => act.entityId))
+  const fromQloo = fittedQloo.filter((act) => welcome.has(act.entityId)).slice(0, TALENT.shortlistSize)
   // Where Qloo knows few home-grown acts, home-grown open records take the places foreign acts would have had.
-  const homeFromQloo = fromQloo.filter((act) => act.home === venue.countryCode).length
+  const homeFromQloo = fromQloo.filter((act) => act.home === country).length
   const openRoom = Math.max(OPEN_TALENT.keep, TALENT.shortlistSize - homeFromQloo)
-  const open = fitActs(pool, verdicts, venue.countryCode, night.format, openRoom)
+  const open = fittedOpen.filter((act) => welcome.has(act.entityId)).slice(0, openRoom)
   const offered = [...fromQloo, ...open]
 
   const sharedTastes = messageTastes(anchors)

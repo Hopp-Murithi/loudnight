@@ -46,35 +46,24 @@ export interface OpenVenue {
   town: string | null
 }
 
-// Acts from open records for the kinds of night Qloo knows few performers for. Never fails the search: an
-// unreachable source simply adds nobody.
+// Acts from open records for the kinds of night Qloo knows few performers for. Every search runs at once and fails
+// on its own: an unreachable source adds nobody, and never takes the others' answers with it.
 export async function openActs(admin: AdminSupabase, search: OpenSearch, venue: OpenVenue): Promise<OpenAct[]> {
-  try {
-    const found: OpenAct[] = []
-    if (search.roles.length > 0) {
-      const near = nearbyQuery(search.roles, venue.point)
-      found.push(...actsFromWikidata(await cached<WikidataRow[]>(admin, "wikidata", near, () => sparql(near))))
-      if (found.length < OPEN_TALENT.keep && venue.countryCode) {
-        const wide = countryQuery(search.roles, venue.countryCode)
-        const more = actsFromWikidata(await cached<WikidataRow[]>(admin, "wikidata", wide, () => sparql(wide)))
-        found.push(...more.filter((act) => !found.some((known) => known.entityId === act.entityId)))
-      }
-    }
-    if (search.townMusicians) {
-      // The town first; the whole country when the town has few musicians on record.
-      const places = [venue.town?.split(",")[0].trim(), venue.countryCode ? countryName(venue.countryCode) : null]
-      for (const place of places) {
-        if (!place || found.filter((act) => act.source === "musicbrainz").length >= OPEN_TALENT.keep) continue
-        const artists = await cached<MusicBrainzArtist[]>(admin, "musicbrainz", place, () =>
-          artistsFrom(place, OPEN_TALENT.fetch),
-        )
-        found.push(
-          ...actsFromMusicBrainz(artists).filter((act) => !found.some((known) => known.entityId === act.entityId)),
-        )
-      }
-    }
-    return found
-  } catch {
-    return []
-  }
+  const wikidata = (query: string) =>
+    cached<WikidataRow[]>(admin, "wikidata", query, () => sparql(query)).then(actsFromWikidata)
+  const musicbrainz = (place: string) =>
+    cached<MusicBrainzArtist[]>(admin, "musicbrainz", place, () => artistsFrom(place, OPEN_TALENT.fetch)).then(
+      actsFromMusicBrainz,
+    )
+  const town = venue.town?.split(",")[0].trim()
+  const country = venue.countryCode
+  const searches = [
+    ...(search.roles.length > 0 ? [wikidata(nearbyQuery(search.roles, venue.point))] : []),
+    ...(search.roles.length > 0 && country ? [wikidata(countryQuery(search.roles, country))] : []),
+    ...(search.townMusicians && town ? [musicbrainz(town)] : []),
+    ...(search.townMusicians && country ? [musicbrainz(countryName(country))] : []),
+  ]
+  const answers = await Promise.allSettled(searches)
+  const found = answers.flatMap((answer) => (answer.status === "fulfilled" ? answer.value : []))
+  return found.filter((act, index) => found.findIndex((other) => other.entityId === act.entityId) === index)
 }

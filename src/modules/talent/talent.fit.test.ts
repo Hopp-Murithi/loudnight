@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { fitActs, kindsFor, type Verdict } from "./talent.fit"
+import { aboutCountry, fitActs, homeGrownFirst, kindsFor, type Verdict } from "./talent.fit"
 
 const acts = [
   "Sample Tanzanian Star",
@@ -44,5 +44,31 @@ describe("fitActs", () => {
     expect(kindsFor("live_music")).toEqual(["musician"])
     expect(kindsFor("dj_night")).toEqual(["dj", "musician"])
     expect(kindsFor("game")).not.toContain("other")
+  })
+})
+
+describe("homeGrownFirst", () => {
+  const list = [
+    { name: "a", home: "KE" },
+    { name: "b", home: "NG" },
+    { name: "c", home: null },
+    { name: "d", home: "JM" },
+    { name: "e", home: "US" },
+  ]
+
+  it("lets a couple of foreign acts fill in while home-grown acts are few", () => {
+    expect(homeGrownFirst(list, "KE", false).map((act) => act.name)).toEqual(["a", "b", "c", "d"])
+  })
+
+  it("leaves foreign acts out once there are enough home-grown ones, or the night is about the country", () => {
+    const many = [...list, ...["f", "g", "h"].map((name) => ({ name, home: "KE" }))]
+    expect(homeGrownFirst(many, "KE", false).map((act) => act.name)).toEqual(["a", "c", "f", "g", "h"])
+    expect(homeGrownFirst(list, "KE", true).map((act) => act.name)).toEqual(["a", "c"])
+  })
+
+  it("knows a night named after the country", () => {
+    expect(aboutCountry("Underrated Kenya Open Stage", "Kenya")).toBe(true)
+    expect(aboutCountry("Kenyan Soul Sundays", "Kenya")).toBe(true)
+    expect(aboutCountry("Cider & Alt-Country Wednesdays", "United States")).toBe(false)
   })
 })
