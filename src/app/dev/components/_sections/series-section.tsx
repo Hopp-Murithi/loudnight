@@ -36,6 +36,7 @@ const act = (id: string, name: string, tier: TalentView["tier"], overlap: number
   booked: id === "b",
   bookedAt: id === "b" ? "2026-10-13T10:00:00Z" : null,
   source: id === "a" ? "both" : id === "b" ? "area" : "night",
+  reach: id === "c" ? "stretch" : "within",
   profile: {
     imageUrl: null,
     tagline: "A sample act known for sample songs and a warm live show.",
@@ -45,6 +46,7 @@ const act = (id: string, name: string, tier: TalentView["tier"], overlap: number
     isGroup: false,
     listeners: 34500,
     origin: id === "a" ? "Sample Town, Sample Country" : null,
+    star: false,
     channels: [{ id: "instagram", label: "Instagram", url: "https://www.instagram.com/" }],
   },
 })

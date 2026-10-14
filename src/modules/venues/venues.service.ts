@@ -2,6 +2,7 @@ import "server-only"
 import { cache } from "react"
 import type { VenueRole } from "@/config/navigation"
 import { ROLES } from "@/config/roles"
+import { ATMOSPHERES, type Atmosphere } from "@/config/venues"
 import { conflict, forbidden, notFound } from "@/lib/http/errors"
 import type { ServerSupabase } from "@/lib/supabase/server"
 import type { RequestContext } from "@/modules/auth/types"
@@ -17,11 +18,15 @@ import {
   type VenueSettingsInput,
 } from "./venues.schemas"
 
+const atmosphereOf = (value: string): Atmosphere => ATMOSPHERES.find((option) => option === value) ?? "mixed"
+
 const settingsColumns = (input: VenueSettingsInput) => ({
   slow_night: input.slowNight,
   break_even_headcount: input.breakEvenHeadcount,
   capacity: input.capacity,
   capabilities: [...new Set(input.capabilities)],
+  hosts: [...new Set(input.hosts)],
+  atmosphere: input.atmosphere,
   talent_budget_cents: toCents(input.talentBudget),
   average_spend_cents: toCents(input.averageSpend),
 })
@@ -58,6 +63,8 @@ const loadDetail = cache(async (ctx: RequestContext, venueId: string): Promise<V
       breakEvenHeadcount: settings.break_even_headcount,
       capacity: settings.capacity,
       capabilities: settings.capabilities,
+      hosts: settings.hosts,
+      atmosphere: atmosphereOf(settings.atmosphere),
       talentBudget: fromCents(settings.talent_budget_cents),
       averageSpend: fromCents(settings.average_spend_cents),
       searchRadiusM: settings.search_radius_m,
@@ -111,6 +118,8 @@ export const venuesService = {
       p_country_code: input.countryCode ?? undefined,
       p_city: input.city ?? undefined,
       p_currency: input.currency,
+      p_hosts: [...new Set(input.hosts)],
+      p_atmosphere: input.atmosphere,
     })
     return { id }
   },

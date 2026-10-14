@@ -12,7 +12,9 @@ const writeOutreach = vi.fn()
 const findRun = vi.fn()
 
 vi.mock("./talent.repository", () => ({ talentRepository: talentRepo }))
+const householdNames = vi.fn()
 vi.mock("./talent.outreach", () => ({ writeOutreach }))
+vi.mock("./talent.stars", () => ({ householdNames }))
 vi.mock("@/modules/taste/taste.service", () => ({ cachedQloo }))
 vi.mock("@/modules/runs/runs.repository", () => ({ runsRepository: { findRun } }))
 vi.mock("@/modules/series/series.repository", () => ({ seriesRepository: {} }))
@@ -44,6 +46,7 @@ const venue = {
   timeZone: "America/New_York",
   talentBudgetCents: 30000,
   currency: "USD",
+  countryCode: "KE",
 }
 const night = {
   conceptId: "c1",
@@ -79,6 +82,7 @@ beforeEach(() => {
   findRun.mockResolvedValue({ context })
   talentRepo.currentList.mockResolvedValue([])
   writeOutreach.mockResolvedValue(new Map([["a", "Hello a"]]))
+  householdNames.mockResolvedValue(new Set(["Sample Act home"]))
   cachedQloo.mockImplementation(async (_admin: unknown, request: { params: Params }) => {
     const kind = which(request.params)
     return { cacheId: `cache-${kind}`, fromCache: false, response: { results: { entities: answers[kind] } } }
@@ -123,6 +127,9 @@ describe("findTalent", () => {
     })
     expect(home).toMatchObject({ qloo_cache_id: "cache-area", fit_signals: [] })
     expect((home.profile as { origin: string }).origin).toBe("Sample Town, Sample Country")
+    expect((home.profile as { star: boolean }).star).toBe(true)
+    expect((fit.profile as { star: boolean }).star).toBe(false)
+    expect(householdNames.mock.calls[0][1]).toBe("Kenya")
     expect(fit).toMatchObject({ fit_signals: ["Sample soul"], outreach_draft: "Hello a", popularity_tier: "local" })
     expect(star).toMatchObject({ popularity_tier: "national", outreach_draft: null, qloo_cache_id: "cache-famous" })
   })
@@ -141,6 +148,7 @@ describe("findTalent", () => {
     ])
     findRun.mockResolvedValue({ context })
     writeOutreach.mockResolvedValue(new Map())
+    householdNames.mockResolvedValue(new Set())
     await findTalent(admin, venue, night)
     expect(asked("fits")[0].page).toBeUndefined()
   })

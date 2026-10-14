@@ -376,5 +376,26 @@ begin
   exception when sqlstate 'EA429' then failed := true; end;
   assert failed, 'a seventh run within the hour is refused';
 
+  -- what a room hosts: owners and managers set it, door staff cannot, and nonsense is refused
+  perform set_config('request.jwt.claims', json_build_object('sub', u_manager, 'role', 'authenticated')::text, true);
+  set local role authenticated;
+  update public.venue_settings set hosts = '{poetry,comedy}', atmosphere = 'seated' where venue_id = v_mine; get diagnostics n = row_count;
+  assert n = 1, 'managers say what the room hosts';
+  failed := false;
+  begin update public.venue_settings set atmosphere = 'floating' where venue_id = v_mine; exception when check_violation then failed := true; end;
+  assert failed, 'an unknown atmosphere is refused';
+  reset role;
+  perform set_config('request.jwt.claims', json_build_object('sub', u_door, 'role', 'authenticated')::text, true);
+  set local role authenticated;
+  update public.venue_settings set hosts = '{film}' where venue_id = v_mine; get diagnostics n = row_count;
+  assert n = 0, 'door staff cannot change the room';
+  reset role;
+  perform set_config('request.jwt.claims', json_build_object('sub', u_other, 'role', 'authenticated')::text, true);
+  set local role authenticated;
+  select public.create_venue('Poetry cafe', '4 Main St', null, -0.42, 36.95, 'cafe', 'Africa/Nairobi',
+    40, '{}', 'thursday', 15, 3000000, 150000, 'KE', 'Nyeri', 'KES', '{poetry,seated_sets}', 'seated') into new_venue;
+  assert (select atmosphere from public.venue_settings where venue_id = new_venue) = 'seated', 'create_venue saves what the room hosts';
+  reset role;
+
   raise exception 'ALL RLS ASSERTIONS PASSED';
 end $$;

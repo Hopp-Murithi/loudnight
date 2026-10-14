@@ -123,6 +123,8 @@ describe("venueOnboardingSchema", () => {
     breakEvenHeadcount: 40,
     capacity: 90,
     capabilities: ["stage", "sound_system"],
+    hosts: ["poetry", "live_music"],
+    atmosphere: "seated",
     talentBudget: 30_000,
     averageSpend: 1_500,
   }
@@ -138,6 +140,8 @@ describe("venueOnboardingSchema", () => {
     ["a fractional capacity", { capacity: 90.5 }],
     ["a negative budget", { talentBudget: -1 }],
     ["an unknown capability", { capabilities: ["jacuzzi"] }],
+    ["an unknown kind of night", { hosts: ["fireworks"] }],
+    ["an unknown atmosphere", { atmosphere: "floating" }],
     ["a made-up zone", { timeZone: "Mars/Olympus" }],
     ["an unknown currency", { currency: "XYZ" }],
     ["a lower-case country", { countryCode: "ke" }],

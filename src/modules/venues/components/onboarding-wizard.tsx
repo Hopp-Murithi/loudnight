@@ -19,7 +19,7 @@ type Fields = FieldPath<VenueOnboardingInput>
 export const ONBOARDING_STEPS: { label: string; fields: Fields[] }[] = [
   { label: "Find your venue", fields: ["googlePlaceId", "name", "address", "latitude", "longitude", "venueType"] },
   { label: "Your quiet night", fields: ["slowNight", "breakEvenHeadcount"] },
-  { label: "Your space", fields: ["capacity", "capabilities"] },
+  { label: "Your space", fields: ["capacity", "hosts", "atmosphere", "capabilities"] },
   { label: "Money", fields: ["currency", "talentBudget", "averageSpend"] },
   { label: "Check and save", fields: ["name", "timeZone"] },
 ]
@@ -31,6 +31,8 @@ export function OnboardingWizard({ initialCountry }: { initialCountry: string })
     resolver: zodResolver(venueOnboardingSchema),
     defaultValues: {
       capabilities: [],
+      hosts: [],
+      atmosphere: "mixed",
       timeZone: DEFAULT_TIME_ZONE,
       countryCode: null,
       city: null,

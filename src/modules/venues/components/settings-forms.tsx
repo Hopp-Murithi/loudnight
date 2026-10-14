@@ -24,7 +24,7 @@ import {
 import { CurrencyField } from "./currency-field"
 import { PlaceSearch } from "./place-search"
 import { TimeZoneField } from "./time-zone-field"
-import { CapabilityPicker, NightPicker } from "./venue-fields"
+import { AtmospherePicker, CapabilityPicker, HostsPicker, NightPicker } from "./venue-fields"
 
 export function VenueIdentityForm({ venue }: { venue: VenueDetail }) {
   const update = useUpdateVenueIdentity(venue.id)
@@ -94,6 +94,8 @@ export function VenueSettingsForm({ venueId, settings, currency }: VenueSettings
           type="number"
         />
         <TextField control={form.control} name="capacity" label="How many people the room holds" type="number" />
+        <HostsPicker control={form.control} name="hosts" />
+        <AtmospherePicker control={form.control} name="atmosphere" />
         <CapabilityPicker control={form.control} name="capabilities" />
         <TextField
           control={form.control}

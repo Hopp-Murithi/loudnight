@@ -7,6 +7,7 @@ import { receiptAt } from "@/modules/concepts/concepts.read"
 import type { ReceiptView } from "@/modules/concepts/concepts.schemas"
 import type { TalentView } from "@/modules/series/series.schemas"
 import { readProfile } from "./talent.profile"
+import { reachOf } from "./talent.reach"
 import { talentRepository } from "./talent.repository"
 
 const SOURCE_ORDER: TalentSource[] = ["both", "area", "night"]
@@ -17,6 +18,7 @@ const sourceOf = (value: string): TalentSource => SOURCE_ORDER.find((source) => 
 export async function readTalent(
   supabase: ServerSupabase | AdminSupabase,
   conceptId: string,
+  budget?: { cents: number; currency: string },
 ): Promise<{ talent: TalentView[]; references: TalentView[] }> {
   const views = (await talentRepository.listForConcept(supabase, conceptId)).map((row): TalentView => ({
     id: row.id,
@@ -30,8 +32,10 @@ export async function readTalent(
     booked: row.booked_at !== null,
     bookedAt: row.booked_at,
     source: sourceOf(row.source),
+    reach: null,
     profile: readProfile(row.profile),
   }))
+  if (budget) for (const view of views) view.reach = reachOf(view.profile, budget.cents, budget.currency)
   // Booked acts first, then local before the rest, then the closest match.
   const ordered = views.sort(
     (a, b) =>

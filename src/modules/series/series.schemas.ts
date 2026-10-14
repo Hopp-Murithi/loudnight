@@ -1,5 +1,6 @@
 import { z } from "zod"
 import { SERIES, type PopularityTier, type TalentSource } from "@/config/series"
+import type { Reach } from "@/config/talent-reach"
 import { plainDashes } from "@/lib/text"
 import type { TalentProfile } from "@/modules/talent/talent.profile"
 import type { Enums } from "@/types/database"
@@ -59,6 +60,8 @@ export interface TalentView {
   booked: boolean
   bookedAt: string | null
   source: TalentSource
+  // Null when the caller cannot see money (door staff) or did not ask.
+  reach: Reach | null
   profile: TalentProfile
 }
 

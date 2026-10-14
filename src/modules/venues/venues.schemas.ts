@@ -4,10 +4,14 @@ import { isCountryCode } from "@/config/countries"
 import { isCurrency } from "@/config/currencies"
 import { isTimeZone } from "@/config/time-zones"
 import {
+  ATMOSPHERES,
   VENUE_CAPABILITIES,
+  VENUE_HOSTS,
   VENUE_TYPES,
   WEEKDAYS,
+  type Atmosphere,
   type VenueCapability,
+  type VenueHost,
   type VenueType,
   type Weekday,
 } from "@/config/venues"
@@ -48,6 +52,8 @@ export const venueSettingsSchema = z.object({
   breakEvenHeadcount: wholeNumber("how many people you need", 1, 100_000),
   capacity: wholeNumber("how many people the room holds", 1, 100_000),
   capabilities: z.array(z.enum(VENUE_CAPABILITIES)).max(VENUE_CAPABILITIES.length),
+  hosts: z.array(z.enum(VENUE_HOSTS)).max(VENUE_HOSTS.length),
+  atmosphere: z.enum(ATMOSPHERES),
   talentBudget: amount("a talent budget", 20_000_000),
   averageSpend: amount("what a guest spends", 10_000_000),
 })
@@ -115,6 +121,8 @@ export interface VenueSettingsView {
   breakEvenHeadcount: number
   capacity: number
   capabilities: VenueCapability[]
+  hosts: VenueHost[]
+  atmosphere: Atmosphere
   talentBudget: number
   averageSpend: number
   searchRadiusM: number

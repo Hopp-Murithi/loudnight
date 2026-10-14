@@ -3,6 +3,7 @@ import type { Enums } from "@/types/database"
 export type Weekday = Enums<"weekday">
 export type VenueType = Enums<"venue_type">
 export type VenueCapability = Enums<"venue_capability">
+export type VenueHost = Enums<"venue_host">
 
 export const WEEKDAYS = [
   "monday",
@@ -50,6 +51,38 @@ export const VENUE_CAPABILITY_LABELS: Record<VenueCapability, string> = {
   kitchen: "Kitchen",
   outdoor_space: "Outdoor space",
   dance_floor: "Dance floor",
+}
+
+// The kinds of night a room suits. The planner proposes only these; the performer search looks for matching acts.
+export const VENUE_HOSTS = [
+  "live_music",
+  "dj_dancing",
+  "seated_sets",
+  "poetry",
+  "comedy",
+  "quiz_games",
+  "talks",
+  "film",
+] as const satisfies readonly VenueHost[]
+
+export const VENUE_HOST_LABELS: Record<VenueHost, string> = {
+  live_music: "Live music",
+  dj_dancing: "DJs and dancing",
+  seated_sets: "Quiet seated sets",
+  poetry: "Poetry and spoken word",
+  comedy: "Comedy",
+  quiz_games: "Quizzes and games",
+  talks: "Talks",
+  film: "Film nights",
+}
+
+export const ATMOSPHERES = ["seated", "standing", "mixed"] as const
+export type Atmosphere = (typeof ATMOSPHERES)[number]
+
+export const ATMOSPHERE_LABELS: Record<Atmosphere, string> = {
+  seated: "Mostly seated",
+  standing: "Mostly standing",
+  mixed: "A bit of both",
 }
 
 export const SEARCH_RADIUS_M = { default: 2000, min: 250, max: 10_000 } as const

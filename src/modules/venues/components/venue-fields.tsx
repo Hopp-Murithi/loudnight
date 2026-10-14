@@ -4,11 +4,14 @@ import { Check } from "lucide-react"
 import { Controller, type Control, type FieldValues, type Path } from "react-hook-form"
 import { FieldError, FieldLegend, FieldSet } from "@/components/ui/field"
 import {
+  ATMOSPHERE_LABELS,
+  ATMOSPHERES,
   VENUE_CAPABILITIES,
   VENUE_CAPABILITY_LABELS,
+  VENUE_HOST_LABELS,
+  VENUE_HOSTS,
   WEEKDAY_LABELS,
   WEEKDAYS,
-  type VenueCapability,
 } from "@/config/venues"
 import { cn } from "@/lib/utils"
 
@@ -49,31 +52,35 @@ export function NightPicker<T extends FieldValues>({ control, name }: FieldProps
   )
 }
 
-export function CapabilityPicker<T extends FieldValues>({ control, name }: FieldProps<T>) {
+function ChipPicker<T extends FieldValues, V extends string>({
+  control,
+  name,
+  legend,
+  options,
+  labels,
+}: FieldProps<T> & { legend: string; options: readonly V[]; labels: Record<V, string> }) {
   return (
     <Controller
       control={control}
       name={name}
       render={({ field, fieldState }) => {
-        const selected: VenueCapability[] = field.value ?? []
-        const toggle = (capability: VenueCapability) =>
-          field.onChange(
-            selected.includes(capability) ? selected.filter((item) => item !== capability) : [...selected, capability],
-          )
+        const selected: V[] = field.value ?? []
+        const toggle = (option: V) =>
+          field.onChange(selected.includes(option) ? selected.filter((item) => item !== option) : [...selected, option])
         return (
           <FieldSet>
-            <FieldLegend>What can the space host?</FieldLegend>
+            <FieldLegend>{legend}</FieldLegend>
             <div className="flex flex-wrap gap-2">
-              {VENUE_CAPABILITIES.map((capability) => (
+              {options.map((option) => (
                 <button
-                  key={capability}
+                  key={option}
                   type="button"
-                  aria-pressed={selected.includes(capability)}
-                  onClick={() => toggle(capability)}
+                  aria-pressed={selected.includes(option)}
+                  onClick={() => toggle(option)}
                   className={chip}
                 >
-                  <Check className={cn("size-4", !selected.includes(capability) && "hidden")} aria-hidden />
-                  {VENUE_CAPABILITY_LABELS[capability]}
+                  <Check className={cn("size-4", !selected.includes(option) && "hidden")} aria-hidden />
+                  {labels[option]}
                 </button>
               ))}
             </div>
@@ -81,6 +88,47 @@ export function CapabilityPicker<T extends FieldValues>({ control, name }: Field
           </FieldSet>
         )
       }}
+    />
+  )
+}
+
+export const CapabilityPicker = <T extends FieldValues>(props: FieldProps<T>) => (
+  <ChipPicker
+    {...props}
+    legend="What does the room have?"
+    options={VENUE_CAPABILITIES}
+    labels={VENUE_CAPABILITY_LABELS}
+  />
+)
+
+export const HostsPicker = <T extends FieldValues>(props: FieldProps<T>) => (
+  <ChipPicker {...props} legend="What kind of nights does it suit?" options={VENUE_HOSTS} labels={VENUE_HOST_LABELS} />
+)
+
+export function AtmospherePicker<T extends FieldValues>({ control, name }: FieldProps<T>) {
+  return (
+    <Controller
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <FieldSet>
+          <FieldLegend>How do guests usually spend the night?</FieldLegend>
+          <div role="radiogroup" aria-label="Atmosphere" className="flex flex-wrap gap-2">
+            {ATMOSPHERES.map((option) => (
+              <button
+                key={option}
+                type="button"
+                role="radio"
+                aria-checked={field.value === option}
+                onClick={() => field.onChange(option)}
+                className={chip}
+              >
+                {ATMOSPHERE_LABELS[option]}
+              </button>
+            ))}
+          </div>
+        </FieldSet>
+      )}
     />
   )
 }

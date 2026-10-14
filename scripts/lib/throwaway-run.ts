@@ -42,6 +42,8 @@ async function loadVenue(admin: AdminSupabase, venueId: string): Promise<ScriptV
       averageSpendCents: settings?.average_spend_cents ?? 0,
       currency: data.currency,
       town: data.city,
+      hosts: [],
+      atmosphere: "mixed",
     },
   }
 }

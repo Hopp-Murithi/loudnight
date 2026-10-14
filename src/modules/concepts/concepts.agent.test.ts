@@ -122,6 +122,8 @@ describe("conceptsUserMessage", () => {
         averageSpendCents: 0,
         currency: "USD",
         town: null,
+        hosts: ["poetry"],
+        atmosphere: "seated",
       },
       [hostile],
       [],

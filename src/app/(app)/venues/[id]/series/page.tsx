@@ -13,6 +13,7 @@ import { readSeries } from "@/modules/series/series.service"
 import { TalentShortlist } from "@/modules/talent/components/talent-shortlist"
 import { readTalent } from "@/modules/talent/talent.read"
 import { venueForPage } from "@/modules/venues/venues.page"
+import { toCents } from "@/modules/venues/venues.schemas"
 
 export const metadata: Metadata = { title: "Series" }
 
@@ -29,7 +30,14 @@ export default async function VenueSeriesPage({ params }: PageProps<"/venues/[id
       : undefined
 
   const [series, acts] = chosen
-    ? await Promise.all([readSeries(ctx.supabase, chosen.id, venue.timeZone), readTalent(ctx.supabase, chosen.id)])
+    ? await Promise.all([
+        readSeries(ctx.supabase, chosen.id, venue.timeZone),
+        readTalent(
+          ctx.supabase,
+          chosen.id,
+          venue.settings ? { cents: toCents(venue.settings.talentBudget), currency: venue.currency } : undefined,
+        ),
+      ])
     : [null, { talent: [], references: [] }]
   const canEdit = venue.role !== "door"
 

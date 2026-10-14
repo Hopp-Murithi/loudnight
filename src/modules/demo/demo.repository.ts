@@ -3,7 +3,7 @@ import { fromDatabaseError } from "@/lib/http/errors"
 import type { AdminSupabase } from "@/lib/supabase/admin"
 import type { ServerSupabase } from "@/lib/supabase/server"
 
-const SETTINGS = "search_radius_m, slow_night, capacity, capabilities, break_even_headcount"
+const SETTINGS = "search_radius_m, slow_night, capacity, capabilities, hosts, atmosphere, break_even_headcount"
 const MONEY = "talent_budget_cents, average_spend_cents"
 
 const check = (error: { code?: string; message: string } | null) => {
@@ -47,7 +47,7 @@ export const demoRepository = {
     const { data, error } = await admin
       .from("venues")
       .select(
-        `id, name, address, city, currency, venue_type, google_place_id, latitude, longitude, time_zone, is_demo, venue_settings(${SETTINGS}, ${MONEY})`,
+        `id, name, address, city, currency, country_code, venue_type, google_place_id, latitude, longitude, time_zone, is_demo, venue_settings(${SETTINGS}, ${MONEY})`,
       )
       .eq("id", venueId)
       .maybeSingle()

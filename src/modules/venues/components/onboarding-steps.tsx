@@ -11,7 +11,7 @@ import { toCents, type PlaceOption, type VenueOnboardingInput } from "../venues.
 import { CurrencyField } from "./currency-field"
 import { PlaceSearch } from "./place-search"
 import { TimeZoneField } from "./time-zone-field"
-import { CapabilityPicker, NightPicker } from "./venue-fields"
+import { AtmospherePicker, CapabilityPicker, HostsPicker, NightPicker } from "./venue-fields"
 
 interface StepProps {
   step: number
@@ -86,6 +86,8 @@ export function OnboardingStep({ step, form, initialCountry }: StepProps) {
         <Heading title="Your space" description="So every idea fits the room you have." />
         <FieldGroup>
           <TextField control={control} name="capacity" label="How many people the room holds" type="number" />
+          <HostsPicker control={control} name="hosts" />
+          <AtmospherePicker control={control} name="atmosphere" />
           <CapabilityPicker control={control} name="capabilities" />
         </FieldGroup>
       </section>

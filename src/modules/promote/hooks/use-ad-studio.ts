@@ -8,7 +8,7 @@ import { AD_DEFAULT, AD_FORMATS, type AdFormatId } from "@/config/promote"
 import { promoteApi } from "../api"
 import { adContent } from "../promote.copy"
 import { qrMatrix } from "../promote.qr"
-import { adFonts, loadImage, paintAd, type AdScene } from "../promote.render"
+import { adFonts, collage, loadImage, paintAd, type AdScene } from "../promote.render"
 import { adDesignSchema, type AdDesign, type PromoBoard } from "../promote.schemas"
 import { STILL } from "../promote.timeline"
 
@@ -42,23 +42,31 @@ export function useAdStudio(board: PromoBoard, canEdit: boolean, canvasRef: RefO
 
   const qr = useMemo(() => (content.link ? qrMatrix(content.link) : null), [content.link])
 
-  const latestPhoto = board.acts.findLast((act) => act.imageUrl !== null)?.imageUrl
-  const actPhoto = latestPhoto ? optimised(latestPhoto) : null
+  // Up to three booked acts with photos, in the order they said yes. One fills the photo; two or three share it.
+  const actPhotos = board.acts.flatMap((act) => (act.imageUrl ? [optimised(act.imageUrl)] : [])).slice(0, 3)
+  const actPhoto = actPhotos.at(-1) ?? null
   const mood = adPhotoFor(board.venue.id, night.sequence).image.src
   const photoSrc = design.photo === "own" ? (ownPhoto ?? mood) : design.photo === "act" ? (actPhoto ?? mood) : mood
+  const photoKey = design.photo === "act" && actPhotos.length > 1 ? actPhotos.join(" ") : photoSrc
 
   useEffect(() => {
     let current = true
+    const sources = photoKey.split(" ")
+    const photo =
+      sources.length > 1
+        ? Promise.all(sources.map(loadImage)).then((images) => {
+            const loaded = images.filter((image): image is HTMLImageElement => image !== null)
+            return loaded.length > 1 ? collage(loaded) : (loaded[0] ?? null)
+          })
+        : loadImage(photoKey)
     // A photo that will not load gives way to the night photo, so the ad is never left with an empty panel.
-    void Promise.all([adFonts(), loadImage(photoSrc).then((image) => image ?? loadImage(mood))]).then(
-      ([fonts, image]) => {
-        if (current) setAssets({ fonts, image, key: photoSrc })
-      },
-    )
+    void Promise.all([adFonts(), photo.then((image) => image ?? loadImage(mood))]).then(([fonts, image]) => {
+      if (current) setAssets({ fonts, image, key: photoKey })
+    })
     return () => {
       current = false
     }
-  }, [mood, photoSrc])
+  }, [mood, photoKey])
 
   const scene: AdScene | null = useMemo(
     () => (assets ? { content, design, format, image: assets.image, fonts: assets.fonts, qr } : null),

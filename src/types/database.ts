@@ -784,11 +784,13 @@ export type Database = {
       }
       venue_settings: {
         Row: {
+          atmosphere: string
           average_spend_cents: number
           break_even_headcount: number
           capabilities: Database["public"]["Enums"]["venue_capability"][]
           capacity: number
           created_at: string
+          hosts: Database["public"]["Enums"]["venue_host"][]
           search_radius_m: number
           slow_night: Database["public"]["Enums"]["weekday"]
           talent_budget_cents: number
@@ -796,11 +798,13 @@ export type Database = {
           venue_id: string
         }
         Insert: {
+          atmosphere?: string
           average_spend_cents?: number
           break_even_headcount: number
           capabilities?: Database["public"]["Enums"]["venue_capability"][]
           capacity: number
           created_at?: string
+          hosts?: Database["public"]["Enums"]["venue_host"][]
           search_radius_m?: number
           slow_night: Database["public"]["Enums"]["weekday"]
           talent_budget_cents?: number
@@ -808,11 +812,13 @@ export type Database = {
           venue_id: string
         }
         Update: {
+          atmosphere?: string
           average_spend_cents?: number
           break_even_headcount?: number
           capabilities?: Database["public"]["Enums"]["venue_capability"][]
           capacity?: number
           created_at?: string
+          hosts?: Database["public"]["Enums"]["venue_host"][]
           search_radius_m?: number
           slow_night?: Database["public"]["Enums"]["weekday"]
           talent_budget_cents?: number
@@ -908,6 +914,7 @@ export type Database = {
       create_venue: {
         Args: {
           p_address: string
+          p_atmosphere?: string
           p_average_spend_cents: number
           p_break_even_headcount: number
           p_capabilities: Database["public"]["Enums"]["venue_capability"][]
@@ -916,6 +923,7 @@ export type Database = {
           p_country_code?: string
           p_currency?: string
           p_google_place_id: string
+          p_hosts?: Database["public"]["Enums"]["venue_host"][]
           p_latitude: number
           p_longitude: number
           p_name: string
@@ -979,6 +987,15 @@ export type Database = {
         | "kitchen"
         | "outdoor_space"
         | "dance_floor"
+      venue_host:
+        | "live_music"
+        | "dj_dancing"
+        | "poetry"
+        | "comedy"
+        | "seated_sets"
+        | "quiz_games"
+        | "talks"
+        | "film"
       venue_role: "owner" | "manager" | "door"
       venue_type: "bar" | "cafe" | "restaurant" | "music_venue" | "other"
       weekday:
@@ -1152,6 +1169,16 @@ export const Constants = {
         "kitchen",
         "outdoor_space",
         "dance_floor",
+      ],
+      venue_host: [
+        "live_music",
+        "dj_dancing",
+        "poetry",
+        "comedy",
+        "seated_sets",
+        "quiz_games",
+        "talks",
+        "film",
       ],
       venue_role: ["owner", "manager", "door"],
       venue_type: ["bar", "cafe", "restaurant", "music_venue", "other"],

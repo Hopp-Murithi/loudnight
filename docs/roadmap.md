@@ -71,6 +71,33 @@ All of these already exist as rows (runs, steps, series, bookings, assets, RSVPs
 - Owners may not trust a number they did not see happen. Mitigation: everything is shown with its receipt, and results come from the door and the till, not from Encore.
 - Prices that suit Brooklyn do not suit Nyeri. Mitigation: local currency and local price points from day one, set per country, not converted.
 
+## Paid tickets, the owner's wallet and payouts
+
+**The problem.** Today a guest saves a free place and gets a ticket with a QR. Many nights should sell tickets. Owners want to see the money as it comes in and draw it out, and Encore's revenue should come from the same flow.
+
+**What it builds on (all built).**
+
+- The event page and its RSVP form, the ticket page with its own QR, and the door that checks a ticket once (`checkins.rsvp_id` is unique; a second scan says when the guest first came in).
+- Takings per night (`night_spend`), the live Results page, the audit log.
+
+**How it works.**
+
+- A night can be free or ticketed: price, number of tickets, sales open and close. Ticket types later (early bird, table for four).
+- Checkout on the event page through a payments partner per region: Stripe for card markets, M-Pesa (through a partner such as Flutterwave, Pesapal or Paystack) for Kenya and East Africa, Paystack or Flutterwave for West Africa. Encore never stores card details.
+- A paid ticket is the same ticket as today, with `paid_at`, the amount, and the provider's reference. The door screen and the staff check-in work unchanged. A refunded ticket is void at the door.
+- **No reuse**: a ticket's code is checked once (already enforced by the database); a refunded or cancelled ticket is refused; the door shows who used it and when. Transfers (sending a ticket to a friend) issue a new code and void the old one.
+- **The owner's wallet**: every sale lands in the venue's balance in its own currency, less the payment provider's fee and Encore's booking fee. The wallet shows sales by night, pending and available balance, refunds, and payouts. Payouts go to the owner's bank or M-Pesa on a schedule or on request, through the provider's payout API (Stripe Connect, Paystack or Flutterwave subaccounts), so the money never sits in Encore's own account.
+- **Encore's revenue**: the booking fee (3%, capped, paid by the guest), on top of the monthly plan. Both show in the administrator console (plan 08).
+- **Tracking**: every sale, refund, payout and scan is a row, audited, owners and managers only (money), with the door seeing names and party sizes only, as today.
+
+**With the point of sale.** A connected till (section above) adds the bar's own takings to the night, next to ticket sales, so Results shows tickets plus spend at the bar against the same weeks before the series. Tickets sold at the door on the till can be issued as Encore tickets too, so one door list holds everyone.
+
+**What it needs from outside.** A payments partner account per region with marketplace payouts (Stripe Connect; Paystack or Flutterwave subaccounts), each venue's identity checks done by the provider, and consumer protection and refund terms per country.
+
+**The first slice.** Ticketed nights in the US through Stripe Checkout and Stripe Connect Express payouts: price and quantity on a night, checkout, the paid ticket, the wallet page, one payout. Then M-Pesa in Kenya.
+
+**The risk.** Money regulation differs by country; a partner that holds the funds and pays out keeps Encore out of money transmission. Chargebacks: the wallet keeps a reserve set by the provider.
+
 ## Point-of-sale integration
 
 **The problem.** Encore counts who came (check-ins at the door) and asks the owner for an average spend per guest. The till knows the truth: what the room actually took on an event night against a normal night. Until Encore reads the till, "this night earned you $X more" is an estimate.

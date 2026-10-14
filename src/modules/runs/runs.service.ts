@@ -32,6 +32,8 @@ function toRunVenue(venue: ManagedVenue): RunVenue {
       averageSpendCents: Math.round(venue.settings.averageSpend * 100),
       currency: venue.currency,
       town: townOf(venue),
+      hosts: venue.settings.hosts,
+      atmosphere: venue.settings.atmosphere,
     },
   }
 }

@@ -40,6 +40,8 @@ function toRunVenue(venue: UpkeepVenue): RunVenue {
       averageSpendCents: settings.average_spend_cents,
       currency: venue.currency,
       town: townOf(venue),
+      hosts: settings.hosts,
+      atmosphere: settings.atmosphere,
     },
   }
 }
@@ -91,6 +93,7 @@ async function planTheNights(admin: AdminSupabase, row: UpkeepVenue, venue: RunV
       timeZone: venue.timeZone,
       talentBudgetCents: venue.brief.talentBudgetCents,
       currency: venue.brief.currency,
+      countryCode: row.country_code,
     },
     {
       conceptId,

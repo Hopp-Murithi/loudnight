@@ -49,6 +49,32 @@ export function loadImage(src: string): Promise<HTMLImageElement | null> {
   })
 }
 
+const COLLAGE = { width: 1200, height: 1500, gap: 12, faceAt: 0.22 } as const
+
+// Two or three booked acts side by side as equal portrait tiles, faces kept in frame, as one photo the ad can use
+// like any other. Drawn on a canvas and read back as an image, so the ad stays exportable.
+export async function collage(images: HTMLImageElement[]): Promise<HTMLImageElement | null> {
+  const canvas = document.createElement("canvas")
+  canvas.width = COLLAGE.width
+  canvas.height = COLLAGE.height
+  const ctx = canvas.getContext("2d")
+  if (!ctx || images.length === 0) return null
+  const tile = (COLLAGE.width - COLLAGE.gap * (images.length - 1)) / images.length
+  images.forEach((image, index) => {
+    const scale = Math.max(tile / image.naturalWidth, COLLAGE.height / image.naturalHeight)
+    const w = image.naturalWidth * scale
+    const h = image.naturalHeight * scale
+    const x = index * (tile + COLLAGE.gap)
+    ctx.save()
+    ctx.beginPath()
+    ctx.rect(x, 0, tile, COLLAGE.height)
+    ctx.clip()
+    ctx.drawImage(image, x + (tile - w) / 2, Math.min(0, -(h - COLLAGE.height) * COLLAGE.faceAt), w, h)
+    ctx.restore()
+  })
+  return loadImage(canvas.toDataURL("image/jpeg", 0.9))
+}
+
 // The app's own two typefaces, by the names the page gave them, loaded before anything is drawn with them.
 export async function adFonts(): Promise<AdScene["fonts"]> {
   const style = getComputedStyle(document.documentElement)

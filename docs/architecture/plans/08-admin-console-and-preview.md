@@ -1,6 +1,6 @@
 # Plan 08: Administrator console and Preview as
 
-Status: Not started. The database half of Preview as exists and is tested (plan 00: `private.viewer_id()`, restrictive no-write policies, assertions in `rls.sql`).
+Status: Not started (revised Oct 14). The database half of Preview as exists and is tested (plan 00: `private.viewer_id()`, restrictive no-write policies, assertions in `rls.sql`).
 Depends on: 03, 13
 Phase: 5
 Judging criteria: Technological Implementation (trust and governance), Design (a complete product includes running it)
@@ -67,6 +67,22 @@ Out: acting on behalf of someone, previewing another administrator, editing othe
 - [ ] Deactivate removes access at once and is audited
 - [ ] Venue history page for owners and managers
 - [ ] Screen standard met for every console screen
+
+## Revision, Oct 14: the owner's asks
+
+The owner asked for a role that oversees the whole platform, can disable venues and people, and manages everything easily. The administrator role is that role; this revision adds what was missing.
+
+- **First administrator**: hoppmurithi@gmail.com was promoted on Oct 14 at the owner's request, by setting `profiles.role` on the hosted project (the existing trigger copied it to the sign-in account). `scripts/seed-admin.ts` remains the way to make further administrators; the UI never can.
+- **Suspend a venue**: `venues.suspended_at` and `suspended_reason` (migration with `rls.sql` assertions). A suspended venue's team can still read it but cannot write to it (a restrictive policy on every venue table, like the preview policies), its public event pages show "This venue is not taking bookings", and RSVPs and self check-ins are refused. Suspending and lifting are audited and need a reason.
+- **Deactivate a person** (already in scope) also signs them out everywhere through the auth admin API.
+- **Console overview** adds what an operator watches: venues by country and currency, nights published this week, RSVPs and check-ins today (live), runs and their failures, Qloo calls and cache hit rate, and the money Encore will bill once billing exists (roadmap).
+- **Manage easily**: every list has search, filters and one-click actions (preview as, suspend, deactivate, refresh demo) with a confirm that says what will happen.
+
+New deliverables:
+
+- [x] A first administrator for the owner (Oct 14)
+- [ ] Suspend and lift a venue, with a reason, audited, enforced by the database
+- [ ] Deactivating a person signs them out everywhere
 
 ## Verification
 

@@ -1,4 +1,5 @@
 import "server-only"
+import { countryName } from "@/config/countries"
 import { MUSIC_FORMATS, TALENT, type TalentSource } from "@/config/series"
 import { formatMoney } from "@/lib/format"
 import { conflict, notFound } from "@/lib/http/errors"
@@ -16,6 +17,7 @@ import { managedVenue } from "@/modules/venues/venues.access"
 import { toCents } from "@/modules/venues/venues.schemas"
 import { actReceiptPath, actsFrom, conceptAnchors, messageTastes } from "./talent.anchors"
 import { writeOutreach } from "./talent.outreach"
+import { householdNames } from "./talent.stars"
 import { talentRepository, type TalentInsert } from "./talent.repository"
 import {
   activeMusicians,
@@ -34,6 +36,7 @@ export interface TalentVenue {
   timeZone: string
   talentBudgetCents: number
   currency: string
+  countryCode: string | null
 }
 
 export interface TalentNight {
@@ -86,21 +89,27 @@ export async function findTalent(admin: AdminSupabase, venue: TalentVenue, night
 
   const fitSignals = anchors.map((anchor) => anchor.name)
   const sharedTastes = messageTastes(anchors)
-  const messages = await writeOutreach(
-    {
-      venue: venue.name,
-      night: night.conceptName,
-      acts: shortlist.map((act) => ({ actId: act.entityId, name: act.name, sharedTastes })),
-    },
-    {
-      date: when(night.firstNight, venue.timeZone, { weekday: "long", month: "long", day: "numeric" }),
-      time: when(night.firstNight, venue.timeZone, { hour: "numeric", minute: "2-digit" }),
-      fee:
-        venue.talentBudgetCents > 0
-          ? `up to ${formatMoney(venue.talentBudgetCents, venue.currency)}`
-          : "a fee we agree together",
-    },
-  )
+  const [messages, stars] = await Promise.all([
+    writeOutreach(
+      {
+        venue: venue.name,
+        night: night.conceptName,
+        acts: shortlist.map((act) => ({ actId: act.entityId, name: act.name, sharedTastes })),
+      },
+      {
+        date: when(night.firstNight, venue.timeZone, { weekday: "long", month: "long", day: "numeric" }),
+        time: when(night.firstNight, venue.timeZone, { hour: "numeric", minute: "2-digit" }),
+        fee:
+          venue.talentBudgetCents > 0
+            ? `up to ${formatMoney(venue.talentBudgetCents, venue.currency)}`
+            : "a fee we agree together",
+      },
+    ),
+    householdNames(
+      shortlist.map((act) => act.name),
+      countryName(venue.countryCode ?? "US"),
+    ),
+  ])
 
   const row = (act: RankedAct, source: TalentSource, cacheId: string): TalentInsert => ({
     concept_id: night.conceptId,
@@ -113,7 +122,7 @@ export async function findTalent(admin: AdminSupabase, venue: TalentVenue, night
     overlap_score: overlapOf(act.affinity),
     fit_signals: source === "area" ? [] : fitSignals,
     outreach_draft: messages.get(act.entityId) ?? null,
-    profile: act.profile as unknown as Json,
+    profile: { ...act.profile, star: stars.has(act.name) } as unknown as Json,
     source,
     search_page: page,
   })
@@ -141,6 +150,7 @@ export const talentService = {
         timeZone: venue.timeZone,
         talentBudgetCents: toCents(venue.settings.talentBudget),
         currency: venue.currency,
+        countryCode: venue.countryCode,
       },
       {
         conceptId: concept.id,

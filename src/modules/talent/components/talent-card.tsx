@@ -6,7 +6,9 @@ import { ToneBadge } from "@/components/shared/tone-badge"
 import type { Tone } from "@/components/shared/tone"
 import { Button } from "@/components/ui/button"
 import { TIER_LABELS, type PopularityTier } from "@/config/series"
+import { REACH_LABELS } from "@/config/talent-reach"
 import { initials } from "@/lib/text"
+import { cn } from "@/lib/utils"
 import { formatAffinity } from "@/modules/concepts/concepts.grounding"
 import type { TalentView } from "@/modules/series/series.schemas"
 import { hometown, listenersText, matchLabel } from "../talent.display"
@@ -80,6 +82,17 @@ export function TalentCard({ act, onOpen, onReceipt }: TalentCardProps) {
             </span>
           ))}
         </div>
+        {act.reach && (
+          <p
+            className={cn(
+              "text-xs",
+              act.reach === "within" ? "text-success" : act.reach === "stretch" ? "text-warning" : "text-destructive",
+            )}
+          >
+            {REACH_LABELS[act.reach]}
+            <span className="text-muted-foreground"> (Encore&apos;s estimate: ask the act)</span>
+          </p>
+        )}
         <p className="line-clamp-2 min-h-10 text-sm text-muted-foreground">{profile.tagline}</p>
         {act.hasReceipt && (
           <button

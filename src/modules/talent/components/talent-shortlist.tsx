@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { SubmitButton } from "@/components/forms/submit-button"
+import { Button } from "@/components/ui/button"
 import { plural } from "@/lib/format"
 import { TYPE } from "@/lib/typography"
 import { ReceiptSheet } from "@/modules/concepts/components/receipt-sheet"
@@ -35,6 +36,9 @@ export function TalentShortlist({ seriesId, nightName, talent, references, canEd
   const find = useFindTalent(seriesId)
   const [receiptId, setReceiptId] = useState<string | null>(null)
   const [openId, setOpenId] = useState<string | null>(null)
+  const [showBigger, setShowBigger] = useState(false)
+  const bigger = talent.filter((act) => act.reach === "beyond" && !act.booked)
+  const shown = showBigger ? talent : talent.filter((act) => !bigger.includes(act))
   const searched = talent.length > 0 || references.length > 0
 
   return (
@@ -66,9 +70,9 @@ export function TalentShortlist({ seriesId, nightName, talent, references, canEd
         </p>
       )}
 
-      {talent.length > 0 && (
+      {shown.length > 0 && (
         <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {talent.map((act) => (
+          {shown.map((act) => (
             <TalentCard
               key={act.id}
               act={act}
@@ -77,6 +81,14 @@ export function TalentShortlist({ seriesId, nightName, talent, references, canEd
             />
           ))}
         </ul>
+      )}
+
+      {bigger.length > 0 && (
+        <Button variant="outline" onClick={() => setShowBigger((value) => !value)}>
+          {showBigger
+            ? "Hide the names beyond this budget"
+            : `Show ${bigger.length} ${bigger.length === 1 ? "name" : "names"} probably beyond this budget`}
+        </Button>
       )}
 
       {references.length > 0 && (
