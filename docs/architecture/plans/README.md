@@ -54,6 +54,16 @@ If the day-one Qloo probe fails (thin location data), switch neighbourhoods or l
 | 19  | [Submission: write-up, screenshots, video, pilot](19-submission.md)               | 5     | Not started       | all core   |
 | 20  | [Roadmap write-ups and stretch enhancements](20-roadmap-and-enhancements.md)      | 5     | Not started       | 19         |
 | 21  | [Landing page and product film](21-landing-page-and-film.md)                      | 2     | In progress       | 01, 03     |
+| 22  | [Continuous integration](22-continuous-integration.md)                            | 5     | Done              | 18         |
+| 23  | [Shareable plan link](23-shareable-plan-link.md)                                  | 5     | Not started       | 07         |
+| 24  | [Plan comparison](24-plan-comparison.md)                                          | 5     | Not started       | 07         |
+| 25  | [Why this works](25-why-this-works.md)                                            | 5     | Not started       | 06         |
+| 26  | [Taste heatmap](26-taste-heatmap.md)                                              | 5     | Not started       | 04         |
+| 27  | [Ask about this plan](27-plan-assistant.md)                                       | 5     | Not started       | 07         |
+| 28  | [Spanish where it matters](28-spanish-ads.md)                                     | 5     | Built, live       | 11         |
+| 29  | [Venues anywhere in the world](29-venues-worldwide.md)                            | 5     | In progress       | 03, 05     |
+| 30  | [Find your venue, in your country](30-venue-search-by-country.md)                 | 5     | Plan ready        | 03, 29     |
+| 31  | [What is trending near the venue](31-local-trends.md)                             | later | Research          | 04, 06     |
 
 ## Official judging criteria and how the plans answer them
 

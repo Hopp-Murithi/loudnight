@@ -2,9 +2,10 @@
 
 import { useRef, type CSSProperties } from "react"
 import { STAGE_SCENES } from "@/config/landing"
+import type { LandingRegion } from "@/config/landing-regions"
 import { stageVars } from "./stage-math"
 import { SceneCopy, StageDots } from "./stage-copy"
-import { FinaleLayer, KenyaLayer, WorldLayer } from "./stage-maps"
+import { AreaLayer, FinaleLayer, WorldLayer } from "./stage-maps"
 import { LightsLayer, RoomLayer } from "./stage-room"
 import { useScrollStage } from "./use-scroll-stage"
 
@@ -13,22 +14,32 @@ const SCENES = STAGE_SCENES.length
 const FIRST_FRAME = stageVars(0, SCENES) as CSSProperties
 
 interface NightStageProps {
+  region: LandingRegion
   signedIn: boolean
   exampleHref: string | null
 }
 
-// The landing page as one pinned stage. Scrolling does not move the page: it moves the story on, scene by scene.
-export function NightStage({ signedIn, exampleHref }: NightStageProps) {
+// The landing page as one pinned stage. Scrolling does not move the page: it moves the story on, one scene per
+// scroll, snapping to each. The story zooms into the visitor's own part of the world.
+export function NightStage({ region, signedIn, exampleHref }: NightStageProps) {
   const trackRef = useRef<HTMLDivElement>(null)
   const stageRef = useRef<HTMLDivElement>(null)
   const { scene, goTo } = useScrollStage(trackRef, stageRef, SCENES)
 
   return (
-    <div ref={trackRef} className="relative" style={{ height: `${SCENES * 100}svh` }}>
+    <div ref={trackRef} className="stage-track relative" style={{ height: `${SCENES * 100}svh` }}>
+      {STAGE_SCENES.map((entry, index) => (
+        <div
+          key={entry.id}
+          aria-hidden
+          className="stage-snap pointer-events-none absolute inset-x-0 h-svh"
+          style={{ top: `${index * 100}svh` }}
+        />
+      ))}
       <div ref={stageRef} className="sticky top-0 h-svh overflow-hidden bg-background" style={FIRST_FRAME}>
-        <WorldLayer />
-        <KenyaLayer active={scene === 1} />
-        <RoomLayer active={scene === 2} />
+        <WorldLayer region={region} />
+        <AreaLayer region={region} active={scene === 1} />
+        <RoomLayer region={region} active={scene === 2} />
         <LightsLayer />
         <FinaleLayer active={scene === 4} />
         <div
@@ -40,6 +51,7 @@ export function NightStage({ signedIn, exampleHref }: NightStageProps) {
             key={entry.id}
             index={index}
             active={index === scene}
+            region={region}
             signedIn={signedIn}
             exampleHref={exampleHref}
           />

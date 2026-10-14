@@ -1,6 +1,6 @@
 # Plan 22: Continuous integration
 
-Status: In progress
+Status: Done (Oct 14). First green run: 38515016615, both jobs.
 Depends on: 00
 Phase: 5 (stretch, from plan 20 part B)
 
@@ -34,9 +34,9 @@ The workflow is its own test: it must go green on the current tree.
 
 ## Deliverables
 
-- [ ] Workflow file runs `validate` and the database tests on push and pull request
-- [ ] Both jobs are green on GitHub for the current tree
-- [ ] No secret is required by the workflow
+- [x] Workflow file runs `validate` and the database tests on push and pull request
+- [x] Both jobs are green on GitHub for the current tree (run 38515016615; the first run failed on a lock file missing two Linux-only optional packages, fixed in b0f12be)
+- [x] No secret is required by the workflow (placeholders only; checked Oct 14)
 
 ## Verification
 

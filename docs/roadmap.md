@@ -105,3 +105,15 @@ All of these already exist as rows (runs, steps, series, bookings, assets, RSVPs
 **The first slice.** Facebook Page and Instagram Business publishing for the first night of a series, with a preview and an explicit confirm. Nothing posts on its own.
 
 **The risk.** App review takes weeks and can be refused. The share sheet already covers the need on a phone, so this is a convenience, not a gap.
+
+## What is trending near the venue
+
+**The problem.** Qloo tells Encore what an area has loved for years. Owners also want what people are talking about this month: a sound going round on TikTok, a song climbing the country's chart, a search everybody is making.
+
+**What it builds on.** The taste fingerprint and its cache, the receipts on every number, the concept grounding validator, the talent cards.
+
+**What it needs from outside.** Sources differ a lot: Qloo's own trends are already in our key; Google Trends has an official API in limited access; TikTok and Meta offer no trends API for products like ours (research access only), so they would need a partnership or a licensed vendor; X sells trends on paid tiers; Apple Music serves country charts. Every source's terms must be read before any code, because most forbid storing or reselling their data.
+
+**The first slice.** Qloo trends: "Rising near you" on the taste card, each item with a receipt, and concepts allowed to cite it. No new provider, no new terms.
+
+**The risk.** Terms and cost, and mistaking a national trend for a local one. Encore always says which level a trend is from. Full research plan: [plan 31](architecture/plans/31-local-trends.md).

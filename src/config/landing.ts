@@ -24,46 +24,17 @@ export const STAGE_SCENES = [
   {
     id: "anywhere",
     title: "Quiet nights, filled. Anywhere.",
-    line: "Nairobi or Nyeri, Lagos or London, Brooklyn or Tokyo. Start with your address.",
+    // Replaced by the visitor's own towns (config/landing-regions.ts).
+    line: "Start with your address.",
   },
 ] as const
 
 export type StageSceneId = (typeof STAGE_SCENES)[number]["id"]
 
-// Map pins as percentages of the dotted maps in `public/landing`, generated once with dotted-map (plan 21).
-export const WORLD_PINS = [
-  { name: "Nairobi", x: 60.71, y: 59.77 },
-  { name: "Lagos", x: 50.36, y: 56.11 },
-  { name: "London", x: 49.64, y: 24.4 },
-  { name: "Brooklyn", x: 27.86, y: 32.93 },
-  { name: "Mexico City", x: 20, y: 47.57 },
-  { name: "Sao Paulo", x: 36.07, y: 73.19 },
-  { name: "Tokyo", x: 90.71, y: 37.81 },
-  { name: "Mumbai", x: 71.43, y: 47.57 },
-  { name: "Johannesburg", x: 57.86, y: 74.4 },
-  { name: "Berlin", x: 53.57, y: 23.18 },
-  { name: "Austin", x: 21.07, y: 41.47 },
-  { name: "Sydney", x: 94.64, y: 80.5 },
-  { name: "Dubai", x: 66.07, y: 43.91 },
+// What the night Encore found brings with it. The night's own name comes from the visitor's region.
+export const NIGHT_READY = [
+  "A local act, booked",
+  "A poster with a ticket QR",
+  "Posts for every channel",
+  "A guest list at the door",
 ] as const
-
-export const WORLD_FOCUS = WORLD_PINS[0]
-
-export const KENYA_PINS = [
-  { name: "Nairobi", x: 36.62, y: 65.67 },
-  { name: "Nyeri", x: 38.73, y: 57.1 },
-  { name: "Mombasa", x: 73.24, y: 92.31 },
-  { name: "Kisumu", x: 11.27, y: 54.25 },
-  { name: "Nakuru", x: 26.76, y: 56.15 },
-  { name: "Eldoret", x: 16.9, y: 48.54 },
-] as const
-
-// What an area's taste reads like, in words. Illustration only: real plans show Qloo's own answers with receipts.
-export const AREA_TASTES = ["Afropop", "Bongo flava", "Live soul", "Kenyan hip hop", "Rooftop nights", "Nyama choma"]
-
-// The night Encore suggests in the story, and what it brings with it.
-export const STORY_NIGHT = {
-  name: "Afro Soul Supper",
-  when: "Thursdays at 8 PM, four weeks",
-  ready: ["A local act, booked", "A poster with a ticket QR", "Posts for every channel", "A guest list at the door"],
-} as const

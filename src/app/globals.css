@@ -249,6 +249,27 @@
 }
 
 /* The landing stage: one pinned screen; scroll moves the story on, and each layer reads its own visibility. */
+/* One wheel notch, swipe or trackpad flick moves exactly one scene and settles there. */
+html:has(.stage-track) {
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+}
+.stage-snap {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+html:has(.stage-track) .shell-footer,
+.stage-credits {
+  scroll-snap-align: end;
+}
+/* On the home page the header floats over the first scene, so the first scroll goes straight to the second. */
+html:has(.stage-track) .shell-header {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  z-index: 20;
+  background: transparent;
+}
 .stage-zoom {
   will-change: transform;
 }

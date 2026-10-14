@@ -19,7 +19,7 @@ export function PublicShell({ children, bleed = false, signedIn = false }: Publi
   return (
     <div className="flex min-h-dvh flex-col">
       <SkipLink />
-      <div className={cn(bleed && "dark bg-background text-foreground")}>
+      <div className={cn("shell-header", bleed && "dark bg-background text-foreground")}>
         <header className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
           <Brand />
           <nav aria-label="Account" className="flex items-center gap-1 sm:gap-2">
@@ -48,7 +48,7 @@ export function PublicShell({ children, bleed = false, signedIn = false }: Publi
       >
         {children}
       </main>
-      <footer className="border-t">
+      <footer className="shell-footer border-t">
         <p className="mx-auto max-w-6xl px-4 py-6 text-sm text-muted-foreground sm:px-6">{SITE.credit}</p>
       </footer>
     </div>

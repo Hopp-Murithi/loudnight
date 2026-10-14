@@ -2,13 +2,13 @@ import Image from "next/image"
 import type { CSSProperties } from "react"
 import cocktailBar from "@/assets/nights/cocktail-bar.webp"
 import danceFloor from "@/assets/nights/dance-floor.webp"
-import { STORY_NIGHT } from "@/config/landing"
+import type { LandingRegion } from "@/config/landing-regions"
 import { cn } from "@/lib/utils"
 
 const LAYER = "pointer-events-none absolute inset-0 overflow-hidden"
 
 // Scene three: inside one venue. The room comes into focus and the night Encore found is pinned to it like a ticket.
-export function RoomLayer({ active }: { active: boolean }) {
+export function RoomLayer({ region, active }: { region: LandingRegion; active: boolean }) {
   return (
     <div aria-hidden className={LAYER} style={{ opacity: "var(--v2)" }}>
       <div className="stage-zoom absolute inset-0" style={{ transform: "scale(var(--room-zoom))" }}>
@@ -22,8 +22,8 @@ export function RoomLayer({ active }: { active: boolean }) {
         )}
       >
         <p className="text-xs text-spotlight">The night nobody nearby runs</p>
-        <p className="mt-1 font-display text-3xl leading-none font-bold">{STORY_NIGHT.name}</p>
-        <p className="mt-2 text-sm text-muted-foreground">{STORY_NIGHT.when}</p>
+        <p className="mt-1 font-display text-3xl leading-none font-bold">{region.night.name}</p>
+        <p className="mt-2 text-sm text-muted-foreground">{region.night.when}</p>
         <div aria-hidden className="mt-3 border-t border-dashed border-spotlight/50" />
         <p className="mt-2 text-xs text-muted-foreground">
           Picked because people around you love it and nobody near you runs it.
@@ -58,12 +58,10 @@ const BEAMS = [
   },
 ]
 
-// Scene four: the lights come up. Coloured beams sweep in from each corner across a full room.
-export function LightsLayer() {
+// Coloured beams sweeping in from each corner. Soft ones light the opening and closing scenes; full ones fill scene four.
+export function SpotBeams({ soft = false }: { soft?: boolean }) {
   return (
-    <div aria-hidden className={LAYER} style={{ opacity: "var(--v3)" }}>
-      <Image src={danceFloor} alt="" fill sizes="100vw" placeholder="blur" className="object-cover opacity-30" />
-      <div className="absolute inset-0 bg-background/55" />
+    <div className={cn("absolute inset-0", soft && "opacity-35")}>
       {BEAMS.map((beam) => (
         <span
           key={beam.color}
@@ -78,6 +76,17 @@ export function LightsLayer() {
           }
         />
       ))}
+    </div>
+  )
+}
+
+// Scene four: the lights come up across a full room.
+export function LightsLayer() {
+  return (
+    <div aria-hidden className={LAYER} style={{ opacity: "var(--v3)" }}>
+      <Image src={danceFloor} alt="" fill sizes="100vw" placeholder="blur" className="object-cover opacity-30" />
+      <div className="absolute inset-0 bg-background/55" />
+      <SpotBeams />
     </div>
   )
 }

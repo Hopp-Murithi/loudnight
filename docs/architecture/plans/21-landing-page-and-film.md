@@ -85,3 +85,15 @@ The owner asked for the page to behave like the slide deck: scrolling should not
 - Reduced motion: scenes cross-fade; nothing zooms, sweeps or pulses.
 - Removed: the hero with the film, the five-picture story, the demo venue list. One quiet "See an example plan" link stays in the last scene so judges still reach a finished plan without an account. Signed-in visitors are sent to their venues instead of being asked to sign in.
 - Checked at 1440 and 390 pixels in the dev server, every scene and mid-scroll. Not yet checked: 768 and 1280, keyboard-only, a real phone.
+
+## Revision, Oct 14 (later): the visitor's own country, one scroll per scene
+
+The owner asked for the zoom to follow the visitor (Kenya for Kenya, the US for the US, Europe, Asia) and for one scroll to change one scene, with no empty frames, on a mouse, a touchpad and a phone.
+
+- Region: the page reads Vercel's `x-vercel-ip-country` header and picks one of twelve regions (US, Kenya, Nigeria, South Africa, UK, Germany, France, India, Japan, Brazil, Mexico, Australia); neighbouring countries go to the nearest one; unknown means the US. Nothing about the visitor is stored. `/?region=<id>` shows any region, for demos.
+- Each region has its own dotted map, six towns, six tastes, an example night and a closing line (`config/landing-regions.ts`). Maps are generated once with dotted-map (`config/landing-maps.ts` holds the positions).
+- Scroll: one snap point per scene (`scroll-snap-type: y mandatory`, `scroll-snap-stop: always`) for touch and the keyboard. A real wheel notch of 100 pixels was snapped back to the same scene in testing, so wheel and trackpad gestures are handled in `use-scroll-stage.ts`: one gesture moves exactly one scene, and a gesture ends after 220 ms without wheel events, so a trackpad's long tail cannot skip scenes. Past the last scene the page scrolls on to the credits.
+- Pictures now cross-fade straight into each other (the visibilities always add up to one), so no frame is empty. Words still hand over faster, one headline at a time.
+- Soft spotlights over the first and last scenes; full ones in scene four.
+- The header floats over the first scene on the home page only.
+- Checked with real wheel input in headless Chrome (each notch moved exactly one scene, the fifth reached the credits), and screenshots of Kenya, the US, the UK and Japan at 1440 and 390 pixels.

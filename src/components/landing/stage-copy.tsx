@@ -1,7 +1,8 @@
 import Link from "next/link"
 import type { CSSProperties } from "react"
 import { Button } from "@/components/ui/button"
-import { AREA_TASTES, STAGE_SCENES, STORY_NIGHT } from "@/config/landing"
+import { NIGHT_READY, STAGE_SCENES } from "@/config/landing"
+import type { LandingRegion } from "@/config/landing-regions"
 import { ROUTES } from "@/config/site"
 import { TYPE } from "@/lib/typography"
 import { cn } from "@/lib/utils"
@@ -9,6 +10,7 @@ import { cn } from "@/lib/utils"
 interface SceneCopyProps {
   index: number
   active: boolean
+  region: LandingRegion
   signedIn: boolean
   exampleHref: string | null
 }
@@ -19,7 +21,7 @@ const textIn = (index: number): CSSProperties => ({
 })
 
 // What the scene says. Only the scene on screen can be read or reached, so a screen reader hears one at a time.
-export function SceneCopy({ index, active, signedIn, exampleHref }: SceneCopyProps) {
+export function SceneCopy({ index, active, region, signedIn, exampleHref }: SceneCopyProps) {
   const scene = STAGE_SCENES[index]
   const Heading = index === 0 ? "h1" : "h2"
   return (
@@ -31,8 +33,10 @@ export function SceneCopy({ index, active, signedIn, exampleHref }: SceneCopyPro
       <div className="mx-auto w-full max-w-6xl">
         <div className="max-w-xl space-y-4" style={textIn(index)}>
           <Heading className={cn(TYPE.display, scene.id === "lights" && "lit-text")}>{scene.title}</Heading>
-          <p className={cn(TYPE.lead, "text-foreground/85")}>{scene.line}</p>
-          {scene.id === "area" && <Tastes active={active} />}
+          <p className={cn(TYPE.lead, "text-foreground/85")}>
+            {scene.id === "anywhere" ? region.anywhere : scene.line}
+          </p>
+          {scene.id === "area" && <Tastes tastes={region.tastes} place={region.place} active={active} />}
           {scene.id === "lights" && <ReadyList active={active} />}
           {(scene.id === "world" || scene.id === "anywhere") && (
             <Start signedIn={signedIn} exampleHref={scene.id === "anywhere" ? exampleHref : null} />
@@ -43,10 +47,10 @@ export function SceneCopy({ index, active, signedIn, exampleHref }: SceneCopyPro
   )
 }
 
-function Tastes({ active }: { active: boolean }) {
+function Tastes({ tastes, place, active }: { tastes: readonly string[]; place: string; active: boolean }) {
   return (
-    <ul aria-label="What an area might love" className="flex flex-wrap gap-2 pt-1">
-      {AREA_TASTES.map((taste, index) => (
+    <ul aria-label={`What an area in ${place} might love`} className="flex flex-wrap gap-2 pt-1">
+      {tastes.map((taste, index) => (
         <li
           key={taste}
           className={cn(
@@ -65,7 +69,7 @@ function Tastes({ active }: { active: boolean }) {
 function ReadyList({ active }: { active: boolean }) {
   return (
     <ul className="grid gap-2 pt-1 sm:grid-cols-2">
-      {STORY_NIGHT.ready.map((item, index) => (
+      {NIGHT_READY.map((item, index) => (
         <li
           key={item}
           className={cn(

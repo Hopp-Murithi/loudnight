@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { sceneAt, stageVars, storyPosition } from "./stage-math"
+import { sceneAt, stageVars, storyPosition, wheelTarget } from "./stage-math"
 
 describe("storyPosition", () => {
   it("runs from the first scene to the last as the stage scrolls past", () => {
@@ -25,17 +25,34 @@ describe("stageVars", () => {
     }
   })
 
-  it("cross-fades between two scenes halfway through a scroll", () => {
-    const vars = stageVars(1.5, 5)
-    expect(Number(vars["--v1"])).toBeGreaterThan(0)
-    expect(Number(vars["--v2"])).toBeGreaterThan(0)
+  it("cross-fades two pictures straight into each other, so no frame is ever empty", () => {
+    for (const position of [0.25, 0.5, 1.5, 3.9]) {
+      const vars = stageVars(position, 5)
+      const shown = [0, 1, 2, 3, 4].reduce((sum, index) => sum + Number(vars[`--v${index}`]), 0)
+      expect(shown).toBeCloseTo(1, 2)
+    }
     expect(sceneAt(1.4)).toBe(1)
     expect(sceneAt(1.6)).toBe(2)
   })
 
-  it("closes in on the map as the visitor moves from the world to Kenya", () => {
+  it("closes in on the map as the visitor moves from the world to their country", () => {
     expect(stageVars(0, 5)["--world-zoom"]).toBe("1.000")
     expect(stageVars(1, 5)["--world-zoom"]).toBe("8.000")
-    expect(Number(stageVars(2, 5)["--kenya-zoom"])).toBeGreaterThan(Number(stageVars(1, 5)["--kenya-zoom"]))
+    expect(Number(stageVars(2, 5)["--area-zoom"])).toBeGreaterThan(Number(stageVars(1, 5)["--area-zoom"]))
+  })
+})
+
+describe("wheelTarget", () => {
+  it("moves one scene in the wheel's direction, however hard the wheel is spun", () => {
+    expect(wheelTarget(0, 3, 5)).toBe(1)
+    expect(wheelTarget(0, 900, 5)).toBe(1)
+    expect(wheelTarget(2, -100, 5)).toBe(1)
+    expect(wheelTarget(1.4, 100, 5)).toBe(2)
+  })
+
+  it("lets the page scroll on normally past the last scene and before the first", () => {
+    expect(wheelTarget(4, 100, 5)).toBeNull()
+    expect(wheelTarget(0, -100, 5)).toBeNull()
+    expect(wheelTarget(2, 0, 5)).toBeNull()
   })
 })

@@ -22,14 +22,17 @@ Built for the Qloo hackathon (submissions close Oct 30, 2026). The full brief is
 
 ## Status
 
-Phase 1 of 5 (Oct 12 to 14). See [`docs/architecture/plans/README.md`](docs/architecture/plans/README.md) for every plan, its gate and the schedule.
+Built and live (Oct 14), in the order an owner meets them:
 
-- [x] Foundation: stack, rules, brand, server layers, external clients, landing page (plan 00)
-- [x] Full data model with RLS: venues and teams, the agent pipeline, receipts, series, RSVPs and check-ins, read-only previews, all tested
-- [ ] Design system and app shell (plan 01); day-one Qloo probe across three neighbourhoods (plan 02, the phase 1 gate)
-- [ ] Onboarding, fingerprint, gap scan, concepts, live trace, demo venues (plans 03 to 07, 09)
-- [ ] Series and talent, launch kit, event pages, door check-in, dashboard, learning loop (plans 10 to 14)
-- [ ] Administrator console with Preview as, installable door app, security, quality, deployment, submission, roadmap (plans 08, 15 to 20)
+- **Landing page**: one pinned stage in five scenes. One scroll moves one scene. The story zooms into the visitor's own country (from the request's IP country, never stored; `/?region=kenya` shows any region).
+- **Venues anywhere**: time zone, town, country and currency come from the Google place; money is shown in the venue's own currency.
+- **Planning**: the six-step planner streams its trace, reads the area's taste through Qloo, scans what nearby venues and events already run, and proposes three scored nights with a receipt on every number.
+- **Series and performers**: four weeks on the calendar; performers popular near the venue first, a fresh list on each look, booking messages ready to send.
+- **Promote**: posters, banners and short videos drawn in the browser, with a ticket QR, Spanish copy and captions for each channel.
+- **Readiness**: what is ready for the chosen night and what is not, on Home.
+- **Demo venues**: finished plans anyone can open without an account.
+
+Next: the event page with RSVP and guest QR (plan 12), door check-in and the live dashboard (plan 13), the learning loop (plan 14), country-first venue search (plan 30). Every plan, its status and its gate: [`docs/architecture/plans/README.md`](docs/architecture/plans/README.md).
 
 ## Tech stack
 
@@ -48,7 +51,9 @@ Every version is pinned exactly in `package.json`. Do not use ranges.
 | [TanStack Query](https://tanstack.com/query)                          | 5.104.0          | Client data cache and mutations                         |
 | [Vitest](https://vitest.dev)                                          | 5.0.2            | Unit tests                                              |
 
-External services: Qloo Insights API, Google Places API (New), Ticketmaster Discovery API, Anthropic.
+Also pinned: `qrcode-generator` 2.0.4 (QR codes on ads and tickets, no dependencies).
+
+External services: Qloo Insights API, Google Places API (New), Ticketmaster Discovery API (optional per country), Anthropic. Hosting: Vercel. CI: GitHub Actions (`.github/workflows/ci.yml`).
 
 ## Architecture in one minute
 
@@ -69,7 +74,7 @@ Full reasoning: [`docs/architecture/ARCHITECTURE.md`](docs/architecture/ARCHITEC
 
 ## Getting started
 
-Needs Node 22 or newer, Docker, and the [Supabase CLI](https://supabase.com/docs/guides/cli).
+Needs Node 22 or newer, Docker, and the [Supabase CLI](https://supabase.com/docs/guides/cli). Without Docker you can point `.env.local` at a hosted Supabase project instead; database tests then run against that project.
 
 ```bash
 npm install
@@ -90,6 +95,7 @@ For local development, `supabase start` prints the local URL, publishable key an
 | `npm run db:test`           | Every `supabase/tests/*.sql` against the local database                       |
 | `npm run db:types`          | Regenerates `src/types/database.ts` from the local schema                     |
 | `npm run check:connections` | Proves Supabase, Qloo, Places, Ticketmaster and Anthropic answer              |
+| `npm run demo:precompute`   | Rebuilds the demo venues' plans, series and performers                        |
 | `npm test`                  | Unit tests                                                                    |
 | `npm run format`            | Prettier                                                                      |
 
@@ -128,7 +134,8 @@ Judges and new owners need no account: demo venues are open to everyone, and sta
 
 - [`CLAUDE.md`](CLAUDE.md): the rules
 - [`docs/architecture/ARCHITECTURE.md`](docs/architecture/ARCHITECTURE.md): the design and why
-- [`docs/architecture/plans`](docs/architecture/plans): the schedule, gates, judging criteria, traceability and plans 00 to 20
+- [`docs/architecture/plans`](docs/architecture/plans): the schedule, gates, judging criteria, traceability and plans 00 to 31
+- [`docs/roadmap.md`](docs/roadmap.md): how Encore makes money, point-of-sale onboarding, posting to social networks, local trends
 - [`docs/reference`](docs/reference): the Encore system brief
 
 ## Licence
