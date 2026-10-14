@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
+import { forbidden } from "@/lib/http/errors"
 import type { RequestContext } from "@/modules/auth/types"
 
 const repo = {
@@ -118,6 +119,16 @@ describe("doorService.ticketForStaff", () => {
     })
     repo.rsvpByCode.mockResolvedValue(null)
     expect(await doorService.ticketForStaff({} as never, "n1", "ab2c3d4e5f6g")).toBeNull()
+  })
+
+  it("shows a signed-out guest their own ticket, though the database refuses them the guest list", async () => {
+    repo.rsvpByCode.mockRejectedValueOnce(forbidden())
+    expect(await doorService.ticketForStaff({} as never, "n1", "ab2c3d4e5f6g")).toBeNull()
+  })
+
+  it("still reports a real failure", async () => {
+    repo.rsvpByCode.mockRejectedValueOnce(new Error("database down"))
+    await expect(doorService.ticketForStaff({} as never, "n1", "ab2c3d4e5f6g")).rejects.toThrow("database down")
   })
 })
 

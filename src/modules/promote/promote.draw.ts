@@ -129,6 +129,9 @@ export function drawDateBand(frame: AdFrame, options: BandOptions): number {
   return width
 }
 
+// A line of body type gives up at most a fifth of its size before it is shortened.
+const LINE_SHRINK = 0.8
+
 interface TextOptions {
   x: number
   y: number
@@ -139,11 +142,16 @@ interface TextOptions {
   alpha?: number
 }
 
-// One small line of body type, shortened with dots if it would run off the ad.
+// One small line of body type: a little smaller if it would run off the ad, then shortened with dots.
 export function drawLine(frame: AdFrame, text: string | null, options: TextOptions) {
   if (!text) return
   const { ctx } = frame
-  setFont(frame, "body", options.weight ?? 500, options.size)
+  let size = options.size
+  setFont(frame, "body", options.weight ?? 500, size)
+  while (ctx.measureText(text).width > options.maxWidth && size > options.size * LINE_SHRINK) {
+    size *= 0.96
+    setFont(frame, "body", options.weight ?? 500, size)
+  }
   let shown = text
   while (shown.length > 4 && ctx.measureText(shown).width > options.maxWidth)
     shown = `${shown.slice(0, -4).trimEnd()}...`

@@ -1,5 +1,5 @@
 import "server-only"
-import { conflict, fromDatabaseError, notFound } from "@/lib/http/errors"
+import { AppError, conflict, fromDatabaseError, notFound } from "@/lib/http/errors"
 import type { ServerSupabase } from "@/lib/supabase/server"
 import type { RequestContext } from "@/modules/auth/types"
 import { codeFrom } from "@/modules/events/events.codes"
@@ -150,9 +150,12 @@ async function logSpend(ctx: RequestContext, nightId: string, amount: number) {
 }
 
 // When a team member opens a ticket (scanned with any phone camera), the guest it belongs to. RLS returns nothing
-// for anyone else, so a guest looking at their own ticket never sees this.
+// for anyone else, and a signed-out guest may not read the guest list at all, so a guest never sees this.
 async function ticketForStaff(supabase: ServerSupabase, nightId: string, code: string) {
-  const rsvp = await doorRepository.rsvpByCode(supabase, code)
+  const rsvp = await doorRepository.rsvpByCode(supabase, code).catch((error: unknown) => {
+    if (error instanceof AppError && error.code === "forbidden") return null
+    throw error
+  })
   if (!rsvp || rsvp.event_night_id !== nightId) return null
   return {
     nightId,
