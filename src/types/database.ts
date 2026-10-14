@@ -576,6 +576,7 @@ export type Database = {
       }
       talent_candidates: {
         Row: {
+          booked_at: string | null
           concept_id: string
           created_at: string
           fit_signals: string[]
@@ -585,12 +586,16 @@ export type Database = {
           outreach_edited: string | null
           overlap_score: number
           popularity_tier: Database["public"]["Enums"]["popularity_tier"]
+          profile: Json
           qloo_cache_id: string | null
           qloo_entity_id: string
           response_path: string[]
+          search_page: number
+          source: string
           venue_id: string
         }
         Insert: {
+          booked_at?: string | null
           concept_id: string
           created_at?: string
           fit_signals?: string[]
@@ -600,12 +605,16 @@ export type Database = {
           outreach_edited?: string | null
           overlap_score: number
           popularity_tier: Database["public"]["Enums"]["popularity_tier"]
+          profile?: Json
           qloo_cache_id?: string | null
           qloo_entity_id: string
           response_path?: string[]
+          search_page?: number
+          source?: string
           venue_id: string
         }
         Update: {
+          booked_at?: string | null
           concept_id?: string
           created_at?: string
           fit_signals?: string[]
@@ -615,9 +624,12 @@ export type Database = {
           outreach_edited?: string | null
           overlap_score?: number
           popularity_tier?: Database["public"]["Enums"]["popularity_tier"]
+          profile?: Json
           qloo_cache_id?: string | null
           qloo_entity_id?: string
           response_path?: string[]
+          search_page?: number
+          source?: string
           venue_id?: string
         }
         Relationships: [
@@ -733,8 +745,11 @@ export type Database = {
       venues: {
         Row: {
           address: string
+          city: string | null
+          country_code: string | null
           created_at: string
           created_by: string | null
+          currency: string
           google_place_id: string | null
           id: string
           is_demo: boolean
@@ -747,8 +762,11 @@ export type Database = {
         }
         Insert: {
           address: string
+          city?: string | null
+          country_code?: string | null
           created_at?: string
           created_by?: string | null
+          currency?: string
           google_place_id?: string | null
           id?: string
           is_demo?: boolean
@@ -761,8 +779,11 @@ export type Database = {
         }
         Update: {
           address?: string
+          city?: string | null
+          country_code?: string | null
           created_at?: string
           created_by?: string | null
+          currency?: string
           google_place_id?: string | null
           id?: string
           is_demo?: boolean
@@ -804,6 +825,9 @@ export type Database = {
           p_break_even_headcount: number
           p_capabilities: Database["public"]["Enums"]["venue_capability"][]
           p_capacity: number
+          p_city?: string
+          p_country_code?: string
+          p_currency?: string
           p_google_place_id: string
           p_latitude: number
           p_longitude: number

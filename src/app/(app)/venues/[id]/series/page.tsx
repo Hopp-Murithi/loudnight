@@ -11,7 +11,7 @@ import { SeriesPoster } from "@/modules/series/components/series-poster"
 import { StageEmpty } from "@/modules/series/components/stage-empty"
 import { readSeries } from "@/modules/series/series.service"
 import { TalentShortlist } from "@/modules/talent/components/talent-shortlist"
-import { readTalent } from "@/modules/talent/talent.service"
+import { readTalent } from "@/modules/talent/talent.read"
 import { venueForPage } from "@/modules/venues/venues.page"
 
 export const metadata: Metadata = { title: "Series" }
@@ -41,7 +41,13 @@ export default async function VenueSeriesPage({ params }: PageProps<"/venues/[id
           <SeriesPoster venueId={id} concept={chosen} night={night} hasSeries={series !== null} canEdit={canEdit} />
           {series && <NightStrip nights={series.nights} timeZone={venue.timeZone} canEdit={canEdit} />}
           {series && (
-            <TalentShortlist seriesId={series.id} talent={acts.talent} references={acts.references} canEdit={canEdit} />
+            <TalentShortlist
+              seriesId={series.id}
+              nightName={chosen.name}
+              talent={acts.talent}
+              references={acts.references}
+              canEdit={canEdit}
+            />
           )}
         </>
       ) : (

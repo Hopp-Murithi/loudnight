@@ -47,7 +47,13 @@ export default async function DemoPage({ params }: PageProps<"/demo/[venueId]">)
         {run && plannedAt ? (
           <>
             <TourStrip />
-            <DemoWorkspace run={run} concepts={concepts} radiusMetres={venue.radiusMetres} plannedAt={plannedAt} />
+            <DemoWorkspace
+              run={run}
+              concepts={concepts}
+              radiusMetres={venue.radiusMetres}
+              plannedAt={plannedAt}
+              currency={venue.currency}
+            />
             {series && (
               <section id="series" aria-labelledby="series-heading" className="scroll-mt-6 space-y-5">
                 <div className="space-y-1">
@@ -62,7 +68,13 @@ export default async function DemoPage({ params }: PageProps<"/demo/[venueId]">)
               </section>
             )}
             {series && (talent.length > 0 || references.length > 0) && (
-              <TalentShortlist seriesId={series.id} talent={talent} references={references} canEdit={false} />
+              <TalentShortlist
+                seriesId={series.id}
+                nightName={concepts.find((concept) => concept.chosen)?.name ?? venue.name}
+                talent={talent}
+                references={references}
+                canEdit={false}
+              />
             )}
           </>
         ) : (

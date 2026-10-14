@@ -117,11 +117,13 @@ export function overlapRequest(anchor: QlooSignalRef, target: QlooSignalRef, poi
 }
 
 // Acts that fans of these tastes follow near the point, kept inside a popularity band so they are bookable.
+// With no anchors it asks for the area's own favourites. Page 2 onwards is a fresh set of the same size.
 export function talentRequest(
   anchors: readonly QlooSignalRef[],
   type: QlooEntityType,
   point: GeoPoint,
   band: PopularityBand,
+  page = 1,
 ): QlooRequest {
   const params: QlooParams = { "filter.type": type, "signal.location": wktPoint(point), take: QLOO.take }
   const tags = anchors.filter((anchor) => anchor.kind === "tag").map((anchor) => anchor.qlooId)
@@ -130,5 +132,6 @@ export function talentRequest(
   if (entities.length > 0) params["signal.interests.entities"] = entities
   if (band.min !== undefined) params["filter.popularity.min"] = band.min
   if (band.max !== undefined && band.max !== null) params["filter.popularity.max"] = band.max
+  if (page > 1) params.page = page
   return { path: "/v2/insights", params }
 }

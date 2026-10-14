@@ -1,4 +1,4 @@
-import { Sparkles, Star, TriangleAlert } from "lucide-react"
+import { Star, TriangleAlert } from "lucide-react"
 import type { ReactNode } from "react"
 import { SectionCard } from "@/components/shared/section-card"
 import { formatDistance } from "@/lib/geo"
@@ -92,10 +92,7 @@ export function NightEvents({
     >
       {failed && <Failed>Ticketmaster did not answer, so the themes come from venues only.</Failed>}
       {!failed && events.length === 0 && (
-        <p className="flex items-start gap-2 text-sm">
-          <Sparkles aria-hidden className="mt-0.5 size-4 shrink-0 text-primary" />
-          Nothing ticketed on {nightLabel} nearby. That is your opening.
-        </p>
+        <p className="flex items-start gap-2 text-sm">Nothing ticketed on {nightLabel} nearby. That is your opening.</p>
       )}
       {!failed && events.length > 0 && (
         <Rows

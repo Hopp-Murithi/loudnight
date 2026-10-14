@@ -1,4 +1,4 @@
-import { ArrowRight, CircleCheck, Plus, Sparkles } from "lucide-react"
+import { CircleCheck, Plus } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { FadeIn } from "@/components/shared/fade-in"
@@ -6,19 +6,14 @@ import { venueHome } from "@/config/navigation"
 import { photoForVenue } from "@/config/night-photos"
 import { ROUTES } from "@/config/site"
 import { VENUE_TYPE_LABELS } from "@/config/venues"
-import { cityOf } from "@/lib/address"
+import { townOf } from "@/lib/address"
 import type { VenuePlanStatus } from "@/modules/runs/runs.status"
 import { VENUE_ROLE_LABELS } from "@/modules/team/team.schemas"
 import type { MyVenue } from "../venues.schemas"
 
 function PlanLine({ status }: { status: VenuePlanStatus | undefined }) {
   if (!status || status.status === "none") {
-    return (
-      <span className="flex items-center gap-1.5 text-muted-foreground">
-        <Sparkles aria-hidden className="size-4" />
-        Not planned yet
-      </span>
-    )
+    return <span className="flex items-center gap-1.5 text-muted-foreground">Not planned yet</span>
   }
   if (status.chosen) {
     return (
@@ -30,10 +25,7 @@ function PlanLine({ status }: { status: VenuePlanStatus | undefined }) {
   }
   if (status.status === "succeeded") {
     return (
-      <span className="flex items-center gap-1.5 text-primary">
-        <Sparkles aria-hidden className="size-4" />
-        {status.shortlist.length} nights ready to compare
-      </span>
+      <span className="flex items-center gap-1.5 text-primary">{status.shortlist.length} nights ready to compare</span>
     )
   }
   return (
@@ -95,17 +87,14 @@ export function VenueList({ venues, statuses }: { venues: MyVenue[]; statuses: R
                 </div>
                 <div className="flex flex-1 flex-col gap-3 p-4">
                   <p className="text-sm text-muted-foreground">
-                    {VENUE_TYPE_LABELS[venue.venueType]} in {cityOf(venue.address) || venue.address}
+                    {VENUE_TYPE_LABELS[venue.venueType]} in {townOf(venue) || venue.address}
                   </p>
                   <div className="text-sm">
                     <PlanLine status={statuses[venue.id]} />
                   </div>
                   <div className="mt-auto flex items-center justify-between border-t pt-3 text-xs text-muted-foreground">
                     <span>{VENUE_ROLE_LABELS[venue.role]}</span>
-                    <ArrowRight
-                      aria-hidden
-                      className="size-4 transition-transform group-hover:translate-x-1 motion-reduce:transition-none"
-                    />
+                    <span className="text-link group-hover:underline">Open</span>
                   </div>
                 </div>
               </Link>

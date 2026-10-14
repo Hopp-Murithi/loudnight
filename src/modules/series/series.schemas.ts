@@ -1,6 +1,7 @@
 import { z } from "zod"
-import { SERIES, type PopularityTier } from "@/config/series"
+import { SERIES, type PopularityTier, type TalentSource } from "@/config/series"
 import { plainDashes } from "@/lib/text"
+import type { TalentProfile } from "@/modules/talent/talent.profile"
 import type { Enums } from "@/types/database"
 import { hasDigits } from "./series.dates"
 
@@ -31,6 +32,10 @@ export const outreachEditSchema = z.object({
 export type NightEditInput = z.infer<typeof nightEditSchema>
 export type OutreachEditInput = z.infer<typeof outreachEditSchema>
 
+// One change at a time: new wording for the message, or whether the act is booked.
+export const talentEditSchema = z.union([outreachEditSchema, z.object({ booked: z.boolean() })])
+export type TalentEditInput = z.infer<typeof talentEditSchema>
+
 export interface NightView {
   id: string
   sequence: number
@@ -50,6 +55,10 @@ export interface TalentView {
   message: string | null
   edited: boolean
   hasReceipt: boolean
+  booked: boolean
+  bookedAt: string | null
+  source: TalentSource
+  profile: TalentProfile
 }
 
 export interface SeriesView {

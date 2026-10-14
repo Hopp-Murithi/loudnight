@@ -1,6 +1,6 @@
 import { RATE_LIMITS } from "@/config/limits"
 import { publicApiRoute } from "@/lib/http/route"
-import { readTalentReceipt } from "@/modules/talent/talent.service"
+import { readTalentReceipt } from "@/modules/talent/talent.read"
 
 type Params = { id: string }
 

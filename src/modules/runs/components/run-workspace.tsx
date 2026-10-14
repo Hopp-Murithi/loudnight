@@ -16,10 +16,11 @@ interface RunWorkspaceProps {
   initialConcepts: ConceptView[]
   canRun: boolean
   radiusMetres: number
+  currency: string
 }
 
 // While it plans the page is one stage. Once done it is the nights, with the working behind them one tab away.
-export function RunWorkspace({ initial, initialConcepts, canRun, radiusMetres }: RunWorkspaceProps) {
+export function RunWorkspace({ initial, initialConcepts, canRun, radiusMetres, currency }: RunWorkspaceProps) {
   const run = useRun(initial, canRun)
   const scored = run.steps.find((step) => step.step === "score")?.status === "done"
   const shortlist = useShortlist(initial.id, initialConcepts, scored)
@@ -41,6 +42,8 @@ export function RunWorkspace({ initial, initialConcepts, canRun, radiusMetres }:
         concepts={shortlist.data}
         ready={scored}
         canChoose={canRun}
+        venueId={initial.venueId}
+        currency={currency}
         generic={{ answer: generic.data, loading: generic.isFetching && !generic.data, failed: generic.isError }}
       />
       <RunDetails

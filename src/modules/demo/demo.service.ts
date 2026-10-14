@@ -1,4 +1,5 @@
 import "server-only"
+import { townOf } from "@/lib/address"
 import { PIPELINE_STEPS } from "@/config/runs"
 import { forbidden, notFound, upstreamFailed } from "@/lib/http/errors"
 import type { AdminSupabase } from "@/lib/supabase/admin"
@@ -10,7 +11,8 @@ import { readRun } from "@/modules/runs/runs.read"
 import { runsRepository } from "@/modules/runs/runs.repository"
 import { seriesRepository } from "@/modules/series/series.repository"
 import { createSeries, readSeries } from "@/modules/series/series.service"
-import { findTalent, readTalent } from "@/modules/talent/talent.service"
+import { readTalent } from "@/modules/talent/talent.read"
+import { findTalent } from "@/modules/talent/talent.service"
 import type { RunContext } from "@/modules/runs/runs.schemas"
 import { demoRepository } from "./demo.repository"
 import type { DemoPlan, PrecomputeSummary } from "./demo.schemas"
@@ -36,6 +38,8 @@ function toRunVenue(venue: UpkeepVenue): RunVenue {
       capabilities: settings.capabilities,
       talentBudgetCents: settings.talent_budget_cents,
       averageSpendCents: settings.average_spend_cents,
+      currency: venue.currency,
+      town: townOf(venue),
     },
   }
 }
@@ -49,6 +53,8 @@ export async function readDemoPlan(supabase: ServerSupabase, venueId: string): P
     id: row.id,
     name: row.name,
     address: row.address,
+    city: row.city,
+    currency: row.currency,
     venueType: row.venue_type,
     timeZone: row.time_zone,
     slowNight: settings.slow_night,
@@ -84,6 +90,7 @@ async function planTheNights(admin: AdminSupabase, row: UpkeepVenue, venue: RunV
       point: venue.point,
       timeZone: venue.timeZone,
       talentBudgetCents: venue.brief.talentBudgetCents,
+      currency: venue.brief.currency,
     },
     {
       conceptId,

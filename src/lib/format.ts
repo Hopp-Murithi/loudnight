@@ -1,7 +1,15 @@
-// Venues are in the US for now, so money is dollars and every time is shown in the venue's own time zone.
-const MONEY = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 })
+// Money is shown in the venue's own currency and every time in the venue's own time zone.
+// Amounts are stored as hundredths of the currency, and shown as whole units: "$300", "KES 5,000", "£40", "¥3,000".
+export function formatMoney(cents: number, currency: string): string {
+  return new Intl.NumberFormat("en-US", { style: "currency", currency, maximumFractionDigits: 0 }).format(
+    Math.round(cents / 100),
+  )
+}
 
-export const formatMoney = (cents: number) => MONEY.format(Math.round(cents / 100))
+const CURRENCY_NAMES = new Intl.DisplayNames(["en"], { type: "currency" })
+
+// "KES" reads as "Kenyan Shilling".
+export const currencyName = (code: string) => CURRENCY_NAMES.of(code) ?? code
 
 export function formatNightDate(iso: string, timeZone: string): string {
   return new Intl.DateTimeFormat("en-US", { weekday: "short", month: "short", day: "numeric", timeZone }).format(

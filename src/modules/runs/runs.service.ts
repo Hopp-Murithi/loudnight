@@ -1,4 +1,5 @@
 import "server-only"
+import { townOf } from "@/lib/address"
 import { PIPELINE_STEPS, STEP_MAX_SECONDS, type PipelineStep } from "@/config/runs"
 import { keepAlive } from "@/lib/http/background"
 import { AppError, conflict, notFound } from "@/lib/http/errors"
@@ -27,8 +28,10 @@ function toRunVenue(venue: ManagedVenue): RunVenue {
       slowNight: venue.settings.slowNight,
       capacity: venue.settings.capacity,
       capabilities: venue.settings.capabilities,
-      talentBudgetCents: Math.round(venue.settings.talentBudgetDollars * 100),
-      averageSpendCents: Math.round(venue.settings.averageSpendDollars * 100),
+      talentBudgetCents: Math.round(venue.settings.talentBudget * 100),
+      averageSpendCents: Math.round(venue.settings.averageSpend * 100),
+      currency: venue.currency,
+      town: townOf(venue),
     },
   }
 }

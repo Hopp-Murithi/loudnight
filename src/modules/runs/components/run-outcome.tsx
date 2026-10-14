@@ -12,6 +12,8 @@ interface RunOutcomeProps {
   canChoose: boolean
   generic: { answer: string | undefined; loading: boolean; failed: boolean }
   first?: "encore" | "generic"
+  venueId?: string
+  currency: string
 }
 
 function Waiting() {
@@ -30,8 +32,21 @@ function Waiting() {
 }
 
 // Encore's nights against a plain chatbot's answer for the same venue: the reason Qloo matters, side by side.
-export function RunOutcome({ concepts, ready, canChoose, generic, first = "encore" }: RunOutcomeProps) {
-  const encore = ready && concepts ? <ConceptShortlist concepts={concepts} canChoose={canChoose} /> : <Waiting />
+export function RunOutcome({
+  concepts,
+  ready,
+  canChoose,
+  generic,
+  first = "encore",
+  venueId,
+  currency,
+}: RunOutcomeProps) {
+  const encore =
+    ready && concepts ? (
+      <ConceptShortlist concepts={concepts} currency={currency} canChoose={canChoose} venueId={venueId} />
+    ) : (
+      <Waiting />
+    )
   const plain = <GenericAnswer {...generic} />
 
   return (

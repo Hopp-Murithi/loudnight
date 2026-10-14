@@ -1,33 +1,24 @@
-import { LandingHero } from "@/components/landing/landing-hero"
-import { NightStory } from "@/components/landing/night-story"
+import { NightStage } from "@/components/landing/night-stage"
 import { PhotoCredits } from "@/components/layout/nights-gallery"
+import { ROUTES } from "@/config/site"
 import { createServerSupabase } from "@/lib/supabase/server"
-import { DemoVenueList } from "@/modules/venues/components/demo-venue-list"
+import { hasAccountSession } from "@/modules/auth/server/context"
 import { venuesService } from "@/modules/venues/venues.service"
 
-// Two slides, always night: the quiet room and the promise, then the whole use case in five pictures.
+// One pinned stage, always night: the world, an area, a room, the lights, then the world again.
 export default async function HomePage() {
-  const demoVenues = await venuesService.listDemoVenues(await createServerSupabase())
+  const [demoVenues, signedIn] = await Promise.all([
+    venuesService.listDemoVenues(await createServerSupabase()),
+    hasAccountSession(),
+  ])
+  const example = demoVenues.find((venue) => venue.planReady)
 
   return (
-    <div className="slides dark bg-background text-foreground">
-      <LandingHero />
-      <div className="slide stage-glow flex min-h-svh flex-col justify-center">
-        <div className="mx-auto w-full max-w-6xl space-y-10 px-4 py-14 sm:px-6">
-          <NightStory />
-          <section
-            id="demo"
-            aria-labelledby="demo-heading"
-            className="reveal flex flex-wrap items-center gap-x-4 gap-y-3"
-          >
-            <h2 id="demo-heading" className="text-sm text-muted-foreground">
-              See a finished plan, no account needed:
-            </h2>
-            <DemoVenueList venues={demoVenues} />
-          </section>
-          <PhotoCredits />
-        </div>
-      </div>
+    <div className="dark bg-background text-foreground">
+      <NightStage signedIn={signedIn} exampleHref={example ? ROUTES.demo(example.id) : null} />
+      <footer className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6">
+        <PhotoCredits />
+      </footer>
     </div>
   )
 }

@@ -1,6 +1,5 @@
 "use client"
 
-import { RotateCw } from "lucide-react"
 import { Stepper, type StepItem } from "@/components/shared/stepper"
 import { Button } from "@/components/ui/button"
 import { PIPELINE } from "@/config/runs"
@@ -46,7 +45,6 @@ export function RunTrace({ steps, error, onRetry, retrying }: RunTraceProps) {
               <p className="text-sm text-destructive">{error.message}</p>
               {onRetry && (
                 <Button size="sm" variant="outline" onClick={onRetry} disabled={retrying}>
-                  <RotateCw aria-hidden className="size-4" />
                   Try this step again
                 </Button>
               )}

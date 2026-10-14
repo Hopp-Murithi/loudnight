@@ -46,6 +46,7 @@ export function ConceptsSection() {
     <GallerySection title="Concepts and receipts" description="The shortlist, one chosen night, and a receipt body.">
       <ConceptShortlist
         canChoose
+        currency="USD"
         concepts={[
           concept(1, "Sample Soul Supper Club", 96, true),
           concept(2, "Sample Night", 91),
@@ -53,7 +54,7 @@ export function ConceptsSection() {
         ]}
       />
       <Specimen label="Empty shortlist">
-        <ConceptShortlist canChoose concepts={[]} />
+        <ConceptShortlist canChoose currency="USD" concepts={[]} />
       </Specimen>
       <Specimen label="Receipt">
         <div className="w-full max-w-lg border p-4">

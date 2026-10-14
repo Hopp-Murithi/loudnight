@@ -8,7 +8,7 @@ import type { RequestContext } from "@/modules/auth/types"
 import { venuesRepository } from "./venues.repository"
 import {
   toCents,
-  toDollars,
+  fromCents,
   type DemoVenue,
   type MyVenue,
   type VenueDetail,
@@ -22,8 +22,8 @@ const settingsColumns = (input: VenueSettingsInput) => ({
   break_even_headcount: input.breakEvenHeadcount,
   capacity: input.capacity,
   capabilities: [...new Set(input.capabilities)],
-  talent_budget_cents: toCents(input.talentBudgetDollars),
-  average_spend_cents: toCents(input.averageSpendDollars),
+  talent_budget_cents: toCents(input.talentBudget),
+  average_spend_cents: toCents(input.averageSpend),
 })
 
 // Administrators work on every venue as an owner would; RLS gives them the same rights.
@@ -44,19 +44,22 @@ const loadDetail = cache(async (ctx: RequestContext, venueId: string): Promise<V
     id: venue.id,
     name: venue.name,
     address: venue.address,
+    city: venue.city,
     venueType: venue.venue_type,
     role,
     googlePlaceId: venue.google_place_id,
     latitude: venue.latitude,
     longitude: venue.longitude,
     timeZone: venue.time_zone,
+    countryCode: venue.country_code,
+    currency: venue.currency,
     settings: settings && {
       slowNight: settings.slow_night,
       breakEvenHeadcount: settings.break_even_headcount,
       capacity: settings.capacity,
       capabilities: settings.capabilities,
-      talentBudgetDollars: toDollars(settings.talent_budget_cents),
-      averageSpendDollars: toDollars(settings.average_spend_cents),
+      talentBudget: fromCents(settings.talent_budget_cents),
+      averageSpend: fromCents(settings.average_spend_cents),
       searchRadiusM: settings.search_radius_m,
     },
   }
@@ -70,6 +73,7 @@ export const venuesService = {
       id: row.id,
       name: row.name,
       address: row.address,
+      city: row.city,
       venueType: row.venue_type,
       planReady: row.agent_runs.length > 0,
     }))
@@ -81,6 +85,7 @@ export const venuesService = {
       id: venue.id,
       name: venue.name,
       address: venue.address,
+      city: venue.city,
       venueType: venue.venue_type,
       role,
     }))
@@ -101,8 +106,11 @@ export const venuesService = {
       p_capabilities: [...new Set(input.capabilities)],
       p_slow_night: input.slowNight,
       p_break_even_headcount: input.breakEvenHeadcount,
-      p_talent_budget_cents: toCents(input.talentBudgetDollars),
-      p_average_spend_cents: toCents(input.averageSpendDollars),
+      p_talent_budget_cents: toCents(input.talentBudget),
+      p_average_spend_cents: toCents(input.averageSpend),
+      p_country_code: input.countryCode ?? undefined,
+      p_city: input.city ?? undefined,
+      p_currency: input.currency,
     })
     return { id }
   },
@@ -116,6 +124,9 @@ export const venuesService = {
       longitude: input.longitude,
       venue_type: input.venueType,
       time_zone: input.timeZone,
+      country_code: input.countryCode,
+      city: input.city,
+      currency: input.currency,
     })
     if (!saved) throw forbidden("Only the venue's owner and managers can change it.")
   },

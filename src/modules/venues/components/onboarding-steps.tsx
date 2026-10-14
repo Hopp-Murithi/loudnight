@@ -4,9 +4,11 @@ import { useWatch, type UseFormReturn } from "react-hook-form"
 import { TextField } from "@/components/forms/text-field"
 import { FieldGroup } from "@/components/ui/field"
 import { VENUE_CAPABILITY_LABELS, VENUE_TYPE_LABELS, WEEKDAY_LABELS } from "@/config/venues"
+import { DEFAULT_CURRENCY } from "@/config/currencies"
 import { formatMoney } from "@/lib/format"
 import { TYPE } from "@/lib/typography"
 import { toCents, type PlaceOption, type VenueOnboardingInput } from "../venues.schemas"
+import { CurrencyField } from "./currency-field"
 import { PlaceSearch } from "./place-search"
 import { TimeZoneField } from "./time-zone-field"
 import { CapabilityPicker, NightPicker } from "./venue-fields"
@@ -28,6 +30,7 @@ function Heading({ title, description }: { title: string; description: string })
 export function OnboardingStep({ step, form }: StepProps) {
   const { control, setValue, formState } = form
   const values = useWatch({ control })
+  const currency = values.currency ?? DEFAULT_CURRENCY
 
   const choosePlace = (place: PlaceOption) => {
     const options = { shouldValidate: true, shouldDirty: true }
@@ -38,6 +41,9 @@ export function OnboardingStep({ step, form }: StepProps) {
     setValue("longitude", place.longitude, options)
     setValue("venueType", place.venueType, options)
     setValue("timeZone", place.timeZone, options)
+    setValue("countryCode", place.countryCode, options)
+    setValue("city", place.city, options)
+    setValue("currency", place.currency, options)
   }
 
   if (step === 0) {
@@ -88,16 +94,17 @@ export function OnboardingStep({ step, form }: StepProps) {
           description="Used to suggest talent you can afford and to show what a full night earns."
         />
         <FieldGroup>
+          <CurrencyField control={control} name="currency" />
           <TextField
             control={control}
-            name="talentBudgetDollars"
-            label="Talent budget per night, in dollars"
+            name="talentBudget"
+            label={`Talent budget per night, in ${currency}`}
             type="number"
           />
           <TextField
             control={control}
-            name="averageSpendDollars"
-            label="What a guest spends, in dollars"
+            name="averageSpend"
+            label={`What a guest spends, in ${currency}`}
             type="number"
           />
         </FieldGroup>
@@ -116,6 +123,8 @@ export function OnboardingStep({ step, form }: StepProps) {
       <dl className="grid gap-x-6 gap-y-3 border p-4 text-sm sm:grid-cols-[12rem_1fr]">
         <dt className="text-muted-foreground">Address</dt>
         <dd>{values.address}</dd>
+        <dt className="text-muted-foreground">Town</dt>
+        <dd>{values.city ?? "Not found, that is fine"}</dd>
         <dt className="text-muted-foreground">Type</dt>
         <dd>{values.venueType && VENUE_TYPE_LABELS[values.venueType]}</dd>
         <dt className="text-muted-foreground">Quiet night</dt>
@@ -130,8 +139,8 @@ export function OnboardingStep({ step, form }: StepProps) {
         </dd>
         <dt className="text-muted-foreground">Money</dt>
         <dd>
-          {formatMoney(toCents(values.talentBudgetDollars ?? 0))} for talent,{" "}
-          {formatMoney(toCents(values.averageSpendDollars ?? 0))} per guest
+          {formatMoney(toCents(values.talentBudget ?? 0), currency)} for talent,{" "}
+          {formatMoney(toCents(values.averageSpend ?? 0), currency)} per guest
         </dd>
       </dl>
     </section>

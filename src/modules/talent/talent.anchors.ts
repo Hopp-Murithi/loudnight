@@ -3,6 +3,7 @@ import { TALENT } from "@/config/series"
 import type { QlooInsights } from "@/lib/qloo/schemas"
 import { buildSignals, type Signal } from "@/modules/concepts/concepts.signals"
 import type { RunContext } from "@/modules/runs/runs.schemas"
+import { profileFrom } from "./talent.profile"
 import type { RankedAct } from "./talent.tiers"
 
 // The tastes the chosen night was built on. If the plan no longer names them, the area's leading music styles stand in.
@@ -20,8 +21,23 @@ export function actsFrom(response: QlooInsights): RankedAct[] {
   return (response.results?.entities ?? []).flatMap((entity, index) => {
     const affinity = entity.query?.affinity
     if (affinity === undefined || !isPresentableName(entity.name)) return []
-    return [{ entityId: entity.entity_id, name: entity.name, popularity: entity.popularity ?? null, affinity, index }]
+    return [
+      {
+        entityId: entity.entity_id,
+        name: entity.name,
+        popularity: entity.popularity ?? null,
+        affinity,
+        index,
+        profile: profileFrom(entity),
+      },
+    ]
   })
+}
+
+// What a booking message may mention: the music and nights out a crowd likes, not the brands or shows it follows.
+export function messageTastes(anchors: Signal[]): string[] {
+  const musical = anchors.filter((anchor) => anchor.category === "music" || anchor.category === "night_out")
+  return (musical.length > 0 ? musical : anchors).map((anchor) => anchor.name)
 }
 
 export const actReceiptPath = (index: number) => ["results", "entities", String(index), "query", "affinity"]

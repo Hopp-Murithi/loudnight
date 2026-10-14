@@ -1,6 +1,5 @@
 "use client"
 
-import { Share2 } from "lucide-react"
 import type { ComponentProps } from "react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
@@ -34,7 +33,6 @@ export function ShareButton({ url, title, text, label = "Share", variant = "outl
 
   return (
     <Button variant={variant} onClick={share} {...props}>
-      <Share2 className="size-4" aria-hidden />
       {label}
     </Button>
   )

@@ -60,3 +60,10 @@ export function photoForVenue(venueId: string): NightPhoto {
   const sum = [...venueId].reduce((total, char) => total + char.charCodeAt(0), 0)
   return NIGHT_PHOTOS[sum % NIGHT_PHOTOS.length]
 }
+
+// Photos an ad may carry with no credit line: public-domain ones only. Each week of a series gets a different one.
+export function adPhotoFor(venueId: string, week: number): NightPhoto {
+  const free = NIGHT_PHOTOS.filter((photo) => photo.license === "CC0")
+  const sum = [...venueId].reduce((total, char) => total + char.charCodeAt(0), 0)
+  return free[(sum + week) % free.length]
+}

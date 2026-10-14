@@ -4,9 +4,10 @@ import {
   DoorOpen,
   History,
   LayoutDashboard,
+  Megaphone,
   Settings,
   ShieldCheck,
-  Sparkles,
+  Compass,
   Store,
   Users,
   type LucideIcon,
@@ -37,10 +38,10 @@ interface VenueNavEntry {
 const EDITORS = { owner: "edit", manager: "edit" } as const
 
 // Who sees what inside a venue (plan 01). Showing an item is a courtesy; the API and RLS still decide.
-// Primary items are the journey itself and fill the tab bar on phones. The rest is upkeep.
+// Primary items are the journey itself, in order. The first four fill the tab bar on phones; the rest is upkeep.
 const VENUE_NAV: VenueNavEntry[] = [
   { label: "Home", icon: LayoutDashboard, href: ROUTES.venue, access: EDITORS, primary: true },
-  { label: "Plan", icon: Sparkles, href: ROUTES.venuePlan, access: { ...EDITORS, door: "view" }, primary: true },
+  { label: "Plan", icon: Compass, href: ROUTES.venuePlan, access: { ...EDITORS, door: "view" }, primary: true },
   {
     label: "Series",
     icon: CalendarDays,
@@ -48,6 +49,7 @@ const VENUE_NAV: VenueNavEntry[] = [
     access: { ...EDITORS, door: "view" },
     primary: true,
   },
+  { label: "Promote", icon: Megaphone, href: ROUTES.venuePromote, access: EDITORS, primary: true },
   { label: "Door", icon: DoorOpen, href: ROUTES.venueDoor, access: { ...EDITORS, door: "edit" }, primary: true },
   { label: "Results", icon: ChartColumn, href: ROUTES.venueResults, access: { owner: "edit", manager: "edit" } },
   { label: "Team", icon: Users, href: ROUTES.venueTeam, access: { owner: "edit", manager: "view" } },
@@ -77,3 +79,6 @@ export const ADMIN_ITEM: NavItem = { label: "Admin", icon: ShieldCheck, href: RO
 export function venueHome(venueId: string, role: VenueRole): string {
   return role === "door" ? ROUTES.venueDoor(venueId) : ROUTES.venue(venueId)
 }
+
+// How many journey items fit beside More in the phone tab bar.
+export const TAB_BAR_ITEMS = 4

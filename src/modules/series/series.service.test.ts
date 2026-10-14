@@ -28,6 +28,8 @@ const concept = {
   pitch: "A sample pitch.",
   format: "live_music" as const,
   themes: ["sample"],
+  needs: ["stage" as const],
+  estimated_cost_cents: 20000,
   chosen_at: "2026-10-13T10:00:00Z",
 }
 const venue = { id: "v1", timeZone: "America/New_York", settings: { capabilities: ["stage"] } }

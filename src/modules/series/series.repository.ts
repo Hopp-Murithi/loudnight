@@ -20,7 +20,7 @@ export const seriesRepository = {
   async findConcept(supabase: Client, conceptId: string) {
     const { data, error } = await supabase
       .from("concepts")
-      .select("id, venue_id, run_id, name, pitch, format, themes, chosen_at")
+      .select("id, venue_id, run_id, name, pitch, format, themes, needs, estimated_cost_cents, chosen_at")
       .eq("id", conceptId)
       .maybeSingle()
     check(error)

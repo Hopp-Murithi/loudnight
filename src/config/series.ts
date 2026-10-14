@@ -27,7 +27,12 @@ export const TALENT = {
   shortlistSize: 8,
   referenceCount: 4,
   anchorCount: 3,
+  minListeners: 1000,
+  pages: 3,
 } as const
+
+// Why an act is on the shortlist: the night's tastes, the area's own favourites, or both.
+export type TalentSource = "night" | "area" | "both"
 
 export const TIER_LABELS: Record<PopularityTier, string> = {
   emerging: "Emerging",

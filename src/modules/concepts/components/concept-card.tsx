@@ -1,6 +1,6 @@
 "use client"
 
-import { CircleCheck, Sparkles, Star } from "lucide-react"
+import { CircleCheck, Star } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { CONCEPT_FORMAT_LABELS } from "@/config/concepts"
 import { formatMoney } from "@/lib/format"
@@ -12,6 +12,7 @@ import { ScoreBreakdown } from "./score-breakdown"
 
 interface ConceptCardProps {
   concept: ConceptView
+  currency: string
   canChoose: boolean
   onOpenReceipt: (evidenceId: string) => void
 }
@@ -35,7 +36,7 @@ function Marker({ concept }: { concept: ConceptView }) {
 }
 
 // One night as a gig poster with its ticket stub: the poster sells it, the stub proves it, then the choice.
-export function ConceptCard({ concept, canChoose, onOpenReceipt }: ConceptCardProps) {
+export function ConceptCard({ concept, currency, canChoose, onOpenReceipt }: ConceptCardProps) {
   const choose = useChooseConcept()
 
   return (
@@ -74,15 +75,12 @@ export function ConceptCard({ concept, canChoose, onOpenReceipt }: ConceptCardPr
           </ul>
         </div>
 
-        <p className="flex gap-2 text-sm">
-          <Sparkles aria-hidden className="mt-0.5 size-4 shrink-0 text-primary" />
-          <span>{concept.reasonBeatsNearby}</span>
-        </p>
+        <p className="border-l-2 border-primary pl-3 text-sm">{concept.reasonBeatsNearby}</p>
 
         <div className="mt-auto flex flex-wrap items-center justify-between gap-3 border-t pt-4">
           <p className="text-sm">
             <span className="text-muted-foreground">About </span>
-            <span className="font-medium tabular-nums">{formatMoney(concept.estimatedCostCents)}</span>
+            <span className="font-medium tabular-nums">{formatMoney(concept.estimatedCostCents, currency)}</span>
             <span className="text-muted-foreground"> a night</span>
           </p>
           {canChoose && !concept.chosen && (

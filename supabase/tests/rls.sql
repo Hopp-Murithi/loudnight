@@ -207,6 +207,11 @@ begin
   failed := false;
   begin update public.talent_candidates set name = 'Renamed' where id = talent_id; exception when insufficient_privilege then failed := true; end;
   assert failed, 'sessions change nothing else on a candidate';
+  update public.talent_candidates set booked_at = now() where id = talent_id; get diagnostics n = row_count;
+  assert n = 1, 'managers mark an act as booked';
+  failed := false;
+  begin update public.talent_candidates set profile = '{"x":1}' where id = talent_id; exception when insufficient_privilege then failed := true; end;
+  assert failed, 'sessions cannot rewrite a performer''s profile';
   reset role;
 
   -- door staff: guest list and check-ins, no money, no planning
@@ -228,6 +233,8 @@ begin
   assert failed, 'door staff cannot make a series';
   update public.talent_candidates set outreach_edited = 'hi' where id = talent_id; get diagnostics n = row_count;
   assert n = 0, 'door staff cannot reword outreach';
+  update public.talent_candidates set booked_at = null where id = talent_id; get diagnostics n = row_count;
+  assert n = 0, 'door staff cannot change a booking';
   failed := false;
   begin insert into public.agent_runs (venue_id, requested_by, target_weekday) values (v_mine, u_door, 'tuesday'); exception when insufficient_privilege then failed := true; end;
   assert failed, 'door staff cannot start a run';

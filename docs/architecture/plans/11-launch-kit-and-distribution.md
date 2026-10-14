@@ -1,6 +1,6 @@
 # Plan 11: Launch kit and distribution
 
-Status: Not started
+Status: In progress (the ad studio first, see the revision at the end)
 Depends on: 10
 Phase: 4
 Judging criteria: Design (one tap from idea to ready-to-post), Potential Impact (an idea fills nothing until people hear about it)
@@ -89,3 +89,39 @@ Out: the public event page and RSVP (plan 12); direct posting to Meta or Google 
 You are working on Encore. Follow `CLAUDE.md` exactly. Read this plan, plans 06 and 10, and `event_nights.assets`. Load the `claude-api` skill for the prompts. Ask the user before adding `satori` and `@resvg/resvg-js`.
 
 Order: schemas and channel config with tests, pure builders (ad brief) with tests, validator, generation service, routes, poster templates and route, then the tab UI. If behind schedule, follow the cut-list: partner cross-promo, then posters. Run `npm run validate`. Tick boxes only when verified. No long dashes. Do not commit unless asked.
+
+## Revision, Oct 14: the ad studio comes first
+
+The owner asked for posters, banners and video ads for the chosen night that are colourful, uncrowded, not generic, cost almost nothing to make, animate (a slow zoom), and can be pushed to social platforms from the phone. This section replaces the poster and posts parts of the design above. The rest of the kit (menu specials, regulars message, partner pitch, ad brief) stays as planned and comes after.
+
+### What it is
+
+`/venues/[id]/promote`: pick one of the four nights, then a format, a template and a colourway. The ad is drawn live from the night's own facts and can be saved as an image, recorded as a short video, or shared.
+
+### Decisions
+
+- **No image or video model.** Every ad is a designed template drawn on a canvas in the browser from stored facts: the night's name, the venue, the date and start time, and the booked act or the week's twist. It costs no tokens and no server time, and the same code draws the still, the preview and the video.
+- **Three templates**, each with one clear idea and at most four pieces of text: Marquee (a full photo with the name over it and the date on a colour band), Block (a field of colour with the photo in a slanted window), Ticket (paper, a giant day number and a tear line, no photo).
+- **Four colourways** (Ember, Plum, Lagoon, Sunset), defined once in `config/promote.ts`. Canvas cannot read CSS tokens, so the hex values live there and nowhere else.
+- **Four formats**: poster 1080x1350, story 1080x1920, square 1080x1080, banner 1200x628.
+- **Video**: six seconds at 30 frames a second, recorded from the canvas with `MediaRecorder`. MP4 where the browser can write it, WebM otherwise. The motion is a slow zoom on the photo, the title rising in line by line, and the date band wiping across. Under reduced motion the preview is the finished still.
+- **Photos**: one of the CC0 night photos already in the repo, the owner's own photo (read locally, never uploaded), or the booked act's photo from Qloo, fetched through the app's own image route so the canvas stays exportable. Photos that need a credit (CC BY) are not offered for ads.
+- **Sharing**: `navigator.share` with the file and the caption opens the phone's own share sheet, which is how an ad reaches Instagram, TikTok, WhatsApp or anything else installed. Without it, the file downloads. Posting through each network's API needs their app review and stays on the roadmap (plan 20).
+- **Captions**: built by rule from the same facts for Instagram, Facebook, X and a text message, each inside its limit, with hashtags from the city, the weekday and the night's format. No model call. A model-written variant can come with the rest of the kit.
+- **Saved design**: the chosen template, colourway, photo and extra line are stored per night in `event_nights.assets.ad` (`PATCH /api/v1/nights/[id]/ad`, owners and managers), so the event page (plan 12) can show the same poster.
+- The server-side poster route, Satori and resvg are not needed for this and are not added.
+- **Ticket link and QR code**: an optional https link per night (a ticket seller or an RSVP page). When set, the ad carries a QR code for it with a "Scan for tickets" label, and every caption ends with the link. Drawn with `qrcode-generator` (MIT, no dependencies, pinned). Once the event page exists (plan 12) its address becomes the default link.
+- **Redo**: Play it again, Film it again, Refresh the details (re-reads the night from the server) and Start this ad over.
+
+### Tests
+
+Pure parts only: what goes on the ad for a night (with and without a booked act), captions and their limits, hashtags, the animation timeline, text fitting, the video type choice, the design schema, and the save service. Drawing itself is checked on screen.
+
+### Deliverables
+
+- [x] An ad for any of the four nights in four formats, three templates and four colourways
+- [ ] Saved as PNG; recorded as a six-second video with a zoom
+- [ ] Shared through the phone's share sheet, or downloaded
+- [x] Captions for four channels inside their limits, one tap to copy
+- [x] The design saved per night
+- [ ] Screen standard met for the studio

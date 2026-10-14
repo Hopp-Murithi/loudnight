@@ -52,6 +52,7 @@ export default async function RunPage({ params }: PageProps<"/venues/[id]/plan/[
         initialConcepts={concepts}
         canRun={canRun}
         radiusMetres={venue.settings?.searchRadiusM ?? 2000}
+        currency={venue.currency}
       />
     </>
   )

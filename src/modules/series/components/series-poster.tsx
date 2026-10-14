@@ -1,6 +1,5 @@
 "use client"
 
-import { CalendarPlus } from "lucide-react"
 import Link from "next/link"
 import { SubmitButton } from "@/components/forms/submit-button"
 import { CONCEPT_FORMAT_LABELS } from "@/config/concepts"
@@ -43,7 +42,6 @@ export function SeriesPoster({ venueId, concept, night, hasSeries, canEdit }: Se
             pendingLabel="Planning four weeks"
             onClick={() => create.mutate(concept.id)}
           >
-            <CalendarPlus aria-hidden className="size-4" />
             Make it four weeks
           </SubmitButton>
         )}

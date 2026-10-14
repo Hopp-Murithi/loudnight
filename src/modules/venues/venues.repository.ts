@@ -7,7 +7,8 @@ type CreateVenueArgs = Database["public"]["Functions"]["create_venue"]["Args"]
 type VenueUpdate = Database["public"]["Tables"]["venues"]["Update"]
 type SettingsUpdate = Database["public"]["Tables"]["venue_settings"]["Update"]
 
-const VENUE_COLUMNS = "id, name, address, venue_type, google_place_id, latitude, longitude, time_zone"
+const VENUE_COLUMNS =
+  "id, name, address, venue_type, google_place_id, latitude, longitude, time_zone, country_code, city, currency"
 const SETTINGS_COLUMNS =
   "slow_night, break_even_headcount, capacity, capabilities, talent_budget_cents, average_spend_cents, search_radius_m"
 
@@ -20,7 +21,7 @@ export const venuesRepository = {
     return unwrap(
       await supabase
         .from("venues")
-        .select("id, name, address, venue_type, agent_runs(status)")
+        .select("id, name, address, city, venue_type, agent_runs(status)")
         .eq("is_demo", true)
         .eq("agent_runs.status", "succeeded")
         .order("name")
@@ -33,7 +34,7 @@ export const venuesRepository = {
     return unwrap(
       await supabase
         .from("venue_members")
-        .select("role, venue:venues!inner(id, name, address, venue_type)")
+        .select("role, venue:venues!inner(id, name, address, city, venue_type)")
         .eq("user_id", userId)
         .order("created_at")
         .limit(50),

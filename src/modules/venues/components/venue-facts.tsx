@@ -8,12 +8,12 @@ import type { HistoryEntry } from "@/modules/history/history.service"
 import { toCents, type VenueSettingsView } from "../venues.schemas"
 
 // The four numbers a plan is built on, in one place, each with what it means.
-export function VenueNumbers({ settings }: { settings: VenueSettingsView }) {
+export function VenueNumbers({ settings, currency }: { settings: VenueSettingsView; currency: string }) {
   const rows = [
     { label: "Break-even", value: String(settings.breakEvenHeadcount), hint: "guests a night needs" },
     { label: "Room", value: String(settings.capacity), hint: "people it holds" },
-    { label: "Guest spend", value: formatMoney(toCents(settings.averageSpendDollars)), hint: "on an average night" },
-    { label: "Talent budget", value: formatMoney(toCents(settings.talentBudgetDollars)), hint: "per night" },
+    { label: "Guest spend", value: formatMoney(toCents(settings.averageSpend), currency), hint: "on an average night" },
+    { label: "Talent budget", value: formatMoney(toCents(settings.talentBudget), currency), hint: "per night" },
   ]
   return (
     <SectionCard title="Your numbers" description="What every plan is sized to.">

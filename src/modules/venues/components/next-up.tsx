@@ -1,4 +1,4 @@
-import { ArrowRight, CircleCheck, DoorOpen, Sparkles } from "lucide-react"
+import { CircleCheck } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ROUTES } from "@/config/site"
@@ -44,7 +44,6 @@ export function NextUp({ venueId, night, status, canPlan }: NextUpProps) {
           nativeButton={false}
           render={<Link href={ROUTES.venueDoor(venueId)} />}
         >
-          <DoorOpen aria-hidden className="size-4" />
           Open the door
         </Button>
       </Frame>
@@ -77,7 +76,6 @@ export function NextUp({ venueId, night, status, canPlan }: NextUpProps) {
         </p>
         <Button className="mt-auto self-start" size="lg" nativeButton={false} render={<Link href={plan} />}>
           {failed ? "Carry on with the plan" : "Watch it plan"}
-          <ArrowRight aria-hidden className="size-4" />
         </Button>
       </Frame>
     )
@@ -98,7 +96,6 @@ export function NextUp({ venueId, night, status, canPlan }: NextUpProps) {
           render={<Link href={ROUTES.venueSeries(venueId)} />}
         >
           See the series
-          <ArrowRight aria-hidden className="size-4" />
         </Button>
       </Frame>
     )
@@ -120,7 +117,6 @@ export function NextUp({ venueId, night, status, canPlan }: NextUpProps) {
         Qloo answer behind it.
       </p>
       <Button className="mt-auto self-start" size="lg" nativeButton={false} render={<Link href={plan} />}>
-        <Sparkles aria-hidden className="size-4" />
         Compare the nights
       </Button>
     </Frame>

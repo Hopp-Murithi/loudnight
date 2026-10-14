@@ -1,43 +1,13 @@
-import {
-  BookOpen,
-  Building2,
-  CircleSlash,
-  Clapperboard,
-  Mic,
-  Music,
-  Plane,
-  ShoppingBag,
-  Sparkles,
-  TriangleAlert,
-  Tv,
-  Users,
-  type LucideIcon,
-} from "lucide-react"
+import { CircleSlash, TriangleAlert } from "lucide-react"
 import { SectionCard } from "@/components/shared/section-card"
-import type { TasteDomainId } from "@/config/taste"
 import type { TasteDomainResult } from "../taste.schemas"
-
-const DOMAIN_ICONS: Record<TasteDomainId, LucideIcon> = {
-  music_styles: Music,
-  place_styles: Sparkles,
-  music: Mic,
-  places: Building2,
-  film: Clapperboard,
-  tv: Tv,
-  brands: ShoppingBag,
-  books: BookOpen,
-  podcasts: Mic,
-  people: Users,
-  destinations: Plane,
-}
 
 // One domain of the fingerprint, ranked. Empty and failed domains say so; they are never left blank or dropped.
 export function DomainTile({ result }: { result: TasteDomainResult }) {
-  const Icon = DOMAIN_ICONS[result.domain as TasteDomainId] ?? Sparkles
   const [top, ...rest] = result.status === "ok" ? result.items : []
 
   return (
-    <SectionCard title={result.label} action={<Icon aria-hidden className="size-4 text-muted-foreground" />}>
+    <SectionCard title={result.label}>
       {top && (
         <ol className="space-y-1.5">
           <li

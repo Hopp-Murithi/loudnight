@@ -8,6 +8,7 @@ import { SubmitButton } from "@/components/forms/submit-button"
 import { StickyActionBar } from "@/components/shared/sticky-action-bar"
 import { Stepper, type StepItem } from "@/components/shared/stepper"
 import { Button } from "@/components/ui/button"
+import { DEFAULT_CURRENCY } from "@/config/currencies"
 import { DEFAULT_TIME_ZONE } from "@/config/time-zones"
 import { useCreateVenue } from "../hooks/use-venue-mutations"
 import { venueOnboardingSchema, type VenueOnboardingInput } from "../venues.schemas"
@@ -19,7 +20,7 @@ export const ONBOARDING_STEPS: { label: string; fields: Fields[] }[] = [
   { label: "Find your venue", fields: ["googlePlaceId", "name", "address", "latitude", "longitude", "venueType"] },
   { label: "Your quiet night", fields: ["slowNight", "breakEvenHeadcount"] },
   { label: "Your space", fields: ["capacity", "capabilities"] },
-  { label: "Money", fields: ["talentBudgetDollars", "averageSpendDollars"] },
+  { label: "Money", fields: ["currency", "talentBudget", "averageSpend"] },
   { label: "Check and save", fields: ["name", "timeZone"] },
 ]
 
@@ -28,7 +29,15 @@ export function OnboardingWizard() {
   const create = useCreateVenue()
   const form = useForm<VenueOnboardingInput>({
     resolver: zodResolver(venueOnboardingSchema),
-    defaultValues: { capabilities: [], timeZone: DEFAULT_TIME_ZONE, talentBudgetDollars: 0, averageSpendDollars: 20 },
+    defaultValues: {
+      capabilities: [],
+      timeZone: DEFAULT_TIME_ZONE,
+      countryCode: null,
+      city: null,
+      currency: DEFAULT_CURRENCY,
+      talentBudget: 0,
+      averageSpend: 20,
+    },
   })
   const last = step === ONBOARDING_STEPS.length - 1
 

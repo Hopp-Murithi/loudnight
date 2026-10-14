@@ -16,10 +16,14 @@ export default async function VenueResultsPage({ params }: PageProps<"/venues/[i
   const venue = await venueForPage(ctx, (await params).id)
   // Results carry money, so they are for owners and managers only.
   if (!venue.settings) notFound()
-  const { breakEvenHeadcount, averageSpendDollars } = venue.settings
+  const { breakEvenHeadcount, averageSpend } = venue.settings
   const measures = [
     { label: "Guests", value: "0", hint: `of ${breakEvenHeadcount} to break even` },
-    { label: "Extra takings", value: formatMoney(0), hint: `at ${formatMoney(toCents(averageSpendDollars))} a guest` },
+    {
+      label: "Extra takings",
+      value: formatMoney(0, venue.currency),
+      hint: `at ${formatMoney(toCents(averageSpend), venue.currency)} a guest`,
+    },
     { label: "Next week", value: "Night 1", hint: "after it: keep, tweak or swap, by turnout" },
   ]
 

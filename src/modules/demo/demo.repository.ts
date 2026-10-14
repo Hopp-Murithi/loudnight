@@ -15,7 +15,7 @@ export const demoRepository = {
   async findVenue(supabase: ServerSupabase, venueId: string) {
     const { data, error } = await supabase
       .from("venues")
-      .select(`id, name, address, venue_type, time_zone, is_demo, venue_settings(${SETTINGS})`)
+      .select(`id, name, address, city, currency, venue_type, time_zone, is_demo, venue_settings(${SETTINGS})`)
       .eq("id", venueId)
       .eq("is_demo", true)
       .maybeSingle()
@@ -47,7 +47,7 @@ export const demoRepository = {
     const { data, error } = await admin
       .from("venues")
       .select(
-        `id, name, address, venue_type, google_place_id, latitude, longitude, time_zone, is_demo, venue_settings(${SETTINGS}, ${MONEY})`,
+        `id, name, address, city, currency, venue_type, google_place_id, latitude, longitude, time_zone, is_demo, venue_settings(${SETTINGS}, ${MONEY})`,
       )
       .eq("id", venueId)
       .maybeSingle()

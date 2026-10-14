@@ -73,3 +73,15 @@ The owner's feedback was that the page had too much going on. It is now two scre
 2. The use case as five pictures ("From an empty Tuesday to a full room"), a gallery on a laptop and a row to swipe on a phone, with three links to finished demo plans beneath.
 
 The two-answers block, the loop, the receipt explorer and the night-value calculator (with its maths and tests) were removed from the page and the code. The Generic vs Encore contrast and the receipts now live on the demo pages (plan 09), where they are real rather than samples. Blocks rise in as they enter the screen where the browser supports scroll-driven animation, and are simply visible otherwise and under reduced motion. A signed-in visitor sees "Your venues" in the header instead of "Sign in".
+
+## Revision, Oct 14: one stage, five scenes
+
+The owner asked for the page to behave like the slide deck: scrolling should not move the page, it should move the story on, with the background zooming from the world into Kenya, into a venue, then party lights, then the world lit up.
+
+- `components/landing/night-stage.tsx`: a pinned stage (`position: sticky`) inside a track five screens tall. `use-scroll-stage.ts` turns the scroll into a position from 0 to 4 and writes style values straight onto the stage each frame, so scrolling never re-renders React; only a change of scene does. The maths is in `stage-math.ts`, tested.
+- Scenes: the world at night (one light on Nairobi), Kenya with its towns lit and an area's tastes, a room with the night Encore found pinned to it, coloured spotlights sweeping in from the corners over "And fills it.", and the world again with a light coming on in one city after another.
+- Words hand over faster than pictures, so two headlines are never on screen together. Only the scene on screen can be read or focused (`inert` on the others). Dots beside the stage jump to any scene.
+- Maps: dotted world and Kenya maps generated once with `dotted-map` (MIT) and saved as static SVG in `public/landing`; the app gains no dependency. Pin positions are in `config/landing.ts`.
+- Reduced motion: scenes cross-fade; nothing zooms, sweeps or pulses.
+- Removed: the hero with the film, the five-picture story, the demo venue list. One quiet "See an example plan" link stays in the last scene so judges still reach a finished plan without an account. Signed-in visitors are sent to their venues instead of being asked to sign in.
+- Checked at 1440 and 390 pixels in the dev server, every scene and mid-scroll. Not yet checked: 768 and 1280, keyboard-only, a real phone.

@@ -1,11 +1,21 @@
 import { describe, expect, it } from "vitest"
-import { isActivePath, venueHome, venueIdFromPath, venueNavigation } from "./navigation"
+import { isActivePath, TAB_BAR_ITEMS, venueHome, venueIdFromPath, venueNavigation } from "./navigation"
 
 const labels = (role: "owner" | "manager" | "door") => venueNavigation("v1", role).map((item) => item.label)
 
 describe("venueNavigation", () => {
   it("gives owners every item", () => {
-    expect(labels("owner")).toEqual(["Home", "Plan", "Series", "Door", "Results", "Team", "Settings", "History"])
+    expect(labels("owner")).toEqual([
+      "Home",
+      "Plan",
+      "Series",
+      "Promote",
+      "Door",
+      "Results",
+      "Team",
+      "Settings",
+      "History",
+    ])
   })
 
   it("gives managers everything, with the team read only", () => {
@@ -18,14 +28,15 @@ describe("venueNavigation", () => {
     const items = venueNavigation("v1", "door")
     expect(items.map((item) => item.label)).toEqual(["Plan", "Series", "Door"])
     expect(items.map((item) => item.access)).toEqual(["view", "view", "edit"])
-    for (const hidden of ["Home", "Results", "Team", "Settings", "History"]) {
+    for (const hidden of ["Home", "Promote", "Results", "Team", "Settings", "History"]) {
       expect(labels("door")).not.toContain(hidden)
     }
   })
 
   it("marks the journey as primary, for the tab bar on phones, and the rest as upkeep", () => {
     const primary = venueNavigation("v1", "owner").filter((item) => item.primary)
-    expect(primary.map((item) => item.label)).toEqual(["Home", "Plan", "Series", "Door"])
+    expect(primary.map((item) => item.label)).toEqual(["Home", "Plan", "Series", "Promote", "Door"])
+    expect(primary.slice(0, TAB_BAR_ITEMS).map((item) => item.label)).toEqual(["Home", "Plan", "Series", "Promote"])
   })
 
   it("builds links for the venue in hand", () => {

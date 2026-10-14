@@ -3,6 +3,8 @@ import { FadeIn } from "@/components/shared/fade-in"
 import { WEEKDAY_LABELS } from "@/config/venues"
 import { getPageContext } from "@/modules/auth/server/context"
 import { venueHistory } from "@/modules/history/history.service"
+import { ReadinessCard } from "@/modules/readiness/components/readiness-card"
+import { readReadiness } from "@/modules/readiness/readiness.service"
 import { planStatuses } from "@/modules/runs/runs.status"
 import { NextUp } from "@/modules/venues/components/next-up"
 import { RecentActivity, VenueNumbers, VenueRoom } from "@/modules/venues/components/venue-facts"
@@ -19,6 +21,8 @@ export default async function VenueOverviewPage({ params }: PageProps<"/venues/[
     planStatuses(ctx.supabase, [id]),
     settings ? venueHistory(ctx.supabase, id, 5) : Promise.resolve([]),
   ])
+  const chosen = statuses[id].chosen
+  const readiness = chosen && settings ? await readReadiness(ctx.supabase, { ...venue, settings }, chosen.id) : null
   const night = WEEKDAY_LABELS[settings?.slowNight ?? "tuesday"]
 
   return (
@@ -29,11 +33,16 @@ export default async function VenueOverviewPage({ params }: PageProps<"/venues/[
       {settings && (
         <>
           <FadeIn delay={1}>
-            <VenueNumbers settings={settings} />
+            <VenueNumbers settings={settings} currency={venue.currency} />
           </FadeIn>
           <FadeIn delay={2}>
             <VenueRoom venueId={id} capabilities={settings.capabilities} />
           </FadeIn>
+          {readiness && (
+            <FadeIn delay={3} className="lg:col-span-2">
+              <ReadinessCard readiness={readiness} canEdit={venue.role !== "door"} />
+            </FadeIn>
+          )}
           <FadeIn delay={3} className="lg:col-span-2">
             <RecentActivity venueId={id} entries={history} />
           </FadeIn>

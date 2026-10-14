@@ -1,77 +1,28 @@
-// Venues are in the US for now. A state's main zone is the default; owners can correct it in settings.
-export const TIME_ZONES = [
-  { value: "America/New_York", label: "Eastern" },
-  { value: "America/Chicago", label: "Central" },
-  { value: "America/Denver", label: "Mountain" },
-  { value: "America/Phoenix", label: "Arizona" },
-  { value: "America/Los_Angeles", label: "Pacific" },
-  { value: "America/Anchorage", label: "Alaska" },
-  { value: "Pacific/Honolulu", label: "Hawaii" },
-] as const
+// Venues can be anywhere. The zone comes from the venue's Google place; owners can correct it in settings.
+export const DEFAULT_TIME_ZONE = "America/New_York"
 
-export type TimeZone = (typeof TIME_ZONES)[number]["value"]
-
-export const DEFAULT_TIME_ZONE: TimeZone = "America/New_York"
-
-const BY_STATE: Record<string, TimeZone> = {
-  CT: "America/New_York",
-  DE: "America/New_York",
-  DC: "America/New_York",
-  FL: "America/New_York",
-  GA: "America/New_York",
-  IN: "America/New_York",
-  KY: "America/New_York",
-  ME: "America/New_York",
-  MD: "America/New_York",
-  MA: "America/New_York",
-  MI: "America/New_York",
-  NH: "America/New_York",
-  NJ: "America/New_York",
-  NY: "America/New_York",
-  NC: "America/New_York",
-  OH: "America/New_York",
-  PA: "America/New_York",
-  RI: "America/New_York",
-  SC: "America/New_York",
-  VT: "America/New_York",
-  VA: "America/New_York",
-  WV: "America/New_York",
-  AL: "America/Chicago",
-  AR: "America/Chicago",
-  IL: "America/Chicago",
-  IA: "America/Chicago",
-  KS: "America/Chicago",
-  LA: "America/Chicago",
-  MN: "America/Chicago",
-  MS: "America/Chicago",
-  MO: "America/Chicago",
-  NE: "America/Chicago",
-  ND: "America/Chicago",
-  OK: "America/Chicago",
-  SD: "America/Chicago",
-  TN: "America/Chicago",
-  TX: "America/Chicago",
-  WI: "America/Chicago",
-  CO: "America/Denver",
-  ID: "America/Denver",
-  MT: "America/Denver",
-  NM: "America/Denver",
-  UT: "America/Denver",
-  WY: "America/Denver",
-  AZ: "America/Phoenix",
-  CA: "America/Los_Angeles",
-  NV: "America/Los_Angeles",
-  OR: "America/Los_Angeles",
-  WA: "America/Los_Angeles",
-  AK: "America/Anchorage",
-  HI: "Pacific/Honolulu",
+// Any zone the runtime knows, such as "Africa/Nairobi" or "Europe/London".
+export function isTimeZone(value: unknown): value is string {
+  if (typeof value !== "string" || value.length === 0 || value.length > 64) return false
+  try {
+    new Intl.DateTimeFormat("en-US", { timeZone: value })
+    return true
+  } catch {
+    return false
+  }
 }
 
-export const isTimeZone = (value: unknown): value is TimeZone =>
-  typeof value === "string" && TIME_ZONES.some((zone) => zone.value === value)
+// Every zone for the settings picker. Older runtimes without the list fall back to the venue's own zone.
+export function allTimeZones(current: string): string[] {
+  const known = typeof Intl.supportedValuesOf === "function" ? Intl.supportedValuesOf("timeZone") : []
+  return known.includes(current) ? known : [current, ...known]
+}
 
-// Reads the state from a US address such as "214 Bedford Ave, Brooklyn, NY 11249, USA".
-export function timeZoneForAddress(address: string): TimeZone {
-  const state = address.match(/,\s*([A-Z]{2})\s+\d{5}(?:-\d{4})?\b/)?.[1]
-  return (state && BY_STATE[state]) || DEFAULT_TIME_ZONE
+// "Africa/Nairobi" reads as "Nairobi (GMT+3)", the way an owner would say it.
+export function zoneLabel(zone: string, at = new Date()): string {
+  const place = zone.split("/").pop()?.replaceAll("_", " ") ?? zone
+  const offset = new Intl.DateTimeFormat("en-US", { timeZone: zone, timeZoneName: "shortOffset" })
+    .formatToParts(at)
+    .find((part) => part.type === "timeZoneName")?.value
+  return offset ? `${place} (${offset})` : place
 }

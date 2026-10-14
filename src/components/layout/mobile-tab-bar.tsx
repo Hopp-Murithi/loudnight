@@ -4,7 +4,7 @@ import { Menu } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useSidebar } from "@/components/ui/sidebar"
-import { isActivePath, venueIdFromPath, venueNavigation } from "@/config/navigation"
+import { isActivePath, TAB_BAR_ITEMS, venueIdFromPath, venueNavigation } from "@/config/navigation"
 import { ROUTES } from "@/config/site"
 import { cn } from "@/lib/utils"
 import type { ShellVenue } from "./app-sidebar"
@@ -18,7 +18,9 @@ export function MobileTabBar({ venues, currentVenueId }: { venues: ShellVenue[];
   const { toggleSidebar } = useSidebar()
   const venue = venues.find((item) => item.id === (currentVenueId ?? venueIdFromPath(pathname)))
   if (!venue) return null
-  const tabs = venueNavigation(venue.id, venue.role).filter((item) => item.primary)
+  const tabs = venueNavigation(venue.id, venue.role)
+    .filter((item) => item.primary)
+    .slice(0, TAB_BAR_ITEMS)
   const homes = [ROUTES.venue(venue.id)]
 
   return (

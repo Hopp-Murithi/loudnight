@@ -1,5 +1,14 @@
 import { describe, expect, it } from "vitest"
-import { bookable, overlapOf, styleReferences, tierOf, type RankedAct } from "./talent.tiers"
+import { EMPTY_PROFILE } from "./talent.profile"
+import {
+  activeMusicians,
+  nextPage,
+  overlapOf,
+  shortlistOf,
+  styleReferences,
+  tierOf,
+  type RankedAct,
+} from "./talent.tiers"
 
 const act = (entityId: string, popularity: number | null, affinity: number): RankedAct => ({
   entityId,
@@ -7,6 +16,7 @@ const act = (entityId: string, popularity: number | null, affinity: number): Ran
   popularity,
   affinity,
   index: 0,
+  profile: EMPTY_PROFILE,
 })
 
 describe("tierOf", () => {
@@ -19,20 +29,36 @@ describe("tierOf", () => {
   })
 })
 
-describe("bookable", () => {
+describe("shortlistOf", () => {
+  const ids = (acts: { entityId: string }[]) => acts.map((item) => item.entityId)
+
   it("never includes a national act, however well it fits", () => {
     const acts = [act("a", 0.95, 1), act("b", 0.5, 0.7), act("c", 0.2, 0.9)]
-    expect(bookable(acts).map((item) => item.entityId)).toEqual(["b", "c"])
+    expect(ids(shortlistOf(acts, []))).toEqual(["b", "c"])
   })
 
   it("puts local draws first, then emerging, then regional, best fit first within each", () => {
     const acts = [act("r", 0.7, 0.99), act("e", 0.1, 0.9), act("l1", 0.5, 0.6), act("l2", 0.45, 0.8)]
-    expect(bookable(acts).map((item) => item.entityId)).toEqual(["l2", "l1", "e", "r"])
+    expect(ids(shortlistOf(acts, []))).toEqual(["l2", "l1", "e", "r"])
+  })
+
+  it("puts the area's own favourites before other fits, and those in both lists first of all", () => {
+    const night = [act("fit", 0.5, 0.99), act("both", 0.5, 0.6)]
+    const area = [act("home2", 0.5, 1), act("home1", 0.5, 1), act("both", 0.5, 1)]
+    const list = shortlistOf(night, area)
+    expect(ids(list)).toEqual(["both", "home2", "home1", "fit"])
+    expect(list.map((item) => item.source)).toEqual(["both", "area", "area", "night"])
   })
 
   it("keeps the shortlist to eight", () => {
     const many = Array.from({ length: 12 }, (_, index) => act(String(index), 0.5, index / 12))
-    expect(bookable(many)).toHaveLength(8)
+    expect(shortlistOf(many, many.slice(0, 3))).toHaveLength(8)
+  })
+})
+
+describe("nextPage", () => {
+  it("moves one page on, and back to the first after the third", () => {
+    expect([1, 2, 3].map(nextPage)).toEqual([2, 3, 1])
   })
 })
 
@@ -40,6 +66,17 @@ describe("styleReferences", () => {
   it("lists only national names that are not already shortlisted", () => {
     const acts = [act("a", 0.9, 0.8), act("b", 0.85, 0.95), act("c", 0.5, 1)]
     expect(styleReferences(acts, ["a"]).map((item) => item.entityId)).toEqual(["b"])
+  })
+})
+
+describe("activeMusicians", () => {
+  it("drops famous names with no real listeners, and anyone with no music profile at all", () => {
+    const withListeners = (id: string, listeners: number | null) => ({
+      ...act(id, 0.5, 0.9),
+      profile: { ...EMPTY_PROFILE, listeners },
+    })
+    const acts = [withListeners("band", 34500), withListeners("model", 979), withListeners("comic", null)]
+    expect(activeMusicians(acts).map((item) => item.entityId)).toEqual(["band"])
   })
 })
 

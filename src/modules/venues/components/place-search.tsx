@@ -41,7 +41,7 @@ export function PlaceSearch({ selected, onSelect, error }: PlaceSearchProps) {
           id={inputId}
           value={text}
           onChange={(event) => setText(event.target.value)}
-          placeholder="Venue name and city, for example The Copper Room Brooklyn"
+          placeholder="Venue name and town, anywhere: The Carnivore Nairobi, The Copper Room Brooklyn"
           className="pl-9"
           autoComplete="off"
           aria-describedby={statusId}

@@ -21,7 +21,7 @@ export default async function VenueSettingsPage({ params }: PageProps<"/venues/[
           <VenueIdentityForm venue={venue} />
         </SectionCard>
         <SectionCard title="Your nights" description="The quiet night, the room and the money.">
-          <VenueSettingsForm venueId={venue.id} settings={venue.settings} />
+          <VenueSettingsForm venueId={venue.id} settings={venue.settings} currency={venue.currency} />
         </SectionCard>
         {venue.role === "owner" && (
           <SectionCard title="Delete this venue" description="This cannot be undone." className="border-destructive/40">

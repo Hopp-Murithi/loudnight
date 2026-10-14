@@ -1,10 +1,26 @@
 import { describe, expect, it } from "vitest"
-import { formatLocalDate, formatMoney, formatNightDate, formatNightTime, formatPercent, plural } from "./format"
+import {
+  currencyName,
+  formatLocalDate,
+  formatMoney,
+  formatNightDate,
+  formatNightTime,
+  formatPercent,
+  plural,
+} from "./format"
 
 describe("format", () => {
-  it("shows money in whole dollars", () => {
-    expect(formatMoney(240_000)).toBe("$2,400")
-    expect(formatMoney(1_999)).toBe("$20")
+  it("shows money in whole units of the venue's own currency", () => {
+    expect(formatMoney(240_000, "USD")).toBe("$2,400")
+    expect(formatMoney(1_999, "USD")).toBe("$20")
+    expect(formatMoney(500_000, "KES")).toBe("KES 5,000")
+    expect(formatMoney(4_000, "GBP")).toBe("£40")
+    expect(formatMoney(4_000, "EUR")).toBe("€40")
+    expect(formatMoney(300_000, "JPY")).toBe("¥3,000")
+  })
+
+  it("names a currency in words", () => {
+    expect(currencyName("KES")).toBe("Kenyan Shilling")
   })
 
   // A Tuesday 8pm night in Brooklyn is still Tuesday 8pm, whatever the server's clock says.

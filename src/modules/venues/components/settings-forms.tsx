@@ -6,6 +6,7 @@ import { showApiError } from "@/components/forms/api-errors"
 import { SubmitButton } from "@/components/forms/submit-button"
 import { TextField } from "@/components/forms/text-field"
 import { FieldGroup } from "@/components/ui/field"
+import { DEFAULT_CURRENCY, isCurrency } from "@/config/currencies"
 import { DEFAULT_TIME_ZONE, isTimeZone } from "@/config/time-zones"
 import { useDeleteVenue, useUpdateVenueIdentity, useUpdateVenueSettings } from "../hooks/use-venue-mutations"
 import {
@@ -19,6 +20,7 @@ import {
   type VenueSettingsInput,
   type VenueSettingsView,
 } from "../venues.schemas"
+import { CurrencyField } from "./currency-field"
 import { PlaceSearch } from "./place-search"
 import { TimeZoneField } from "./time-zone-field"
 import { CapabilityPicker, NightPicker } from "./venue-fields"
@@ -35,6 +37,9 @@ export function VenueIdentityForm({ venue }: { venue: VenueDetail }) {
       longitude: venue.longitude,
       venueType: venue.venueType,
       timeZone: isTimeZone(venue.timeZone) ? venue.timeZone : DEFAULT_TIME_ZONE,
+      countryCode: venue.countryCode,
+      city: venue.city,
+      currency: isCurrency(venue.currency) ? venue.currency : DEFAULT_CURRENCY,
     },
   })
   const values = useWatch({ control: form.control })
@@ -54,6 +59,7 @@ export function VenueIdentityForm({ venue }: { venue: VenueDetail }) {
           error={form.formState.errors.googlePlaceId?.message}
         />
         <TimeZoneField control={form.control} name="timeZone" />
+        <CurrencyField control={form.control} name="currency" />
         <SubmitButton pending={update.isPending} pendingLabel="Saving" className="self-start">
           Save details
         </SubmitButton>
@@ -62,7 +68,13 @@ export function VenueIdentityForm({ venue }: { venue: VenueDetail }) {
   )
 }
 
-export function VenueSettingsForm({ venueId, settings }: { venueId: string; settings: VenueSettingsView }) {
+interface VenueSettingsFormProps {
+  venueId: string
+  settings: VenueSettingsView
+  currency: string
+}
+
+export function VenueSettingsForm({ venueId, settings, currency }: VenueSettingsFormProps) {
   const update = useUpdateVenueSettings(venueId)
   const form = useForm<VenueSettingsInput>({ resolver: zodResolver(venueSettingsSchema), defaultValues: settings })
 
@@ -83,14 +95,14 @@ export function VenueSettingsForm({ venueId, settings }: { venueId: string; sett
         <CapabilityPicker control={form.control} name="capabilities" />
         <TextField
           control={form.control}
-          name="talentBudgetDollars"
-          label="Talent budget per night, in dollars"
+          name="talentBudget"
+          label={`Talent budget per night, in ${currency}`}
           type="number"
         />
         <TextField
           control={form.control}
-          name="averageSpendDollars"
-          label="What a guest spends, in dollars"
+          name="averageSpend"
+          label={`What a guest spends, in ${currency}`}
           type="number"
         />
         <SubmitButton pending={update.isPending} pendingLabel="Saving" className="self-start">

@@ -7,6 +7,8 @@ export interface DemoVenueView {
   id: string
   name: string
   address: string
+  city: string | null
+  currency: string
   venueType: VenueType
   timeZone: string
   slowNight: Weekday

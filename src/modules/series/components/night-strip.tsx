@@ -1,6 +1,6 @@
 "use client"
 
-import { Clock, Pencil } from "lucide-react"
+import { Clock } from "lucide-react"
 import { useState } from "react"
 import { ToneBadge } from "@/components/shared/tone-badge"
 import { Button } from "@/components/ui/button"
@@ -55,7 +55,6 @@ export function NightStrip({ nights, timeZone, canEdit }: NightStripProps) {
             <p className="text-sm">{night.variation}</p>
             {canEdit && night.status === "draft" && (
               <Button variant="outline" className="mt-auto self-start" onClick={() => setEditing(night)}>
-                <Pencil aria-hidden className="size-4" />
                 Edit
                 <span className="sr-only">{WEEK_NAMES[night.sequence - 1]}</span>
               </Button>

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest"
 import type { QlooInsights } from "@/lib/qloo/schemas"
 import type { RunContext } from "@/modules/runs/runs.schemas"
-import { actReceiptPath, actsFrom, conceptAnchors } from "./talent.anchors"
+import { actReceiptPath, actsFrom, conceptAnchors, messageTastes } from "./talent.anchors"
 
 // Made-up values in the shape the pipeline stores. Never real Qloo data.
 const receipt = { cacheId: "00000000-0000-4000-8000-000000000000", path: ["results", "tags", "0", "query", "affinity"] }
@@ -36,6 +36,25 @@ describe("conceptAnchors", () => {
 
   it("has nothing to offer without a fingerprint", () => {
     expect(conceptAnchors("Sample Night", {})).toEqual([])
+  })
+})
+
+describe("messageTastes", () => {
+  it("mentions the music a crowd likes, not the films or brands it also follows", () => {
+    const anchors = conceptAnchors("Renamed", {
+      fingerprint,
+      invention: { candidates: [candidate("Renamed", ["s1", "s3"])], overlaps: [], turns: 1, toolCalls: 0 },
+    })
+    expect(anchors.map((anchor) => anchor.name)).toEqual(["Sample soul", "Sample film"])
+    expect(messageTastes(anchors)).toEqual(["Sample soul"])
+  })
+
+  it("uses every taste when none of them is music or a kind of night out", () => {
+    const anchors = conceptAnchors("Film Night", {
+      fingerprint,
+      invention: { candidates: [candidate("Film Night", ["s3"])], overlaps: [], turns: 1, toolCalls: 0 },
+    })
+    expect(messageTastes(anchors)).toEqual(["Sample film"])
   })
 })
 

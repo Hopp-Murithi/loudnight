@@ -1,6 +1,6 @@
 "use client"
 
-import { Play, SkipForward } from "lucide-react"
+import { SkipForward } from "lucide-react"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { TYPE } from "@/lib/typography"
@@ -17,10 +17,11 @@ interface DemoWorkspaceProps {
   concepts: ConceptView[]
   radiusMetres: number
   plannedAt: string
+  currency: string
 }
 
 // A finished plan, read only. The plain chatbot's answer comes first, because the contrast is the point.
-export function DemoWorkspace({ run, concepts, radiusMetres, plannedAt }: DemoWorkspaceProps) {
+export function DemoWorkspace({ run, concepts, radiusMetres, plannedAt, currency }: DemoWorkspaceProps) {
   const replay = useReplay(run.steps)
   const [callId, setCallId] = useState<string | null>(null)
 
@@ -36,6 +37,7 @@ export function DemoWorkspace({ run, concepts, radiusMetres, plannedAt }: DemoWo
           </p>
         </div>
         <RunOutcome
+          currency={currency}
           first="generic"
           concepts={concepts}
           ready
@@ -60,7 +62,6 @@ export function DemoWorkspace({ run, concepts, radiusMetres, plannedAt }: DemoWo
                 </Button>
               ) : (
                 <Button variant="outline" onClick={replay.play}>
-                  <Play aria-hidden className="size-4" />
                   Replay the run
                 </Button>
               )}

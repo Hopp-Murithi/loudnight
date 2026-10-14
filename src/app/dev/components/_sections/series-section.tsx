@@ -32,6 +32,20 @@ const act = (id: string, name: string, tier: TalentView["tier"], overlap: number
   message: "Hi, this is Sample Room. Are you free on Tuesday, October 20?",
   edited: false,
   hasReceipt: true,
+  booked: id === "b",
+  bookedAt: id === "b" ? "2026-10-13T10:00:00Z" : null,
+  source: id === "a" ? "both" : id === "b" ? "area" : "night",
+  profile: {
+    imageUrl: null,
+    tagline: "A sample act known for sample songs and a warm live show.",
+    knownFor: "Their sample live shows in small rooms.",
+    genres: ["Sample Soul", "Sample Folk"],
+    songs: ["Sample One", "Sample Two"],
+    isGroup: false,
+    listeners: 34500,
+    origin: id === "a" ? "Sample Town, Sample Country" : null,
+    channels: [{ id: "instagram", label: "Instagram", url: "https://www.instagram.com/" }],
+  },
 })
 
 const TALENT = [
@@ -55,6 +69,7 @@ export function SeriesSection() {
         <div className="w-full min-w-0">
           <TalentShortlist
             seriesId="series"
+            nightName="Sample Night"
             talent={TALENT}
             references={[act("z", "Sample Star", "national", 0.99)]}
             canEdit
@@ -65,6 +80,7 @@ export function SeriesSection() {
         <div className="w-full min-w-0">
           <TalentShortlist
             seriesId="series"
+            nightName="Sample Night"
             talent={[]}
             references={[act("z", "Sample Star", "national", 0.99)]}
             canEdit={false}

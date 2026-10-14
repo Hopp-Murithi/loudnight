@@ -2,14 +2,14 @@ import { CalendarDays } from "lucide-react"
 import Image from "next/image"
 import { photoForVenue } from "@/config/night-photos"
 import { VENUE_TYPE_LABELS, WEEKDAY_LABELS } from "@/config/venues"
-import { cityOf } from "@/lib/address"
+import { townOf } from "@/lib/address"
 import { VENUE_ROLE_LABELS } from "@/modules/team/team.schemas"
 import type { VenueDetail } from "../venues.schemas"
 
 // Every page about a venue opens on a night out: its own photo, its name on the marquee, its quiet night lit.
 export function VenueBanner({ venue }: { venue: VenueDetail }) {
   const photo = photoForVenue(venue.id)
-  const city = cityOf(venue.address)
+  const city = townOf(venue)
 
   return (
     <section

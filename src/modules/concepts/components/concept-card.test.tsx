@@ -24,7 +24,7 @@ const concept: ConceptView = {
 
 describe("ConceptCard", () => {
   it("shows the total and each part as points out of its weight", () => {
-    render(<ConceptCard concept={concept} canChoose onOpenReceipt={vi.fn()} />)
+    render(<ConceptCard currency="USD" concept={concept} canChoose onOpenReceipt={vi.fn()} />)
     expect(screen.getByText("88")).toBeInTheDocument()
     expect(screen.getByText("Audience fit").closest("div")).toHaveTextContent("38 of 40")
     expect(screen.getByText("Venue fit").closest("div")).toHaveTextContent("10 of 20")
@@ -32,16 +32,18 @@ describe("ConceptCard", () => {
 
   it("opens the receipt from the chip, which shows the value to two decimals", async () => {
     const onOpen = vi.fn()
-    render(<ConceptCard concept={concept} canChoose onOpenReceipt={onOpen} />)
+    render(<ConceptCard currency="USD" concept={concept} canChoose onOpenReceipt={onOpen} />)
     const chip = screen.getByRole("button", { name: /Sample style is big nearby.*0\.99.*open the receipt/ })
     await userEvent.click(chip)
     expect(onOpen).toHaveBeenCalledWith("e1")
   })
 
   it("offers the choice only to people who may make it", async () => {
-    const { rerender } = render(<ConceptCard concept={concept} canChoose={false} onOpenReceipt={vi.fn()} />)
+    const { rerender } = render(
+      <ConceptCard currency="USD" concept={concept} canChoose={false} onOpenReceipt={vi.fn()} />,
+    )
     expect(screen.queryByRole("button", { name: "Choose this night" })).not.toBeInTheDocument()
-    rerender(<ConceptCard concept={concept} canChoose onOpenReceipt={vi.fn()} />)
+    rerender(<ConceptCard currency="USD" concept={concept} canChoose onOpenReceipt={vi.fn()} />)
     await userEvent.click(screen.getByRole("button", { name: "Choose this night" }))
     expect(mutate).toHaveBeenCalledWith("c1")
   })

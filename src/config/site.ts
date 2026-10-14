@@ -22,6 +22,7 @@ export const ROUTES = {
   venuePlan: (id: string) => `/venues/${id}/plan`,
   venueRun: (id: string, runId: string) => `/venues/${id}/plan/${runId}`,
   venueSeries: (id: string) => `/venues/${id}/series`,
+  venuePromote: (id: string) => `/venues/${id}/promote`,
   venueDoor: (id: string) => `/venues/${id}/door`,
   venueResults: (id: string) => `/venues/${id}/results`,
   venueTeam: (id: string) => `/venues/${id}/team`,

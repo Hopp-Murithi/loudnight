@@ -16,6 +16,10 @@ const placeSchema = z.object({
   primaryTypeDisplayName: text.optional(),
   rating: z.number().optional(),
   userRatingCount: z.number().optional(),
+  addressComponents: z
+    .array(z.object({ longText: z.string().optional(), shortText: z.string().optional(), types: z.array(z.string()) }))
+    .optional(),
+  timeZone: z.object({ id: z.string().optional() }).optional(),
 })
 
 const placesSchema = z.object({ places: z.array(placeSchema).default([]) })
@@ -72,9 +76,11 @@ function placesCall<T>(path: string, fieldMask: string, schema: ZodType<T>, body
 }
 
 const listMask = LIST_FIELDS.map((field) => `places.${field}`).join(",")
+// Choosing a venue also needs its town, country and time zone. The nearby scan does not, so it does not pay for them.
+const searchMask = [...LIST_FIELDS, "addressComponents", "timeZone"].map((field) => `places.${field}`).join(",")
 
 export async function searchPlaces(query: string): Promise<Place[]> {
-  return (await placesCall("/places:searchText", listMask, placesSchema, { textQuery: query, maxResultCount: 5 }))
+  return (await placesCall("/places:searchText", searchMask, placesSchema, { textQuery: query, maxResultCount: 5 }))
     .places
 }
 

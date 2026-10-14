@@ -1,6 +1,6 @@
 "use client"
 
-import { RotateCw, TriangleAlert } from "lucide-react"
+import { TriangleAlert } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 interface ErrorStateProps {
@@ -21,7 +21,6 @@ export function ErrorState({ title, description, onRetry, retryLabel = "Try agai
       <p className="max-w-prose text-sm text-muted-foreground">{description}</p>
       {onRetry && (
         <Button variant="outline" size="sm" onClick={onRetry}>
-          <RotateCw className="size-4" aria-hidden />
           {retryLabel}
         </Button>
       )}

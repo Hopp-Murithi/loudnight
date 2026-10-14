@@ -19,7 +19,7 @@ async function loadVenue(admin: AdminSupabase, venueId: string): Promise<ScriptV
   const { data, error } = await admin
     .from("venues")
     .select(
-      "id, name, venue_type, google_place_id, latitude, longitude, time_zone, venue_settings(search_radius_m, slow_night, capacity, capabilities, talent_budget_cents, average_spend_cents)",
+      "id, name, city, currency, venue_type, google_place_id, latitude, longitude, time_zone, venue_settings(search_radius_m, slow_night, capacity, capabilities, talent_budget_cents, average_spend_cents)",
     )
     .eq("id", venueId)
     .single()
@@ -40,6 +40,8 @@ async function loadVenue(admin: AdminSupabase, venueId: string): Promise<ScriptV
       capabilities: settings?.capabilities ?? [],
       talentBudgetCents: settings?.talent_budget_cents ?? 0,
       averageSpendCents: settings?.average_spend_cents ?? 0,
+      currency: data.currency,
+      town: data.city,
     },
   }
 }
