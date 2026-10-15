@@ -2,6 +2,12 @@
 
 What comes after the core loop (decide, execute, promote, measure), and how Loudnight pays for itself. Nothing in the later sections is built. Each item says what it solves, what it builds on, what it needs from outside, the first slice, and the risk. Plan 20 holds the full list; this file is filled in as items are thought through.
 
+## Where Loudnight launches
+
+1. **The United States and Europe first.** Bars, cafes and restaurants with quiet weeknights, card payments everywhere, and the deepest Qloo coverage. First cities: Austin, New York, Chicago, London and Berlin. Planning, performers and money already work in dollars, euros and pounds.
+2. **Then Africa.** Nairobi and Lagos: Loudnight was already tested in Nairobi, where it puts local acts first, prices in shillings, and adds performers from open data where Qloo knows few. Payments here need mobile money (M-Pesa), planned through a payments partner.
+3. **Then Latin America and Asia**, city by city, where the venue search, currencies and time zones already work.
+
 ## How Loudnight makes money
 
 Written Oct 14. Every cost below is either measured from Loudnight's own runs on the hosted project or a published list price, and says which. Revenue figures are worked examples, not forecasts: there are no paying customers yet.
@@ -26,14 +32,13 @@ Fixed costs: Supabase Pro (from $25 a month), Vercel Pro (from $20 a month per s
 
 One subscription per venue, priced in the venue's own currency (plan 29 made money local), with a free way in.
 
-| Plan  | What it includes                                                                                                                                 | US          | Kenya             | UK          |
-| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ----------- | ----------------- | ----------- |
-| Try   | One plan, the demo, the ad studio with a small Loudnight mark                                                                                    | free        | free              | free        |
-| Free  | One venue, one quiet night, one plan a month, the top 3 performers, posters with the Loudnight mark, up to 50 RSVPs a night, the web door screen | $0          | KES 0             | £0          |
-| Venue | A fresh plan every month, series, performers, ads, event page, door, results                                                                     | $49 a month | KES 2,500 a month | £39 a month |
+| Plan  | What it includes                                                                                                                                 | US           | Europe       | UK           |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ------------ | ------------ | ------------ |
+| Free  | One venue, one quiet night, one plan a month, the top 3 performers, posters with the Loudnight mark, up to 50 RSVPs a night, the web door screen | $0           | €0           | £0           |
+| Venue | A fresh plan every month, series, performers, ads, event page, door, results                                                                     | $49 a month  | €45 a month  | £39 a month  |
+| Group | Up to five venues, team roles, one bill                                                                                                          | $199 a month | €179 a month | £159 a month |
 
 The full comparison of Free, Venue and Group is in the README ("Plans: Free and Premium"). Free exists so a venue can run one night before paying; the upgrade comes when a second quiet night, the full performer list, video ads, the door app or unlimited RSVPs are wanted.
-| Group | Up to five venues, team roles, one bill | $199 a month | KES 10,000 a month | £159 a month |
 
 Later, once tickets are sold through the event page (plan 12): a booking fee paid by the guest, 3% capped at $1 or the local equivalent. The owner pays nothing extra for a full room.
 

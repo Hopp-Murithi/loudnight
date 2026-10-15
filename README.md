@@ -11,7 +11,7 @@
 <p align="center">
   <img alt="Built on Qloo" src="https://img.shields.io/badge/Taste_data-Qloo-1c1613?style=flat-square">
   <img alt="Next.js 16" src="https://img.shields.io/badge/Next.js-16-1c1613?style=flat-square">
-  <img alt="Supabase" src="https://img.shields.io/badge/Supabase-Postgres_%2B_RLS-1c1613?style=flat-square">
+  <img alt="Supabase" src="https://img.shields.io/badge/Supabase-Postgres-1c1613?style=flat-square">
   <img alt="Claude" src="https://img.shields.io/badge/Claude-Sonnet_5.5-1c1613?style=flat-square">
   <img alt="Expo SDK 57" src="https://img.shields.io/badge/Door_app-Expo_SDK_57-1c1613?style=flat-square">
   <a href="https://github.com/Hopp-Murithi/encore/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/Hopp-Murithi/encore/actions/workflows/ci.yml/badge.svg"></a>
@@ -20,45 +20,59 @@
 
 > **Qloo knows what a neighbourhood loves. Loudnight turns that into people through the door on a Tuesday.**
 
-Loudnight is a programming director for bars, cafes, restaurants and small music venues. An owner enters their address and their slow nights. Loudnight reads the neighbourhood's taste through [Qloo](https://www.qloo.com), finds what nobody nearby is running, invents a weekly night backed by evidence, books local acts the budget can afford, makes the ads, fills the guest list, runs the door, and shows who actually came against break-even. It is built, live, and works in any country and currency.
+Loudnight helps bars, cafes, restaurants and small music venues fill their quiet nights. The owner enters the venue's address and the nights that are slow. Loudnight finds out what the people who live nearby enjoy, checks what other venues nearby already offer, and suggests a weekly night that nobody else runs. It then finds local performers the venue can afford, makes the posters and social posts, lets guests reserve a place, checks them in at the door, and shows the owner how many people came compared with how many they needed.
+
+It is live and works in any country and currency. It was tested end to end in Austin, Brooklyn, Chicago and Nairobi.
 
 Built for the Qloo hackathon (submissions close Oct 30, 2026). The brief: [`docs/reference/encore-system-brief.pdf`](docs/reference/encore-system-brief.pdf).
 
 ## Contents
 
-|                                                   |                                                     |                                             |
-| ------------------------------------------------- | --------------------------------------------------- | ------------------------------------------- |
-| [Try it in 60 seconds](#try-it-in-60-seconds)     | [Plans: Free and Premium](#plans-free-and-premium)  | [How it is built](#how-it-is-built)         |
-| [The problem](#the-problem)                       | [For investors](#for-investors-what-25000-does)     | [What is built today](#what-is-built-today) |
-| [See it work](#see-it-work-a-wednesday-in-austin) | [How Loudnight uses Qloo](#how-loudnight-uses-qloo) | [Roadmap](#roadmap)                         |
-| [The judging criteria](#the-judging-criteria)     | [By the numbers](#by-the-numbers)                   | [Run it yourself](#run-it-yourself)         |
-
-## Try it in 60 seconds
-
-No account needed for the first three.
-
-| Step | Open                                                                                                                             | What to look for                                                                                                                                   |
-| ---- | -------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1    | [The landing page](https://encore-seven-dusky.vercel.app)                                                                        | Scroll once per scene: the story zooms into your own country.                                                                                      |
-| 2    | [A finished plan for The Copper Room, Brooklyn](https://encore-seven-dusky.vercel.app/demo/8f6a1f8e-2c1b-4c55-9d2e-0b7a3c1e0001) | Three scored nights. **Tap any number**: it opens the exact Qloo request and answer it came from. Compare with the plain chatbot answer beside it. |
-| 3    | [A live event page](https://encore-seven-dusky.vercel.app/e/cider-alt-country-wednesdays-wed-oct-21-6726)                        | What a guest sees: the night, the booked acts, and a place to save a seat that gives them a ticket QR.                                             |
-| 4    | [Start your own venue](https://encore-seven-dusky.vercel.app/signup)                                                             | Pick your country, find your venue, choose your quiet nights. About a minute later you have three nights planned for your street.                  |
+|                                                     |                                                     |                                             |
+| --------------------------------------------------- | --------------------------------------------------- | ------------------------------------------- |
+| [The problem](#the-problem)                         | [The judging criteria](#the-judging-criteria)       | [How it is built](#how-it-is-built)         |
+| [How Loudnight solves it](#how-loudnight-solves-it) | [How Loudnight uses Qloo](#how-loudnight-uses-qloo) | [What is built today](#what-is-built-today) |
+| [Try it in 60 seconds](#try-it-in-60-seconds)       | [Plans: Free and Premium](#plans-free-and-premium)  | [Roadmap](#roadmap)                         |
+| [See it work](#see-it-work-a-wednesday-in-austin)   | [By the numbers](#by-the-numbers)                   | [Run it yourself](#run-it-yourself)         |
 
 ## The problem
 
-Most bars, cafes and restaurants are half empty two or three nights a week, and those nights still pay rent, staff and stock. Owners know they should run "something", but not what their neighbourhood would come for, who could play it, how to tell people, or whether it worked. Event tools sell tickets; marketing tools post ads; none of them tell a venue **what night to run**.
+Walk past almost any bar or restaurant on a Monday, Tuesday or Wednesday night and it is half empty. Those nights still cost the owner rent, staff, heating and stock. A venue that is quiet three nights a week is paying for those nights without earning from them.
 
-**What Loudnight does, in plain words:**
+Owners know the answer is to run something: a music night, a quiz, a comedy show, a supper club. But they get stuck on four questions:
 
-1. **Tell it your quiet nights.** Your address, up to three slow nights, what the room can host, and your budget. Two minutes.
-2. **Get three nights worth running.** Loudnight reads what people near you love, checks what the venues around you already run, and suggests three regular nights nobody nearby offers. Every number has its source one tap away.
-3. **Pick one and it is planned for four weeks.** Each week has its own twist, plus local performers your budget can stretch to, from your own country first, with a message ready to send them.
-4. **Promote it.** Posters, stories and short videos with the performers' photos, captions for each network, and an event page where guests save a place.
-5. **Run the door and see who came.** Scan tickets with the door app or tap names on any phone. The count updates live on every screen, against the number you need to break even.
+1. **What would people around here actually come for?** Owners guess, copy the venue down the street, or ask a chatbot that gives the same answer to everyone.
+2. **Who could play it, at a price I can afford?** Booking agents push big names. Local acts are hard to find.
+3. **How do I tell people?** Making posters, posts and an event page takes hours the owner does not have.
+4. **Did it work?** Most venues never count who came because of the night, so they cannot tell whether to keep it.
+
+Ticketing apps sell tickets. Marketing tools post ads. Booking sites list performers. None of them tells a venue **which night to run**, and none of them connects the plan to the people who walk through the door.
+
+## How Loudnight solves it
+
+| The owner's question                    | What Loudnight does                                                                                                                                                                                                                                                     |
+| --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| What would people around here come for? | Reads what people near the venue love (music, food, films, brands, nights out) through Qloo, checks what nearby venues and events already offer, and suggests three weekly nights nobody else runs. Every number shown can be opened to see exactly where it came from. |
+| Who could play it?                      | Suggests performers whose fans match the night, local acts first, each labelled as likely within the budget or not, with a booking message ready to send. Stars the venue could never afford are left out.                                                              |
+| How do I tell people?                   | Makes posters, stories, banners and short videos with the booked performers' photos, writes the captions for each network, and publishes an event page where guests reserve a place and get a ticket.                                                                   |
+| Did it work?                            | Staff check guests in at the door by scanning tickets or tapping names. Every phone at the door shows the same live count against the number of guests the venue needs to break even, and the results page keeps each night's numbers.                                  |
+
+**In short: about ten minutes of the owner's time, from an address to a promoted night with a guest list and a working door.**
+
+## Try it in 60 seconds
+
+No account is needed for the first three steps.
+
+| Step | Open                                                                                                                               | What to look for                                                                                                                                           |
+| ---- | ---------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1    | [The landing page](https://encore-seven-dusky.vercel.app)                                                                          | Scroll down: each scroll moves the story on, and it zooms into your own country.                                                                           |
+| 2    | [A finished plan for The Copper Room in Brooklyn](https://encore-seven-dusky.vercel.app/demo/8f6a1f8e-2c1b-4c55-9d2e-0b7a3c1e0001) | Three scored nights. **Tap any number** to see the exact Qloo question and answer it came from. Compare it with the plain chatbot answer on the same page. |
+| 3    | [A live event page](https://encore-seven-dusky.vercel.app/e/cider-alt-country-wednesdays-wed-oct-21-6726)                          | What a guest sees: the night, the performers, and a button that reserves a place and gives them a ticket.                                                  |
+| 4    | [Add your own venue](https://encore-seven-dusky.vercel.app/signup)                                                                 | Choose your country, find your venue, pick your quiet nights. About three minutes later you have three nights planned for your street.                     |
 
 ## See it work: a Wednesday in Austin
 
-A full run on Oct 14 with a made-up restaurant, Juniper Supper Club on South Congress, Austin. Its quiet nights are Wednesday and Tuesday, it hosts live music and comedy, and its performer budget is $400. Loudnight planned the Wednesday in about three minutes. Its pick, **Cider & Alt-Country Wednesdays**, scored 100. Two local bands were booked, the poster and captions named them, and the first night went live. A guest saved a place from a signed-out phone, their ticket was scanned on a second phone, and the door screen on a third went from 0 to 2 of 35 without a reload.
+We tested the whole journey on Oct 14 with a made-up restaurant, Juniper Supper Club on South Congress in Austin. Its quiet nights are Wednesday and Tuesday, it can host live music and comedy, and its budget for performers is $400 a night. Loudnight planned the Wednesday in about three minutes. Its top suggestion, **Cider & Alt-Country Wednesdays**, scored 100 out of 100. Two local bands were booked, and the poster and captions named them. The first night was published, a guest reserved a place on a phone without an account, the ticket was scanned on a second phone, and the door screen on a third phone went from 0 to 2 of 35 without refreshing.
 
 <h3>1. Plan the night</h3>
 <table>
@@ -74,9 +88,9 @@ A full run on Oct 14 with a made-up restaurant, Juniper Supper Club on South Con
       Two quiet nights, one chosen, and the next step
     </td>
     <td align="center" valign="top" width="33%">
-      <img src="docs/screenshots/03-plan.jpg" width="270" alt="The planner's pick with its score and evidence"><br>
-      <b>The pick</b><br>
-      Scored 100, with each piece of evidence one tap from its source
+      <img src="docs/screenshots/03-plan.jpg" width="270" alt="The top suggestion with its score and evidence"><br>
+      <b>The suggestion</b><br>
+      Scored 100, and every piece of evidence opens its source
     </td>
   </tr>
 </table>
@@ -90,14 +104,14 @@ A full run on Oct 14 with a made-up restaurant, Juniper Supper Club on South Con
       Booked acts first, each labelled for the budget
     </td>
     <td align="center" valign="top" width="33%">
-      <img src="docs/screenshots/06-poster.jpg" width="270" alt="The poster with both booked acts and a ticket QR"><br>
+      <img src="docs/screenshots/06-poster.jpg" width="270" alt="The poster with both booked acts and a ticket QR code"><br>
       <b>The poster</b><br>
-      Both booked acts, the date, and a QR to the tickets
+      Both performers, the date, and a QR code for tickets
     </td>
     <td align="center" valign="top" width="33%">
       <img src="docs/screenshots/07-event.jpg" width="270" alt="The public event page"><br>
       <b>The event page</b><br>
-      What a guest opens to save a place
+      What a guest opens to reserve a place
     </td>
   </tr>
 </table>
@@ -108,17 +122,17 @@ A full run on Oct 14 with a made-up restaurant, Juniper Supper Club on South Con
     <td align="center" valign="top" width="33%">
       <img src="docs/screenshots/08-ticket.jpg" width="270" alt="A guest's ticket with its QR code"><br>
       <b>The ticket</b><br>
-      Any phone camera opens it; staff check the guest in from it
+      Any phone camera opens it, and staff check the guest in from it
     </td>
     <td align="center" valign="top" width="33%">
       <img src="docs/screenshots/09-door.jpg" width="270" alt="The door screen after a check-in"><br>
       <b>The door</b><br>
-      Updated live on every phone: 2 of 35 to break even
+      Updated live on every phone: 2 of the 35 needed to break even
     </td>
     <td align="center" valign="top" width="33%">
       <img src="docs/screenshots/10-results.jpg" width="270" alt="Results updating live during the night"><br>
       <b>Results</b><br>
-      Tonight's count while the night is on, then each night's takings
+      Tonight's count during the night, then each night's takings
     </td>
   </tr>
 </table>
@@ -127,188 +141,127 @@ A full run on Oct 14 with a made-up restaurant, Juniper Supper Club on South Con
 <p align="center">
   <img src="docs/screenshots/11-admin.jpg" width="820" alt="The administrator console listing venues with their status"><br>
   <b>The administrator console</b><br>
-  Every venue and person with a detail panel each, suspension, deactivation, every plan, the audit log, and read-only preview
+  Every venue and person, with details, suspension, deactivation, every plan, a full change history, and a read-only view of any user's screens for support
 </p>
 
 ## The judging criteria
 
-| Criterion                        | What Loudnight brings                                                                                                                                                                                                                                                                                                                                | Check it                                                                                                                                                                |
-| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Technological Implementation** | Qloo drives five stages of a six-step planner (about 35 calls a plan); Claude chooses which taste pairings to test and Qloo confirms each one; every number is stored with its Qloo request and **the database refuses a number that is not in the stored answer**; multi-tenant security in Postgres; 500+ unit tests and database rule tests in CI | [How Loudnight uses Qloo](#how-loudnight-uses-qloo), tap any number in the [demo plan](https://encore-seven-dusky.vercel.app/demo/8f6a1f8e-2c1b-4c55-9d2e-0b7a3c1e0001) |
-| **Design**                       | One finished journey: address, plan, series, performers, ads, event page, tickets, door, results, administration. Phone first, light and dark, every empty, loading and error state designed, plus a native door app                                                                                                                                 | [See it work](#see-it-work-a-wednesday-in-austin)                                                                                                                       |
-| **Potential Impact**             | A real problem with real money: break-even on every screen, live door counts, each night's takings, and a working product in any country and currency (tested in Austin and Nairobi)                                                                                                                                                                 | [For investors](#for-investors-what-25000-does)                                                                                                                         |
-| **Quality of the Idea**          | Taste data used on the supply side: it helps the venue decide what to run, not a consumer decide what to watch. Nights combine tastes across domains (music with food, film with a night out) that Qloo confirms locally, beside a plain chatbot answer that shows why that matters                                                                  | The plan page's "Generic AI" comparison                                                                                                                                 |
-
-## Plans: Free and Premium
-
-Planned pricing. During the hackathon every feature is open to everyone; billing is on the roadmap.
-
-|                                         | **Free**                                       | **Venue** (Premium)                                              | **Group**                |
-| --------------------------------------- | ---------------------------------------------- | ---------------------------------------------------------------- | ------------------------ |
-| Price                                   | $0                                             | **$49 a month** (KES 2,500, £39)                                 | **$199 a month**         |
-| Venues                                  | 1                                              | 1                                                                | Up to 5, one bill        |
-| Quiet nights planned                    | 1                                              | Up to 3                                                          | Up to 3 at each venue    |
-| Fresh plans                             | 1 a month                                      | As many as you need                                              | As many as you need      |
-| Evidence receipts on every number       | Yes                                            | Yes                                                              | Yes                      |
-| Four-week series with a twist each week | Yes                                            | Yes                                                              | Yes                      |
-| Local performers                        | The top 3                                      | Full list, fresh lists, budget labels, ready messages, booking   | Same, across venues      |
-| Ads                                     | Posters with the Loudnight mark                | Posters, stories, banners and video, no mark, Spanish captions   | Same                     |
-| Event page and RSVPs                    | Up to 50 a night                               | Unlimited                                                        | Unlimited                |
-| The door                                | Web door screen                                | The door app, team roles for managers and door staff             | Same, every venue        |
-| Results                                 | Tonight's count                                | Every night's takings, the monthly gain, what the plan pays back | Every venue side by side |
-| Paid tickets (when live)                | 3% booking fee paid by the guest, capped at $1 | Same                                                             | Same                     |
-
-**What each plan does for the owner**
-
-| Plan  | Who it is for                               | What it does for them                                                                                                                                                 |
-| ----- | ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Free  | A venue trying it out                       | Finds the night its neighbourhood is missing and runs it once, with a guest list and a door screen.                                                                   |
-| Venue | A bar, cafe or restaurant with quiet nights | Fills one to three quiet nights every week. At Juniper's numbers, one extra full night (35 guests at $38) is about $1,330 of sales: more than two years of Loudnight. |
-| Group | A hospitality group or promoter             | Runs every venue's weekly nights, team and results from one place.                                                                                                    |
-
-## For investors: what $25,000 does
-
-**What it is.** One app that takes a venue from "Tuesday is dead" to a planned, promoted, ticketed and measured weekly night. It is built and live, and the same code serves Austin in dollars and Nairobi in shillings.
-
-### Proof it works: one venue, start to finish (the Austin run, Oct 14)
-
-| Step                | What happened                                                                                        | Owner's time                 |
-| ------------------- | ---------------------------------------------------------------------------------------------------- | ---------------------------- |
-| Set up the venue    | Address, two quiet nights, budget $400, what the room hosts                                          | 2 minutes                    |
-| Plan                | 35 Qloo calls, nearby venues and events checked, 3 nights scored with evidence                       | About 3 minutes, automatic   |
-| Choose and schedule | "Cider & Alt-Country Wednesdays" (score 100) became 4 dated nights                                   | 1 click                      |
-| Book performers     | 10 local acts suggested with budget labels; 2 booked, each with a ready message                      | A few minutes                |
-| Promote             | Poster, story and video with both acts' photos, captions for each network                            | Automatic                    |
-| Fill the room       | Event page live; a guest saved a place from a signed-out phone                                       | Under a minute for the guest |
-| Run the door        | The ticket QR was scanned on a second phone; the door screen on a third went from 0 to 2 of 35, live | Seconds per guest            |
-
-**Under 10 minutes of the owner's time from an address to a promoted night with a guest list and a working door**, and every number on screen can be traced to its source.
-
-### What one venue is worth
-
-|                             | Amount                                                                                                                                       |
-| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| Price to the venue          | $49 a month (KES 2,500, £39); groups of up to five venues $199                                                                               |
-| Our cost to serve one venue | Under $1 a month at one plan a month: about $0.30 of AI calls a plan, and Qloo answers are cached and shared by area                         |
-| Gross margin                | Above 95% before Qloo's commercial price, which is the number that sets the real margin                                                      |
-| Value to the venue          | Juniper's break-even is 35 guests at $38 each, about $1,330 of sales a night. One extra full night pays for more than two years of Loudnight |
-| Later, on paid tickets      | A 3% booking fee paid by the guest, capped at $1; the venue pays nothing extra for a full room                                               |
-
-### Where the $25,000 goes
-
-| Use                                | Amount      | What it buys                                                                                                                                                                      |
-| ---------------------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Meeting venues in person           | $7,000      | Travel to meet promoters, club, bar and restaurant owners and event organisers, starting in Nairobi and Mombasa, then Kampala and Lagos; onboarding the first 100 venues hands on |
-| Advertising to owners              | $6,000      | Instagram, TikTok and Google campaigns aimed at venue owners, tested city by city                                                                                                 |
-| The door app and payments          | $5,000      | The React Native door app on real phones and in the stores, M-Pesa and card ticketing, payouts to venues                                                                          |
-| Running the platform for 12 months | $4,000      | Qloo, Claude, Supabase, Vercel, Google Places and SMS                                                                                                                             |
-| Legal, compliance and buffer       | $3,000      | Company set-up, data protection (Kenya's Data Protection Act, GDPR), terms, payment provider checks                                                                               |
-| **Total**                          | **$25,000** |                                                                                                                                                                                   |
-
-### Targets for the next twelve months (targets, not results)
-
-| By       | Target                                        | Monthly subscription revenue                       |
-| -------- | --------------------------------------------- | -------------------------------------------------- |
-| Month 3  | 30 paying venues in Nairobi                   | $1,470                                             |
-| Month 6  | 100 venues in two cities, paid ticketing live | $4,900, plus booking fees                          |
-| Month 12 | 300 venues                                    | $14,700 (about $176,000 a year), plus booking fees |
-
-Booking fees at month 12, as an illustration: 300 venues x 4 nights a month x 40 tickets x $0.30 (3% of a $10 ticket) = $14,400 a month, about as much again as subscriptions.
-
-**Assumptions, stated so they can be checked:** 4 in 10 venue meetings start a free plan; 1 in 4 free venues upgrades; winning a paying venue costs under $60 (in person plus ads), so its margin pays that back in about six weeks; fewer than 1 in 20 venues leave each month. The administrator console tracks the inputs from the first month: venues, plans, published nights, RSVPs and check-ins.
-
-### Why it can win
-
-- **A working product, not slides**: live, and run end to end in Austin and Nairobi.
-- **Data nobody else uses this way**: Qloo's taste data turned into nights a venue can run, with every number backed by a stored receipt.
-- **Local first**: a venue in Kenya gets Kenyan performers first, prices in shillings and its own time zone.
-- **Built to be trusted with money**: every venue's data walled off by the database itself, an audited administrator console, venue suspension, and read-only "preview as" for support.
+| Criterion                        | What Loudnight brings                                                                                                                                                                                                                                                                                                                                                                                                                        | Where to check                                                                                                                                                              |
+| -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Technological Implementation** | Qloo is used at five of the six planning steps, about 35 calls for each plan. The AI planner decides which pairs of tastes to test, and Qloo confirms or rejects each pair for that neighbourhood. Every number is saved with the Qloo answer it came from, and **the database refuses any number that is not in that answer**. Each venue's data is kept private by the database itself. More than 500 automated tests run on every change. | [How Loudnight uses Qloo](#how-loudnight-uses-qloo), and tap any number in the [demo plan](https://encore-seven-dusky.vercel.app/demo/8f6a1f8e-2c1b-4c55-9d2e-0b7a3c1e0001) |
+| **Design**                       | One complete journey: address, plan, four-week series, performers, ads, event page, tickets, door, results and administration. It works on a phone first, in light and dark, with every empty, loading and error screen designed, plus a separate phone app for door staff.                                                                                                                                                                  | [See it work](#see-it-work-a-wednesday-in-austin)                                                                                                                           |
+| **Potential Impact**             | It goes after a cost every venue owner knows: the nights that lose money. The owner sees the break-even number on every screen, the live count at the door, and each night's takings. It works in any country and currency.                                                                                                                                                                                                                  | [The problem](#the-problem), [How Loudnight solves it](#how-loudnight-solves-it)                                                                                            |
+| **Quality of the Idea**          | It uses taste data to help the business, not the customer: it tells a venue what to run, instead of telling a person what to watch. Its nights combine tastes from different areas (music with food, a film with a night out), and Qloo confirms each combination locally. A plain chatbot answer sits beside it to show the difference.                                                                                                     | The "Generic AI" comparison on the [demo plan](https://encore-seven-dusky.vercel.app/demo/8f6a1f8e-2c1b-4c55-9d2e-0b7a3c1e0001)                                             |
 
 ## How Loudnight uses Qloo
 
 Qloo answers the question no venue tool can: what do the people who live around this address actually love? Loudnight asks it at every stage and keeps every answer.
 
-| Stage                  | What Loudnight asks Qloo (all `/v2/insights` near the venue)                                                                                                                                                      |
-| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Read the neighbourhood | Eleven areas of taste: music and night-out tags, then artists, films, TV, brands, books, podcasts, people and destinations, with a popularity cap so local names surface instead of global stars                  |
-| Who the crowd is       | `urn:demographics` for the night's tastes: the age bands it leans to                                                                                                                                              |
-| What is already on     | `urn:entity:place` within 2 km, next to Google Places and Ticketmaster, so the night fills a real gap                                                                                                             |
-| Invent the nights      | The planner (Claude) calls a `check_overlap` tool: does one taste really pull another here? Qloo confirms or refutes each pairing, such as alt-country fans and a local cider                                     |
-| Find performers        | Artists or people whose fans share the night's tastes, the area's own favourites, the area's own sound (`filter.tags`), and national names kept apart as style references; Qloo's popularity sets each act's size |
+| Stage                  | What Loudnight asks Qloo (the `/v2/insights` endpoint, near the venue)                                                                                                                                          |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Read the neighbourhood | Eleven areas of taste: music styles and kinds of night out, then artists, films, TV, brands, books, podcasts, people and destinations. Very popular global names are filtered down so local favourites show up. |
+| Who the crowd is       | `urn:demographics` for the night's tastes: the age groups it leans towards                                                                                                                                      |
+| What is already on     | `urn:entity:place` within 2 km, alongside Google Places and Ticketmaster, so the night fills a real gap                                                                                                         |
+| Invent the nights      | The AI planner calls a `check_overlap` tool: do people who like one thing here also like another? Qloo confirms or rejects each pair, for example fans of alt-country and a local cider.                        |
+| Find performers        | Artists whose fans share the night's tastes, the area's own favourites, and artists of the area's own sound (`filter.tags`). Famous names are shown only as a style to look for, never as acts to book.         |
 
-**No number without a receipt.** Every Qloo answer is stored in `qloo_cache` with its request. Every number on screen keeps the stored row and the JSON path of its value, and the database refuses one that is not there. One tap shows the request and the answer. Answers are reused for a week and kept after a refresh, so old receipts still open. Planning one night made about 35 Qloo calls in the Austin run; a second plan for the same area reuses most of them from the cache.
+**No number without a receipt.** Every Qloo answer is saved together with the question that produced it. Every number on screen points to the saved answer and the exact place in it, and the database refuses a number that is not there. One tap shows the question and the answer. Answers are reused for a week and kept after they are refreshed, so old receipts still open.
 
-Where Qloo is thin, other sources fill in, always labelled: Wikidata for local musicians, poets, comedians and DJs, and MusicBrainz for town and country musicians. Each act says "From Wikidata" or "From MusicBrainz" and never shows a Qloo receipt it does not have. One check gives every act a home country and a star flag, so a venue's own country comes first and household names it could never book are left out.
+Where Qloo has few performers, Loudnight adds them from open data and says so on each card: Wikidata for musicians, poets, comedians and DJs, and MusicBrainz for musicians from the town or country. One check gives every act a home country and marks household names, so a venue sees its own country's acts first and never stars it could not book.
 
 <details>
-<summary><b>Feedback for Qloo</b>: what we learned from probes in East Austin, Williamsburg, Logan Square, Nairobi and Nyeri</summary>
+<summary><b>Feedback for Qloo</b>: what we learned testing the hackathon API in Austin, Brooklyn, Chicago and Nairobi</summary>
 
-- **Popularity is global, not local.** Diamond Platnumz scores 0.58 and Harmonize 0.13, so to a Nairobi venue they read as small acts, though both are East African stars. A popularity within a country or around a location would make "can this venue book them?" much more accurate.
-- **Affinity saturates near 1.0, and the top results repeat across cities.** We cap popularity (`filter.popularity.max`) to bring local names forward. A documented way to rank by what is distinctive to an area would help every local use case.
-- **Silent ignoring costs time.** Invalid parameters return 200 with an empty list. `signal.location.radius` changed nothing in our tests. `signal.location.weight=high` made results less relevant. Occupation tags such as `urn:tag:occupation:wikidata:comedian` are ignored by insights. A warning field naming ignored parameters would save developers hours.
-- **Home-grown artists are thin outside the biggest markets.** Only two artists carry the `urn:tag:genre:music:kenyan` tag, and there is no gengetone or benga tag. Asking who fans of Kenyan music follow returns Nigerian, Jamaican and US names, because it describes the fans, not the artists. A nationality or hometown field on artists would let Qloo answer "who from here plays this sound" directly.
-- **Poets and comedians are thin.** Genre tags find DJs well, but a Nairobi search found no comedians.
-- **Small things:** `filter.location` needs WKT (`lat,lng` returns 400). `urn:entity:video_game` returns 400 on the hackathon host. Short descriptions are often untagged by language. One entity can carry several Spotify accounts.
-- **What worked well:** location tags differ clearly by neighbourhood (East Austin: alt-country, Americana, blues; Williamsburg: indie, experimental). Overlap queries answer fast. `place_of_birth` and Spotify listeners in the entity made local-first booking possible.
+- **Popularity is global, not local.** A star who is huge in one region can score low worldwide and look like a small, bookable act. A popularity score within a country or around a location would make "can this venue book them?" much more accurate.
+- **Affinity is close to 1.0 for the top results, and the top results repeat from city to city.** We cap popularity (`filter.popularity.max`) to bring local names forward. A documented way to rank by what is distinctive about an area would help every local use case.
+- **Invalid parameters are ignored without a warning.** They return 200 with an empty list. `signal.location.radius` changed nothing in our tests, and `signal.location.weight=high` made results less relevant. Occupation tags such as `urn:tag:occupation:wikidata:comedian` are ignored by insights. A field naming ignored parameters would save developers hours.
+- **Local artists are thin outside the biggest markets.** Only two artists carry the `urn:tag:genre:music:kenyan` tag. Asking which artists fans of Kenyan music follow returns mostly Nigerian, Jamaican and American names, because it describes the fans rather than the artists. A home country field on artists would let Qloo answer "who from here plays this sound".
+- **Poets and comedians are thin.** Genre tags find DJs well, but searches near Nairobi found no comedians.
+- **Smaller points:** `filter.location` needs WKT (`lat,lng` returns 400). `urn:entity:video_game` returns 400 on the hackathon host. Short descriptions are often not tagged by language. One artist can have several Spotify accounts.
+- **What worked well:** the tastes of different neighbourhoods are clearly different (East Austin: alt-country, Americana, blues; Williamsburg: indie and experimental). Overlap questions answer fast. Birthplace and Spotify listener counts on artists made local-first booking possible.
 
 </details>
 
+## Plans: Free and Premium
+
+This is the planned pricing. During the hackathon every feature is free for everyone.
+
+|                                         | **Free**                                     | **Venue** (Premium)                                                         | **Group**                     |
+| --------------------------------------- | -------------------------------------------- | --------------------------------------------------------------------------- | ----------------------------- |
+| Price                                   | $0                                           | **$49 a month** (€45, £39)                                                  | **$199 a month** (€179, £159) |
+| Venues                                  | 1                                            | 1                                                                           | Up to 5, one bill             |
+| Quiet nights planned                    | 1                                            | Up to 3                                                                     | Up to 3 at each venue         |
+| Fresh plans                             | 1 a month                                    | As many as you need                                                         | As many as you need           |
+| Evidence behind every number            | Yes                                          | Yes                                                                         | Yes                           |
+| Four-week series, a new twist each week | Yes                                          | Yes                                                                         | Yes                           |
+| Local performers                        | The top 3                                    | The full list, new lists on request, budget labels, ready messages, booking | The same, for every venue     |
+| Ads                                     | Posters with a small Loudnight mark          | Posters, stories, banners and video, no mark, Spanish captions              | The same                      |
+| Event page and reservations             | Up to 50 a night                             | Unlimited                                                                   | Unlimited                     |
+| The door                                | The web door screen                          | The door app, and team roles for managers and door staff                    | The same, at every venue      |
+| Results                                 | Tonight's count                              | Every night's takings, the monthly gain, and what Loudnight paid back       | Every venue side by side      |
+| Paid tickets (planned)                  | 3% booking fee paid by the guest, at most $1 | The same                                                                    | The same                      |
+
+| Plan  | Who it is for                               | What it does for them                                                                                                                                               |
+| ----- | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Free  | A venue trying Loudnight out                | Finds the night its neighbourhood is missing and runs it once, with a guest list and a door screen.                                                                 |
+| Venue | A bar, cafe or restaurant with quiet nights | Fills one to three quiet nights every week. One extra full night (for example 35 guests spending $38 each, about $1,330) pays for more than two years of Loudnight. |
+| Group | A hospitality group or promoter             | Runs every venue's weekly nights, teams and results from one place.                                                                                                 |
+
 ## By the numbers
 
-|                      |                                                                                             |
-| -------------------- | ------------------------------------------------------------------------------------------- |
-| Planner              | 6 fixed steps, streamed live; Claude chooses the tools inside a step, never the order       |
-| Taste read per venue | 11 areas of taste from Qloo                                                                 |
-| One plan             | About 35 Qloo calls, 3 scored nights, about 3 minutes                                       |
-| Score                | 40 x audience fit + 20 x novelty + 20 x venue fit + 20 x cost fit, computed by the database |
-| Tests                | 500+ unit tests, plus database rule tests for every role, preview and suspension            |
-| Schema               | 19 migrations; row level security on every table                                            |
-| Apps                 | The web app (Next.js) and the door app (React Native, Expo) on one API                      |
-| Reach                | Any country, currency and time zone; 237 countries in the venue search                      |
+|                           |                                                                                                                 |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| The planner               | 6 fixed steps, shown live as they run. The AI chooses its tools inside each step, never the order of the steps. |
+| Taste read for each venue | 11 areas of taste from Qloo                                                                                     |
+| One plan                  | About 35 Qloo calls, 3 scored nights, about 3 minutes                                                           |
+| The score                 | 40 x audience fit + 20 x novelty + 20 x venue fit + 20 x cost fit, calculated by the database                   |
+| Tests                     | More than 500 automated tests, plus database tests for every role                                               |
+| Apps                      | The web app and the door app, both using the same API                                                           |
+| Countries                 | Any country, currency and time zone; 237 countries in the venue search                                          |
 
 ## How it is built
 
-**Where it runs**: the web app on [Vercel](https://encore-seven-dusky.vercel.app), data, sign-in and live updates on [Supabase](https://supabase.com) (Postgres), taste data from [Qloo](https://www.qloo.com), reasoning and copy from [Claude](https://www.anthropic.com), places from Google, events from Ticketmaster, and checks on every push in [GitHub Actions](.github/workflows/ci.yml).
+**Where it runs:** the web app on [Vercel](https://encore-seven-dusky.vercel.app); data, sign-in and live updates on [Supabase](https://supabase.com) (Postgres); taste data from [Qloo](https://www.qloo.com); planning and writing by [Claude](https://www.anthropic.com); places from Google; events from Ticketmaster; automatic checks on every change in [GitHub Actions](.github/workflows/ci.yml).
 
 ```
 Browser or door app
-  component -> hook -> api.ts -> /api/v1 route -> service -> repository -> Supabase Postgres (row level security)
-                                                     \-> lib/qloo, lib/places, lib/ticketmaster, lib/ai, lib/wikidata, lib/musicbrainz
+  screen -> data hook -> API call -> /api/v1 route -> business rules -> database queries -> Postgres
+                                                           \-> Qloo, Google Places, Ticketmaster, Claude, Wikidata, MusicBrainz
 ```
 
-- **The tenant is the venue.** Every venue's rows share one database, and Postgres itself refuses to show a row to someone who should not see it, so the code cannot forget to filter. Door staff never see money; guests read nothing back.
-- **No number without a receipt.** Every Qloo answer is cached; every evidence chip stores the cached row and the JSON path of its value; a database trigger refuses a value that is not there.
-- **Three gates**: the proxy, the route wrappers, and row level security. A hidden button is never the control.
-- **Trust and governance**: an administrator console with suspension, deactivation and an audit log written by database triggers, and read-only "preview as" that the database enforces.
+- **Each venue's data is private by design.** All venues share one database, and the database itself checks who may see each row (Postgres row level security). Door staff never see money, and guests only see public event pages.
+- **Every number has a receipt.** A database rule refuses any number that is not in the saved Qloo answer it claims to come from.
+- **Three locks on every action:** the page gate, the API, and the database. Hiding a button is never what stops someone.
+- **Built to be run:** an administrator console with suspension, deactivation, a change history written by the database, and a read-only view of any user's screens for support.
 
-| Technology                                                            | Version          | Used for                                                      |
-| --------------------------------------------------------------------- | ---------------- | ------------------------------------------------------------- |
-| [Next.js](https://nextjs.org)                                         | 16.3.6           | App Router, route handlers under `/api/v1`, `proxy.ts`        |
-| [React](https://react.dev)                                            | 19.2.8           | User interface                                                |
-| [TypeScript](https://www.typescriptlang.org)                          | 5.9.3            | Strict typing everywhere                                      |
-| [Tailwind CSS](https://tailwindcss.com)                               | 4.3.3            | Styling with design tokens for light and dark                 |
-| [shadcn/ui](https://ui.shadcn.com) on [Base UI](https://base-ui.com)  | 4.21.0 / 1.8.0   | Component source in `src/components/ui`                       |
-| [Supabase JS](https://supabase.com/docs/reference/javascript) and SSR | 2.117.2 / 0.12.7 | Postgres, Auth, Realtime                                      |
-| [Anthropic SDK](https://docs.anthropic.com)                           | 0.131.0          | Claude Sonnet 5.5 for planning and checks, Haiku 5.5 for copy |
-| [Zod](https://zod.dev)                                                | 4.6.5            | One schema for forms, API bodies and upstream responses       |
-| [TanStack Query](https://tanstack.com/query)                          | 5.104.0          | Client data cache and mutations                               |
-| [Vitest](https://vitest.dev)                                          | 5.0.2            | Unit tests                                                    |
-| [Expo](https://expo.dev) and React Native                             | SDK 57 / 0.86.3  | The door app in [`apps/door`](apps/door/README.md)            |
+| Technology                                                           | Version         | Used for                                                         |
+| -------------------------------------------------------------------- | --------------- | ---------------------------------------------------------------- |
+| [Next.js](https://nextjs.org)                                        | 16.3.6          | The web app and its API (`/api/v1`)                              |
+| [React](https://react.dev)                                           | 19.2.8          | The interface                                                    |
+| [TypeScript](https://www.typescriptlang.org)                         | 5.9.3           | Strict types everywhere                                          |
+| [Tailwind CSS](https://tailwindcss.com)                              | 4.3.3           | Styling, light and dark                                          |
+| [shadcn/ui](https://ui.shadcn.com) on [Base UI](https://base-ui.com) | 4.21.0 / 1.8.0  | Interface components                                             |
+| [Supabase](https://supabase.com/docs/reference/javascript)           | 2.117.2         | Postgres, sign-in, live updates                                  |
+| [Anthropic SDK](https://docs.anthropic.com)                          | 0.131.0         | Claude Sonnet 5.5 for planning and checks, Haiku 5.5 for writing |
+| [Zod](https://zod.dev)                                               | 4.6.5           | One set of rules for forms, the API and outside answers          |
+| [TanStack Query](https://tanstack.com/query)                         | 5.104.0         | Data loading in the browser                                      |
+| [Vitest](https://vitest.dev)                                         | 5.0.2           | Automated tests                                                  |
+| [Expo](https://expo.dev) and React Native                            | SDK 57 / 0.86.3 | The door app in [`apps/door`](apps/door/README.md)               |
 
-Every version is pinned exactly. Full reasoning: [`docs/architecture/ARCHITECTURE.md`](docs/architecture/ARCHITECTURE.md).
+Every version is pinned exactly. The full design and the reasons behind it: [`docs/architecture/ARCHITECTURE.md`](docs/architecture/ARCHITECTURE.md).
 
 <details>
 <summary><b>Project layout</b></summary>
 
 ```
-src/app            Routing only: pages, layouts, /api/v1 route handlers
-src/components     ui (shadcn), layout, shared, forms, providers
-src/config         Constants: site, roles, venues, series, pricing, integrations
-src/lib            env, http, supabase, ai, qloo, places, ticketmaster, wikidata, musicbrainz, format
-src/modules        One folder per business area: schemas, repository, service, api, hooks, components
-apps/door          The React Native door app (Expo)
-supabase           migrations, seed.sql (demo venues), tests (row level security and suspension), config.toml
-docs               architecture (ARCHITECTURE.md, plans), roadmap, screenshots, reference (the brief)
+src/app            Pages, layouts and /api/v1 routes (no business rules)
+src/components     Shared interface components
+src/config         Settings: site, roles, venues, series, pricing, outside services
+src/lib            Connections to Supabase, Qloo, Google Places, Ticketmaster, Claude, Wikidata, MusicBrainz
+src/modules        One folder per feature: rules, database queries, API calls, hooks and screens
+apps/door          The door app (React Native, Expo)
+supabase           Database changes, demo venues, and database tests
+docs               Architecture, plans, roadmap, screenshots, and the original brief
 ```
 
 </details>
@@ -316,55 +269,55 @@ docs               architecture (ARCHITECTURE.md, plans), roadmap, screenshots, 
 <details>
 <summary><b>Roles</b></summary>
 
-| Role          | Who                        | Can                                                                        |
-| ------------- | -------------------------- | -------------------------------------------------------------------------- |
-| Administrator | Runs Loudnight             | Everything; suspends venues, deactivates people, previews anyone read only |
-| Venue owner   | Whoever created the venue  | Everything at their venue, including the team and money settings           |
-| Venue manager | Invited by the owner       | Plans, series, nights, settings, spend                                     |
-| Door staff    | Invited by the owner       | Guest list and check-ins; never money                                      |
-| Guest         | Anyone with the event link | RSVP and check in; reads nothing back                                      |
+| Role          | Who                        | Can                                                                                 |
+| ------------- | -------------------------- | ----------------------------------------------------------------------------------- |
+| Administrator | Runs Loudnight             | Everything; suspends venues, deactivates people, views any user's screens read only |
+| Venue owner   | Whoever added the venue    | Everything at their venue, including the team and money                             |
+| Venue manager | Invited by the owner       | Plans, series, nights, settings and takings                                         |
+| Door staff    | Invited by the owner       | The guest list and check-ins, never money                                           |
+| Guest         | Anyone with the event link | Reserve a place and check in                                                        |
 
 </details>
 
 ## What is built today
 
-| Area                    | Built and live                                                                                                                                                                |
-| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Landing                 | One pinned stage in five scenes; one scroll moves one scene; the story zooms into the visitor's own country                                                                   |
-| Venues anywhere         | Pick the country first, then search inside it; time zone, town, currency from the place; money in the venue's own currency                                                    |
-| The room                | What it can host (live music, DJs, poetry, comedy and more), seated or standing, up to three quiet nights, each with its own plan, series and ads                             |
-| Planning                | The six-step planner streams its trace and proposes three scored nights with a receipt on every number, beside a plain chatbot answer                                         |
-| Series and performers   | Four weeks on the calendar; home-country acts first, household names and non-performers left out, budget labels, ready messages, booking                                      |
-| Promote                 | Posters, stories, banners and short videos drawn in the browser, with the booked acts' photos, a ticket QR, Spanish copy and captions for each network                        |
-| Event pages and tickets | Guests save a place signed out; the ticket QR opens on any camera; staff check them in from it; a ticket counts once                                                          |
-| The door and results    | Scan, find a name or count walk-ins; counts update live on every phone; each night against break-even                                                                         |
-| The door app            | React Native (first version, [`apps/door`](apps/door/README.md)): camera scanning that uses tickets up, live counts, walk-ins, and arrivals kept offline until they sync once |
-| Running the platform    | Administrator console: venues and people as tables with detail panels, plans, audit log, suspension, deactivation, read-only preview                                          |
-| Demo venues             | Finished plans anyone can open without an account                                                                                                                             |
+| Area                    | Built and live                                                                                                                                                            |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Landing page            | A story in five scenes; each scroll moves one scene, and it zooms into the visitor's own country                                                                          |
+| Venues anywhere         | Choose the country, then find the venue; time zone, town and currency come from the address                                                                               |
+| The room                | What it can host (live music, DJs, poetry, comedy and more), seated or standing, and up to three quiet nights                                                             |
+| Planning                | The six-step planner shows its work live and suggests three scored nights, with evidence behind every number and a plain chatbot answer beside it                         |
+| Series and performers   | Four dated weeks; local acts first, stars and non-performers left out, budget labels, ready messages, booking                                                             |
+| Promote                 | Posters, stories, banners and short videos made in the browser, with the performers' photos, a ticket QR code, Spanish text and captions                                  |
+| Event pages and tickets | Guests reserve without an account; the ticket opens on any phone camera; each ticket checks in once                                                                       |
+| The door and results    | Scan, find a name or count walk-ins; live counts on every phone; each night against break-even                                                                            |
+| The door app            | A phone app for door staff ([`apps/door`](apps/door/README.md)): scans and uses up tickets, live count, walk-ins, and check-ins saved without signal until they send once |
+| Administration          | Venues and people with details, every plan, change history, suspension, deactivation, and a read-only view of any user's screens                                          |
+| Demo venues             | Finished plans anyone can open without an account                                                                                                                         |
 
-Every plan, its status and its gate: [`docs/architecture/plans/README.md`](docs/architecture/plans/README.md).
+Every plan, its status and its checks: [`docs/architecture/plans/README.md`](docs/architecture/plans/README.md).
 
 ## Roadmap
 
-| Next                             | What it adds                                                                                                                 |
-| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| The door app in the stores       | Real phones, EAS builds, sound on each scan                                                                                  |
-| The door control room            | Real-time messages to door staff, live arrivals, the till sending takings into results, gate cameras viewed beside the count |
-| Paid tickets and payouts         | M-Pesa and cards, a wallet for each venue, withdrawals, tickets that cannot be used twice                                    |
-| The learning loop                | Each night's turnout decides the next: keep, tweak or swap                                                                   |
-| Point of sale and social posting | Takings from the till, ads posted straight to Instagram, Facebook and TikTok                                                 |
-| Local trends                     | Chart and search trends near the venue beside Qloo's taste                                                                   |
+| Next                           | What it adds                                                                                                                                          |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Launch in the US and Europe    | Austin, New York, Chicago, London and Berlin first, where Qloo's data is deepest and venues pay by card                                               |
+| The door app in the app stores | Tested on real phones, published for iPhone and Android, with a sound for each scan                                                                   |
+| Paid tickets and payouts       | Card payments, a wallet for each venue, withdrawals, and tickets that can never be used twice                                                         |
+| The door control room          | The owner messages door staff in real time, sees each arrival as it happens, gets the till's takings automatically, and can view the entrance cameras |
+| The learning loop              | Each night's turnout decides the next one: keep it, change it or replace it                                                                           |
+| Expansion                      | Africa next (Nairobi and Lagos, with mobile money such as M-Pesa), then Latin America and Asia                                                        |
 
-Details, costs and order: [`docs/roadmap.md`](docs/roadmap.md).
+Details, costs and order of work: [`docs/roadmap.md`](docs/roadmap.md).
 
 ## Run it yourself
 
-Needs Node 22 or newer. Point `.env.local` at a Supabase project (hosted, or local with Docker and the [Supabase CLI](https://supabase.com/docs/guides/cli)).
+You need Node 22 or newer and a Supabase project (hosted, or local with Docker and the [Supabase CLI](https://supabase.com/docs/guides/cli)).
 
 ```bash
 npm install
-cp .env.example .env.local     # fill in the values; check:connections tells you which keys work, without printing them
-npm run check:connections
+cp .env.example .env.local     # fill in the keys
+npm run check:connections      # says which keys work, without printing them
 npm run dev                    # http://localhost:3000
 ```
 
@@ -374,21 +327,21 @@ npm run dev                    # http://localhost:3000
 | Command                     | What it does                                                                  |
 | --------------------------- | ----------------------------------------------------------------------------- |
 | `npm run dev`               | Development server                                                            |
-| `npm run validate`          | Dashes, typecheck, lint, format check, tests and build. Run before every push |
-| `npm run db:test`           | Every `supabase/tests/*.sql` against the local database                       |
-| `npm run db:types`          | Regenerates `src/types/database.ts` from the local schema                     |
-| `npm run check:connections` | Proves Supabase, Qloo, Places, Ticketmaster and Anthropic answer              |
-| `npm run demo:precompute`   | Rebuilds the demo venues' plans, series and performers                        |
-| `npm test`                  | Unit tests                                                                    |
-| `npm run format`            | Prettier                                                                      |
+| `npm run validate`          | Style checks, types, lint, formatting, tests and build. Run before every push |
+| `npm run db:test`           | The database tests against a local database                                   |
+| `npm run db:types`          | Regenerates the database types                                                |
+| `npm run check:connections` | Checks that Supabase, Qloo, Google Places, Ticketmaster and Anthropic answer  |
+| `npm run demo:precompute`   | Rebuilds the demo venues' plans                                               |
+| `npm test`                  | Automated tests                                                               |
+| `npm run format`            | Formats the code                                                              |
 
 The door app: see [`apps/door/README.md`](apps/door/README.md).
 
 </details>
 
-**Contributing**: read [`CLAUDE.md`](CLAUDE.md) (every rule is mandatory), pick the active plan in [`docs/architecture/plans`](docs/architecture/plans), and run `npm run validate` and `npm run db:test` before every push.
+**Contributing:** read [`CLAUDE.md`](CLAUDE.md) (every rule in it is required), pick the active plan in [`docs/architecture/plans`](docs/architecture/plans), and run `npm run validate` and `npm run db:test` before every push.
 
-**Documentation**: [`CLAUDE.md`](CLAUDE.md) (the rules), [`ARCHITECTURE.md`](docs/architecture/ARCHITECTURE.md) (the design and why), [`plans`](docs/architecture/plans) (plans 00 to 32, gates, judging criteria, traceability), [`roadmap.md`](docs/roadmap.md) (money, the door app, payments, point of sale, trends), [`docs/reference`](docs/reference) (the brief).
+**More documents:** [`ARCHITECTURE.md`](docs/architecture/ARCHITECTURE.md) (the design and why), [`plans`](docs/architecture/plans) (every feature's plan and status), [`roadmap.md`](docs/roadmap.md) (pricing, launch order, payments, the door app), [`investors.md`](docs/investors.md) (for investors), [`docs/reference`](docs/reference) (the original brief).
 
 ## Licence
 
