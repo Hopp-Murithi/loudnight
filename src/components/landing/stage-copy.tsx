@@ -124,7 +124,7 @@ interface StageDotsProps {
 // Where the visitor is in the story, and a way to jump to any scene.
 export function StageDots({ scene, onGo }: StageDotsProps) {
   return (
-    <nav aria-label="Story" className="absolute top-1/2 right-3 -translate-y-1/2 sm:right-6">
+    <nav aria-label="Story" className="absolute top-1/2 right-6 hidden -translate-y-1/2 sm:block">
       <ol className="flex flex-col gap-2">
         {STAGE_SCENES.map((entry, index) => (
           <li key={entry.id}>
