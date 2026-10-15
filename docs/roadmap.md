@@ -26,11 +26,14 @@ Fixed costs: Supabase Pro (from $25 a month), Vercel Pro (from $20 a month per s
 
 One subscription per venue, priced in the venue's own currency (plan 29 made money local), with a free way in.
 
-| Plan  | What it includes                                                             | US           | Kenya              | UK           |
-| ----- | ---------------------------------------------------------------------------- | ------------ | ------------------ | ------------ |
-| Try   | One plan, the demo, the ad studio with a small Loudnight mark                | free         | free               | free         |
-| Venue | A fresh plan every month, series, performers, ads, event page, door, results | $49 a month  | KES 2,500 a month  | £39 a month  |
-| Group | Up to five venues, team roles, one bill                                      | $199 a month | KES 10,000 a month | £159 a month |
+| Plan  | What it includes                                                                                                                                 | US          | Kenya             | UK          |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ----------- | ----------------- | ----------- |
+| Try   | One plan, the demo, the ad studio with a small Loudnight mark                                                                                    | free        | free              | free        |
+| Free  | One venue, one quiet night, one plan a month, the top 3 performers, posters with the Loudnight mark, up to 50 RSVPs a night, the web door screen | $0          | KES 0             | £0          |
+| Venue | A fresh plan every month, series, performers, ads, event page, door, results                                                                     | $49 a month | KES 2,500 a month | £39 a month |
+
+The full comparison of Free, Venue and Group is in the README ("Plans: Free and Premium"). Free exists so a venue can run one night before paying; the upgrade comes when a second quiet night, the full performer list, video ads, the door app or unlimited RSVPs are wanted.
+| Group | Up to five venues, team roles, one bill | $199 a month | KES 10,000 a month | £159 a month |
 
 Later, once tickets are sold through the event page (plan 12): a booking fee paid by the guest, 3% capped at $1 or the local equivalent. The owner pays nothing extra for a full room.
 
