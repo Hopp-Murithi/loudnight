@@ -5,7 +5,9 @@ import { cn } from "@/lib/utils"
 import { SpotBeams } from "./stage-room"
 
 const LAYER = "pointer-events-none absolute inset-0 overflow-hidden"
-const visible = (scene: number): CSSProperties => ({ opacity: `var(--v${scene})` })
+// A map layer never goes fully invisible: the browser would drop its drawing and redraw thousands of dots at full
+// zoom when it came back, freezing the scroll. A trace of opacity keeps it drawn, so zooming stays cheap.
+const visible = (scene: number): CSSProperties => ({ opacity: `max(var(--v${scene}), 0.002)` })
 
 interface MapProps {
   src: string
@@ -33,7 +35,7 @@ function DottedMap({ src, ratio, width, zoom, origin, side = false, children }: 
         style={{ transform: `scale(var(${zoom}))`, transformOrigin: `${origin.x}% ${origin.y}%` }}
       >
         {/* eslint-disable-next-line @next/next/no-img-element -- a static SVG drawing, nothing for the optimiser to do */}
-        <img src={src} alt="" className="size-full" />
+        <img src={src} alt="" decoding="sync" className="size-full" />
         {children}
       </div>
     </div>
