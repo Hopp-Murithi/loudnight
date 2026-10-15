@@ -40,3 +40,16 @@ export function stageVars(position: number, scenes: number): Record<string, stri
   vars["--finale-zoom"] = (1.25 - 0.25 * stretch(position, 3.3, 4)).toFixed(3)
   return vars
 }
+
+// The glide between scenes: slow out of the start, quick through the middle, gentle into the next scene.
+export const easeInOut = (t: number) => {
+  const x = clamp(t)
+  return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2
+}
+
+// The scene a key press moves to, or null when the key is not one that moves the story.
+export function keyTarget(position: number, key: string, scenes: number): number | null {
+  const step =
+    key === "ArrowDown" || key === "PageDown" || key === " " ? 1 : key === "ArrowUp" || key === "PageUp" ? -1 : 0
+  return step === 0 ? null : wheelTarget(position, step, scenes)
+}

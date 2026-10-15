@@ -1,10 +1,12 @@
 "use client"
 
-import { useCallback, useEffect, useState, type RefObject } from "react"
-import { sceneAt, stageVars, storyPosition, wheelTarget } from "./stage-math"
+import { useCallback, useEffect, useRef, useState, type RefObject } from "react"
+import { easeInOut, keyTarget, sceneAt, stageVars, storyPosition, wheelTarget } from "./stage-math"
 
 // A wheel or trackpad gesture counts as over once its events stop for this long; one gesture moves one scene.
-const GESTURE_GAP_MS = 220
+const GESTURE_GAP_MS = 180
+// One scene to the next, under the half second every animation keeps to.
+const GLIDE_MS = 480
 
 function measure(track: HTMLElement, scenes: number) {
   const top = track.getBoundingClientRect().top + window.scrollY
@@ -13,28 +15,49 @@ function measure(track: HTMLElement, scenes: number) {
   return { top, travel, position, inside: window.scrollY >= top - 1 && window.scrollY <= top + travel + 1 }
 }
 
+const reducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches
+const typing = (target: EventTarget | null) =>
+  target instanceof HTMLElement && (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName))
+
 // Pins the stage and turns the page's scroll into the story's position. The values are written straight onto the
-// stage each frame, so scrolling never re-renders React; only a change of scene does. A mouse wheel or trackpad moves
-// exactly one scene per gesture; touch and the keyboard use the browser's own snapping.
+// stage each frame, so scrolling never re-renders React; only a change of scene does. A wheel, trackpad or key moves
+// exactly one scene, gliding there frame by frame; touch screens use the browser's own snapping.
 export function useScrollStage(
   trackRef: RefObject<HTMLElement | null>,
   stageRef: RefObject<HTMLElement | null>,
   scenes: number,
 ) {
   const [scene, setScene] = useState(0)
+  const glide = useRef({ frame: 0, running: false })
 
   const goTo = useCallback(
     (index: number) => {
       const track = trackRef.current
       if (!track) return
       const { top, travel } = measure(track, scenes)
-      window.scrollTo({ top: top + (travel * index) / (scenes - 1) })
+      const target = top + (travel * index) / (scenes - 1)
+      cancelAnimationFrame(glide.current.frame)
+      if (reducedMotion()) {
+        window.scrollTo({ top: target, behavior: "instant" })
+        return
+      }
+      const start = window.scrollY
+      const began = performance.now()
+      glide.current.running = true
+      const step = (now: number) => {
+        const progress = Math.min(1, (now - began) / GLIDE_MS)
+        window.scrollTo({ top: start + (target - start) * easeInOut(progress), behavior: "instant" })
+        if (progress < 1) glide.current.frame = requestAnimationFrame(step)
+        else glide.current.running = false
+      }
+      glide.current.frame = requestAnimationFrame(step)
     },
     [scenes, trackRef],
   )
 
   useEffect(() => {
     let frame = 0
+    const current = glide.current
     const update = () => {
       frame = 0
       const track = trackRef.current
@@ -48,34 +71,48 @@ export function useScrollStage(
       if (!frame) frame = requestAnimationFrame(update)
     }
 
-    let moving = false
+    // A gesture keeps sending wheel events after the glide starts; all of them belong to that one move.
+    let gesture = false
     let quiet = 0
     const onWheel = (event: WheelEvent) => {
       const track = trackRef.current
       if (!track || event.ctrlKey || Math.abs(event.deltaX) > Math.abs(event.deltaY)) return
       const { position, inside } = measure(track, scenes)
       const target = inside ? wheelTarget(position, event.deltaY, scenes) : null
-      if (target === null) return
+      if (target === null && !current.running) return
       event.preventDefault()
       window.clearTimeout(quiet)
       quiet = window.setTimeout(() => {
-        moving = false
+        gesture = false
       }, GESTURE_GAP_MS)
-      if (moving) return
-      moving = true
+      if (gesture || current.running || target === null) return
+      gesture = true
       goTo(target)
+    }
+
+    const onKey = (event: KeyboardEvent) => {
+      const track = trackRef.current
+      if (!track || typing(event.target) || event.altKey || event.ctrlKey || event.metaKey) return
+      const { position, inside } = measure(track, scenes)
+      const target = inside ? keyTarget(position, event.key, scenes) : null
+      if (target === null) return
+      event.preventDefault()
+      if (!current.running) goTo(target)
     }
 
     update()
     window.addEventListener("scroll", schedule, { passive: true })
     window.addEventListener("resize", schedule)
     window.addEventListener("wheel", onWheel, { passive: false })
+    window.addEventListener("keydown", onKey)
     return () => {
       cancelAnimationFrame(frame)
+      cancelAnimationFrame(current.frame)
       window.clearTimeout(quiet)
       window.removeEventListener("scroll", schedule)
       window.removeEventListener("resize", schedule)
       window.removeEventListener("wheel", onWheel)
+      window.removeEventListener("keydown", onKey)
     }
   }, [goTo, scenes, stageRef, trackRef])
 

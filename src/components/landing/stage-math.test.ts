@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { sceneAt, stageVars, storyPosition, wheelTarget } from "./stage-math"
+import { easeInOut, keyTarget, sceneAt, stageVars, storyPosition, wheelTarget } from "./stage-math"
 
 describe("storyPosition", () => {
   it("runs from the first scene to the last as the stage scrolls past", () => {
@@ -54,5 +54,23 @@ describe("wheelTarget", () => {
     expect(wheelTarget(4, 100, 5)).toBeNull()
     expect(wheelTarget(0, -100, 5)).toBeNull()
     expect(wheelTarget(2, 0, 5)).toBeNull()
+  })
+})
+
+describe("the glide between scenes", () => {
+  it("starts and ends still, and is halfway at the middle", () => {
+    expect(easeInOut(0)).toBe(0)
+    expect(easeInOut(0.5)).toBe(0.5)
+    expect(easeInOut(1)).toBe(1)
+    expect(easeInOut(0.1)).toBeLessThan(0.1)
+    expect(easeInOut(0.9)).toBeGreaterThan(0.9)
+  })
+
+  it("moves one scene per key, and lets the page scroll on past either end", () => {
+    expect(keyTarget(1, "ArrowDown", 5)).toBe(2)
+    expect(keyTarget(1, "PageUp", 5)).toBe(0)
+    expect(keyTarget(0, "ArrowUp", 5)).toBeNull()
+    expect(keyTarget(4, " ", 5)).toBeNull()
+    expect(keyTarget(2, "Enter", 5)).toBeNull()
   })
 })
