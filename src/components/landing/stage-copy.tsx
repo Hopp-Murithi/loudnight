@@ -1,3 +1,4 @@
+import Image from "next/image"
 import Link from "next/link"
 import type { CSSProperties } from "react"
 import { Button } from "@/components/ui/button"
@@ -68,17 +69,26 @@ function Tastes({ tastes, place, active }: { tastes: readonly string[]; place: s
 
 function ReadyList({ active }: { active: boolean }) {
   return (
-    <ul className="grid gap-2 pt-1 sm:grid-cols-2">
+    <ul className="grid grid-cols-2 gap-3 pt-2 lg:grid-cols-4">
       {NIGHT_READY.map((item, index) => (
         <li
-          key={item}
+          key={item.label}
           className={cn(
-            "border-l-2 border-spotlight bg-background/60 px-3 py-2 text-sm backdrop-blur",
+            "overflow-hidden rounded-md border border-foreground/15 bg-foreground/[0.06] shadow-2xl backdrop-blur-md",
             active && "taste-in",
           )}
           style={{ "--taste-delay": `${0.2 + index * 0.12}s` } as CSSProperties}
         >
-          {item}
+          <div className="relative aspect-[4/3] border-b border-foreground/10">
+            <Image
+              src={item.image}
+              alt={item.alt}
+              fill
+              sizes="(min-width: 1024px) 12rem, 45vw"
+              className="object-cover object-top"
+            />
+          </div>
+          <p className="px-3 py-2 text-sm leading-snug font-medium">{item.label}</p>
         </li>
       ))}
     </ul>

@@ -1,3 +1,8 @@
+import readyAct from "@/assets/landing/ready-act.webp"
+import readyDoor from "@/assets/landing/ready-door.webp"
+import readyPosts from "@/assets/landing/ready-posts.webp"
+import readyPoster from "@/assets/landing/ready-poster.webp"
+
 // The landing page is one stage and five scenes. Each scroll moves the story on; the words never scroll away.
 
 export const STAGE_SCENES = [
@@ -31,10 +36,10 @@ export const STAGE_SCENES = [
 
 export type StageSceneId = (typeof STAGE_SCENES)[number]["id"]
 
-// What the night Loudnight found brings with it. The night's own name comes from the visitor's region.
+// What the night Loudnight found brings with it, each shown as the real screen it comes from.
 export const NIGHT_READY = [
-  "A local act, booked",
-  "A poster with a ticket QR",
-  "Posts for every channel",
-  "A guest list at the door",
+  { label: "A local act, booked", image: readyAct, alt: "A booked local band on its performer card" },
+  { label: "A poster with a ticket QR", image: readyPoster, alt: "A poster showing two bands and a ticket QR code" },
+  { label: "Posts for every channel", image: readyPosts, alt: "Instagram captions written from the night's details" },
+  { label: "A guest list at the door", image: readyDoor, alt: "The door screen counting guests against break-even" },
 ] as const
