@@ -5,8 +5,7 @@ import { cn } from "@/lib/utils"
 import { SpotBeams } from "./stage-room"
 
 const LAYER = "pointer-events-none absolute inset-0 overflow-hidden"
-// A map layer never goes fully invisible: the browser would drop its drawing and redraw thousands of dots at full
-// zoom when it came back, freezing the scroll. A trace of opacity keeps it drawn, so zooming stays cheap.
+// Never fully invisible: a hidden map is redrawn at full zoom when it returns, which froze the scroll.
 const visible = (scene: number): CSSProperties => ({ opacity: `max(var(--v${scene}), 0.002)` })
 
 interface MapProps {
