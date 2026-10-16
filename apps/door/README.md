@@ -36,7 +36,13 @@ npm test                  # the offline queue's tests (Node's built-in test runn
 npm run typecheck
 ```
 
-Builds for the stores use EAS (`npx eas build`), which needs an Expo account and store credentials.
+An Android APK to install straight onto a phone is built in Expo's cloud (no Android SDK needed on your machine):
+
+```bash
+npx eas-cli build -p android --profile preview   # prints a link to download the .apk when it finishes
+```
+
+The `preview` profile in `eas.json` points the app at the live site and the hosted Supabase project (public values only). Store builds use the `production` profile and need store credentials.
 
 ## Layout
 

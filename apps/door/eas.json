@@ -1,0 +1,27 @@
+{
+  "cli": {
+    "version": ">= 24.7.0",
+    "appVersionSource": "local"
+  },
+  "build": {
+    "preview": {
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://encore-seven-dusky.vercel.app",
+        "EXPO_PUBLIC_SUPABASE_URL": "https://fpcvuqncvpypjncmqvml.supabase.co",
+        "EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY": "sb_publishable_hy362h726zERFSfEPz4jvg_BI9KHvlk"
+      }
+    },
+    "production": {
+      "autoIncrement": true,
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://encore-seven-dusky.vercel.app",
+        "EXPO_PUBLIC_SUPABASE_URL": "https://fpcvuqncvpypjncmqvml.supabase.co",
+        "EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY": "sb_publishable_hy362h726zERFSfEPz4jvg_BI9KHvlk"
+      }
+    }
+  }
+}

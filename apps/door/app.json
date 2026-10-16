@@ -21,7 +21,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#120e0c"
-      }
+      },
+      "blockedPermissions": ["android.permission.RECORD_AUDIO"]
     },
     "plugins": [
       "expo-router",
@@ -29,13 +30,20 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "Loudnight uses the camera to scan tickets at the door."
+          "cameraPermission": "Loudnight uses the camera to scan tickets at the door.",
+          "recordAudioAndroid": false
         }
       ],
       "expo-status-bar"
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "5d8167f3-970f-488e-8855-0149d0f6a631"
+      }
+    },
+    "owner": "wamasoda"
   }
 }
