@@ -5,6 +5,7 @@ const getDetail = vi.fn()
 const findMembership = vi.fn()
 const findAccount = vi.fn()
 const createInvite = vi.fn()
+const createAccountLink = vi.fn()
 const add = vi.fn()
 const sendEmail = vi.fn()
 
@@ -17,6 +18,7 @@ vi.mock("@/modules/venues/venues.repository", () => ({
 vi.mock("@/modules/auth/server/identity", () => ({
   findAccount: (...a: unknown[]) => findAccount(...a),
   createInvite: (...a: unknown[]) => createInvite(...a),
+  createAccountLink: (...a: unknown[]) => createAccountLink(...a),
 }))
 vi.mock("./team.repository", () => ({ teamRepository: { add: (...a: unknown[]) => add(...a) } }))
 vi.mock("@/lib/email/mailer", () => ({ sendEmail: (m: unknown) => sendEmail(m) }))
@@ -29,7 +31,10 @@ const ctx = {
 } as unknown as RequestContext
 
 beforeEach(() => {
-  ;[getDetail, findMembership, findAccount, createInvite, add, sendEmail].forEach((mock) => mock.mockReset())
+  ;[getDetail, findMembership, findAccount, createInvite, createAccountLink, add, sendEmail].forEach((mock) =>
+    mock.mockReset(),
+  )
+  createAccountLink.mockResolvedValue("https://encore.test/auth/confirm?token_hash=r&type=recovery")
   getDetail.mockResolvedValue({ id: "v1", name: "Union Pool", role: "owner" })
 })
 
@@ -48,7 +53,7 @@ describe("teamService.invite", () => {
     expect(sendEmail.mock.calls[0][0].subject).toBe("Ada added you to Union Pool on Loudnight")
   })
 
-  it("adds an existing account without creating another", async () => {
+  it("adds an existing account without creating another, with a link to choose a password", async () => {
     findAccount.mockResolvedValue({ id: "user-2", confirmed: true })
     findMembership.mockResolvedValue(null)
 
@@ -56,7 +61,9 @@ describe("teamService.invite", () => {
       status: "added",
     })
     expect(createInvite).not.toHaveBeenCalled()
+    expect(createAccountLink).toHaveBeenCalledWith("lee@example.com", "recovery")
     expect(sendEmail.mock.calls[0][0].subject).toBe("You now work at Union Pool on Loudnight")
+    expect(sendEmail.mock.calls[0][0].text).toContain("type=recovery")
   })
 
   // Nothing is created for someone who is not the owner, so the endpoint cannot be used to make accounts.
@@ -70,12 +77,17 @@ describe("teamService.invite", () => {
     expect(createInvite).not.toHaveBeenCalled()
   })
 
-  it("explains when the person is already on the team, or is you", async () => {
-    findAccount.mockResolvedValue({ id: "user-2", confirmed: true })
+  it("sends someone already on the team a fresh link instead of adding them twice", async () => {
+    findAccount.mockResolvedValue({ id: "user-2", confirmed: false })
     findMembership.mockResolvedValue({ role: "door" })
-    await expect(teamService.invite(ctx, "v1", { email: "lee@example.com", role: "door" })).rejects.toMatchObject({
-      message: "They are already on this team.",
+    await expect(teamService.invite(ctx, "v1", { email: "lee@example.com", role: "door" })).resolves.toEqual({
+      status: "resent",
     })
+    expect(add).not.toHaveBeenCalled()
+    expect(sendEmail.mock.calls[0][0].text).toContain("Loudnight Door app")
+  })
+
+  it("refuses to invite you to your own team", async () => {
     await expect(teamService.invite(ctx, "v1", { email: "ada@example.com", role: "door" })).rejects.toMatchObject({
       message: "You are already on this team.",
     })

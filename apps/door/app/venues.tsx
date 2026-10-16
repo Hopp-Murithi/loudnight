@@ -1,16 +1,22 @@
 import { Redirect, router } from "expo-router"
 import { ActivityIndicator, FlatList, Pressable, Text, View } from "react-native"
 import { useVenues } from "../src/hooks/use-door"
-import { signOut, useSession } from "../src/hooks/use-session"
+import { useSession, useSignOut } from "../src/hooks/use-session"
 import { colors, ui } from "../src/theme"
 
 const ROLE: Record<string, string> = { owner: "Owner", manager: "Manager", door: "Door staff" }
 
-// The venues where this person is on the team. The server decides the list; the phone only shows it.
+// The venues where this person is on the team, with their role at each. The server decides the list.
 export default function Venues() {
   const session = useSession()
   const venues = useVenues()
+  const signOut = useSignOut()
   if (session === null) return <Redirect href="/" />
+  const list = venues.data ?? []
+  const [only] = list
+  // One team: straight to its door. Several, at different venues or in different roles: the person chooses.
+  if (list.length === 1 && only)
+    return <Redirect href={{ pathname: "/door/[venueId]", params: { venueId: only.id } }} />
 
   return (
     <View style={ui.screen}>
@@ -22,7 +28,8 @@ export default function Venues() {
         </Pressable>
       ) : (
         <FlatList
-          data={venues.data ?? []}
+          data={list}
+          ListHeaderComponent={list.length > 1 ? <Text style={ui.title}>Choose a venue</Text> : null}
           keyExtractor={(venue) => venue.id}
           contentContainerStyle={{ gap: 12 }}
           ListEmptyComponent={

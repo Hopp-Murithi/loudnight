@@ -4,18 +4,18 @@ The app door staff use on the night: sign in once, pick the venue, point the cam
 
 ## What it does
 
-| Screen      | What happens                                                                                                                            |
-| ----------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| Sign in     | The same account as the web app. The session is kept in the phone's secure keychain.                                                    |
-| Your venues | Only venues where you are on the team (owner, manager or door staff).                                                                   |
-| The door    | Tonight's live count against break-even, waiting arrivals, scan, walk-in with party size, find a guest by name. The screen stays awake. |
-| Scan        | Full-screen camera. Each ticket QR is sent as read; a typed code works too.                                                             |
+| Screen      | What happens                                                                                                                                                                                                                                      |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Sign in     | The same email and password as the web app (an invited person chooses the password from their invite email). Kept in the phone's secure keychain.                                                                                                 |
+| Your venues | Only venues where you are on the team, with your role at each (owner, manager or door staff). With one venue the app opens its door straight away; Switch venue and Sign out sit under the door screen, and signing out clears the phone's cache. |
+| The door    | Tonight's live count against break-even, waiting arrivals, scan, walk-in with party size, find a guest by name. The screen stays awake.                                                                                                           |
+| Scan        | Full-screen camera. Each ticket QR is sent as read; a typed code works too.                                                                                                                                                                       |
 
 Every result comes from the server, never from the phone:
 
 - **Green, "in"**: the ticket was valid for tonight and is now used up.
 - **Amber, "already came in"**: the ticket was used before, with the time; it is not counted twice, even if two phones scan it at once.
-- **Red, "not let in"**: another night's ticket, a cancelled night, or not a Loudnight ticket, with the reason.
+- **Red, "not let in"**: another night's ticket, a cancelled night, a scan before the night's day or after it is over, or not a Loudnight ticket, with the reason. A ticket lets its whole party in once, on the night only.
 - **"Saved on this phone"**: there was no connection. The arrival waits on the phone and is sent when the connection returns (every 30 seconds and whenever the app reopens). A walk-in carries a key, so one sent twice is counted once.
 
 Each result has its own vibration and is read out by screen readers. Counts update live on every phone through Supabase Realtime; nothing polls.

@@ -75,6 +75,7 @@ Hosts and atmosphere in the schema and prompt; the act size label from listeners
 - [ ] Poets and comedians found for Brooklyn and Nairobi from Wikidata and MusicBrainz, labelled by source
 - [x] Up to three quiet nights per venue (migration `20261014075219_quiet_nights`, `rls.sql` passed on hosted; Settings reorder and the night switcher checked at 390 and 1280)
 - [ ] Booked acts' photos on the poster, one to three, tidy
+- Oct 16: **every card has a picture.** Qloo has photos for some acts and open records have none, so each act still without one is looked up by name on Deezer (the artist's own photo, the best-followed exact name match, never the blank silhouette) and then iTunes (an album cover by that same artist, at 600 pixels). Both are keyless and run at once with the outreach messages, each failing on its own (`lib/deezer`, `lib/itunes`, `talent.pictures.ts`, tested). An act found nowhere shows a stage photo with their initials instead of an empty box (`act-picture.tsx`). Probe: Nikita Kering, Bensoul, Sauti Sol and Mike and the Moonpies all have Deezer photos.
 
 ## Verification
 

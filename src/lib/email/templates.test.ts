@@ -26,10 +26,26 @@ describe("emailTemplates", () => {
       inviterName: "Ada",
       roleLabel: "door staff",
       url: URL_WITH_TOKEN,
+      door: true,
     })
 
     expect(email.subject).toBe("Ada added you to The Copper Room on Loudnight")
     expect(email.text).toContain("as door staff")
+    expect(email.text).toContain("Loudnight Door app")
+  })
+
+  it("gives someone added with an existing account a link to choose a password", () => {
+    const email = emailTemplates.addedToTeam({
+      venueName: "The Copper Room",
+      inviterName: "Ada",
+      roleLabel: "manager",
+      signInUrl: "https://encore.test/venues/v1",
+      passwordUrl: URL_WITH_TOKEN,
+      door: false,
+    })
+
+    expect(email.text).toContain(`Choose my password: ${URL_WITH_TOKEN}`)
+    expect(email.text).not.toContain("Door app")
   })
 
   it("offers sign in and reset when the address already has an account", () => {

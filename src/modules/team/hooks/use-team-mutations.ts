@@ -6,12 +6,18 @@ import { toast } from "sonner"
 import { teamApi } from "../api"
 import type { ChangeRoleInput, InviteInput } from "../team.schemas"
 
+const INVITE_TOASTS = {
+  invited: (email: string) => `Invitation sent to ${email}`,
+  added: (email: string) => `${email} added to the team`,
+  resent: (email: string) => `A new sign-in link was sent to ${email}`,
+}
+
 export function useInvite(venueId: string) {
   const router = useRouter()
   return useMutation({
     mutationFn: (input: InviteInput) => teamApi.invite(venueId, input),
     onSuccess: ({ status }, input) => {
-      toast.success(status === "invited" ? `Invitation sent to ${input.email}` : `${input.email} added to the team`)
+      toast.success(INVITE_TOASTS[status](input.email))
       router.refresh()
     },
   })

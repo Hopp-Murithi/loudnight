@@ -10,7 +10,10 @@ export default async function SetPasswordPage() {
   await getPageContext()
   return (
     <>
-      <AuthHeading title="Choose a password" description="You will use it with your email to sign in to Loudnight." />
+      <AuthHeading
+        title="Choose a password"
+        description="You will use it with your email to sign in to Loudnight, here and in the Loudnight Door app."
+      />
       <SetPasswordForm />
     </>
   )

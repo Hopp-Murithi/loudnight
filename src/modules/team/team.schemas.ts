@@ -29,5 +29,5 @@ export interface TeamMember {
 }
 
 export interface InviteResult {
-  status: "added" | "invited"
+  status: "added" | "invited" | "resent"
 }

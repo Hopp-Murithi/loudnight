@@ -47,3 +47,18 @@ export const OPEN_DATA = {
   wikidata: { url: "https://query.wikidata.org/sparql", timeoutMs: 25_000 },
   musicbrainz: { url: "https://musicbrainz.org/ws/2", timeoutMs: 10_000 },
 } as const
+
+// Where a performer with no photo gets one: their artist picture on Deezer, else an album cover on iTunes. No keys.
+export const PICTURES = {
+  deezer: { url: "https://api.deezer.com", timeoutMs: 6_000 },
+  itunes: { url: "https://itunes.apple.com", timeoutMs: 6_000 },
+  hosts: [
+    "cdn-images.dzcdn.net",
+    "e-cdns-images.dzcdn.net",
+    "is1-ssl.mzstatic.com",
+    "is2-ssl.mzstatic.com",
+    "is3-ssl.mzstatic.com",
+    "is4-ssl.mzstatic.com",
+    "is5-ssl.mzstatic.com",
+  ],
+} as const

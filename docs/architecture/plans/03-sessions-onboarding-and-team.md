@@ -103,6 +103,14 @@ Out: planning runs (plans 04 to 07), Preview as (plan 08), venue history page (p
 - [x] Account page: change name and password, sign out (API verified; the user reviews the screen)
 - [x] Tests above pass (128 unit tests); `npm run validate` and `npm run db:test` pass; migration applied to the hosted project. Security advisor: one intentional note (the limiter table has no policies because only the server function may touch it) and "anonymous access" warnings that clear when the user turns anonymous sign-ins off. Test accounts and the test venue were removed afterwards
 
+## Revision, Oct 16: a password link in every team email
+
+The owner found that someone invited to the door could be left with no way to choose a password. A brand-new address already got an invite link to set one, but an address with an account (for example an earlier invite never finished, or a forgotten password) got only "Open the venue", and inviting them again said "already on this team".
+
+- Every team email now carries a fresh one-hour link to choose a password: the invite link for a new account, a reset link for an existing one ("Never chosen a password, or forgotten it?"). Inviting someone already on the team sends them a new link instead of an error (`resent`).
+- Door staff are told to sign in to the Loudnight Door app with the same email and password; the set-password page says the same.
+- One person can hold different roles at different venues (owner here, door staff there). The web and the door app list each venue with that person's role; the door app opens the venue straight away when there is only one, and offers Switch venue and Sign out on the door screen. Signing out clears what the phone cached, for shared door phones.
+
 ## Verification
 
 `npm run validate`, `npm run db:test`. Sign up with a real inbox, verify, sign in, add The Copper Room, invite a second inbox as door staff, set its password, sign in as door staff, then reset the owner's password.

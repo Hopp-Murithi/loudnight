@@ -5,7 +5,7 @@ import { emailTemplates } from "@/lib/email/templates"
 import { publicEnv } from "@/lib/env/public"
 import { conflict, forbidden } from "@/lib/http/errors"
 import { absoluteUrl } from "@/modules/auth/auth.links"
-import { createInvite, findAccount } from "@/modules/auth/server/identity"
+import { createAccountLink, createInvite, findAccount } from "@/modules/auth/server/identity"
 import type { RequestContext } from "@/modules/auth/types"
 import { venuesRepository } from "@/modules/venues/venues.repository"
 import { venuesService } from "@/modules/venues/venues.service"
@@ -48,24 +48,27 @@ export const teamService = {
     const inviterName = ctx.user.displayName ?? ctx.user.email ?? "Your colleague"
     const roleLabel = VENUE_ROLE_LABELS[input.role].toLowerCase()
 
+    const door = input.role === "door"
+
+    // Someone with an account may never have chosen a password (an older invite they did not finish), or may have
+    // forgotten it, so their email always carries a fresh link to choose one. Inviting them again resends it.
     if (existing) {
-      if (await venuesRepository.findMembership(ctx.supabase, venueId, existing.id)) {
-        throw conflict("They are already on this team.")
-      }
-      await teamRepository.add(ctx.supabase, venueId, existing.id, input.role, ctx.user.id)
-      const url = absoluteUrl(appUrl(), ROUTES.venue(venueId))
+      const member = await venuesRepository.findMembership(ctx.supabase, venueId, existing.id)
+      if (!member) await teamRepository.add(ctx.supabase, venueId, existing.id, input.role, ctx.user.id)
+      const passwordUrl = await createAccountLink(input.email, "recovery")
+      const signInUrl = absoluteUrl(appUrl(), ROUTES.venue(venueId))
       await sendEmail({
         to: input.email,
-        ...emailTemplates.addedToTeam({ venueName: venue.name, inviterName, roleLabel, url }),
+        ...emailTemplates.addedToTeam({ venueName: venue.name, inviterName, roleLabel, signInUrl, passwordUrl, door }),
       })
-      return { status: "added" }
+      return { status: member ? "resent" : "added" }
     }
 
     const invite = await createInvite(input.email)
     await teamRepository.add(ctx.supabase, venueId, invite.userId, input.role, ctx.user.id)
     await sendEmail({
       to: input.email,
-      ...emailTemplates.teamInvite({ venueName: venue.name, inviterName, roleLabel, url: invite.url }),
+      ...emailTemplates.teamInvite({ venueName: venue.name, inviterName, roleLabel, url: invite.url, door }),
     })
     return { status: "invited" }
   },

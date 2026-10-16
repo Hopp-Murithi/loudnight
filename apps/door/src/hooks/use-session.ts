@@ -1,4 +1,6 @@
 import type { Session } from "@supabase/supabase-js"
+import { useQueryClient } from "@tanstack/react-query"
+import { router } from "expo-router"
 import { useEffect, useState } from "react"
 import { supabase } from "../lib/supabase"
 
@@ -18,4 +20,12 @@ export async function signIn(email: string, password: string): Promise<string | 
   return error ? "That email and password do not match an account." : null
 }
 
-export const signOut = () => supabase.auth.signOut()
+// On a shared door phone the next person must not see the last one's venues, so signing out forgets them too.
+export function useSignOut() {
+  const queries = useQueryClient()
+  return async () => {
+    await supabase.auth.signOut()
+    queries.clear()
+    router.replace("/")
+  }
+}

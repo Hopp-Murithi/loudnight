@@ -4,6 +4,7 @@ import { router, useLocalSearchParams } from "expo-router"
 import { useMemo, useState } from "react"
 import { ActivityIndicator, FlatList, Pressable, Text, TextInput, View } from "react-native"
 import { DoorCount } from "../../src/components/door-count"
+import { DoorFooter } from "../../src/components/door-footer"
 import { ResultCard } from "../../src/components/result-card"
 import { type Arrival, useArrivals } from "../../src/hooks/use-arrivals"
 import { useDoor } from "../../src/hooks/use-door"
@@ -30,6 +31,7 @@ export default function Door() {
       <View style={ui.screen}>
         <Text style={ui.title}>No night is on yet</Text>
         <Text style={ui.muted}>When the owner publishes a night, its guest list opens here.</Text>
+        <DoorFooter />
       </View>
     )
 
@@ -96,6 +98,7 @@ export default function Door() {
           />
         </View>
       }
+      ListFooterComponent={<DoorFooter />}
       renderItem={({ item }) => (
         <Pressable
           style={[ui.card, { flexDirection: "row", alignItems: "center", minHeight: 56 }]}

@@ -10,7 +10,7 @@ Loudnight: an AI programming director that fills a venue's empty nights. An owne
 
 Roles. Platform: `owner` (everyone, anonymous visitors included) and `administrator`. Inside a venue (`venue_members`): `owner`, `manager`, `door`. Guests on event pages have no account.
 
-Stack: Next.js 16 (App Router, route handlers under `/api/v1`), React 19, TypeScript strict, Tailwind v4 + shadcn/ui (Base UI), Supabase (Postgres, Auth with anonymous sign-in, Realtime), Anthropic Claude, Qloo Insights, Google Places (New), Ticketmaster Discovery, Wikidata and MusicBrainz (open data for performers), Zod, TanStack Query, Vitest.
+Stack: Next.js 16 (App Router, route handlers under `/api/v1`), React 19, TypeScript strict, Tailwind v4 + shadcn/ui (Base UI), Supabase (Postgres, Auth with anonymous sign-in, Realtime), Anthropic Claude, Qloo Insights, Google Places (New), Ticketmaster Discovery, Wikidata and MusicBrainz (open data for performers), Deezer and iTunes (performer pictures), Zod, TanStack Query, Vitest.
 
 Architecture: **Layered modular monolith with shared-schema multi-tenancy (the tenant is the venue) enforced by Postgres RLS, and an agent pipeline whose every number carries a receipt.** Full reasoning in `docs/architecture/ARCHITECTURE.md`.
 
@@ -29,7 +29,7 @@ src/
     env/                  Zod-validated env. `public.ts` (browser safe) and `server.ts` (secrets, one schema per concern)
     supabase/             browser, server (RLS), admin (service role), proxy clients
     http/                 errors, route wrappers, client fetch, stream, upstream. The only place status codes are decided
-    ai/ qloo/ places/ ticketmaster/ wikidata/ musicbrainz/   One thin client per external service. No business logic.
+    ai/ qloo/ places/ ticketmaster/ wikidata/ musicbrainz/ deezer/ itunes/   One thin client per external service. No business logic.
   modules/<feature>/      One folder per business area. Everything about the feature lives here.
     <feature>.schemas.ts      Zod schemas and types shared by client and server
     <feature>.repository.ts   Database access only. Server only.

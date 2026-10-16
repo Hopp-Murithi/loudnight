@@ -1,18 +1,17 @@
 "use client"
 
 import { BadgeCheck } from "lucide-react"
-import Image from "next/image"
 import { ToneBadge } from "@/components/shared/tone-badge"
 import type { Tone } from "@/components/shared/tone"
 import { Button } from "@/components/ui/button"
 import { countryName, flagOf } from "@/config/countries"
 import { isOpenSource, OPEN_SOURCE_LABELS, TIER_LABELS, type PopularityTier } from "@/config/series"
 import { REACH_LABELS } from "@/config/talent-reach"
-import { initials } from "@/lib/text"
 import { cn } from "@/lib/utils"
 import { formatAffinity } from "@/modules/concepts/concepts.grounding"
 import type { TalentView } from "@/modules/series/series.schemas"
 import { hometown, listenersText, matchLabel } from "../talent.display"
+import { ActPicture } from "./act-picture"
 
 interface TalentCardProps {
   act: TalentView
@@ -43,22 +42,7 @@ export function TalentCard({ act, onOpen, onReceipt }: TalentCardProps) {
         aria-label={`Open ${act.name}`}
         className="dark poster-glow group relative block aspect-[4/3] w-full overflow-hidden text-left text-foreground outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
       >
-        {profile.imageUrl ? (
-          <Image
-            src={profile.imageUrl}
-            alt=""
-            fill
-            sizes="(min-width: 1280px) 24rem, (min-width: 640px) 50vw, 100vw"
-            className="object-cover object-[center_18%] transition-transform duration-500 group-hover:scale-105 motion-reduce:transition-none"
-          />
-        ) : (
-          <span
-            aria-hidden
-            className="absolute inset-0 grid place-items-center font-display text-7xl font-extrabold text-foreground/25"
-          >
-            {initials(act.name)}
-          </span>
-        )}
+        <ActPicture id={act.id} name={act.name} imageUrl={profile.imageUrl} />
         <span
           aria-hidden
           className="absolute inset-0 bg-linear-to-t from-background via-background/20 to-transparent"

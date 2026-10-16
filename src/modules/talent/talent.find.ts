@@ -13,6 +13,7 @@ import { actReceiptPath, actsFrom, conceptAnchors, localSoundAnchors, messageTas
 import { openSearchFor } from "./talent.open"
 import { openActs } from "./talent.open-data"
 import { writeOutreach } from "./talent.outreach"
+import { picturesFor } from "./talent.pictures.find"
 import { vetActs } from "./talent.vet"
 import { aboutCountry, fitActs, homeGrownFirst } from "./talent.fit"
 import { talentRepository, type TalentInsert } from "./talent.repository"
@@ -140,21 +141,25 @@ export async function findTalent(admin: AdminSupabase, venue: TalentVenue, night
   const offered = [...fromQloo, ...open]
 
   const sharedTastes = messageTastes(anchors)
-  const messages = await writeOutreach(
-    {
-      venue: venue.name,
-      night: night.conceptName,
-      acts: offered.map((act) => ({ actId: act.entityId, name: act.name, sharedTastes })),
-    },
-    {
-      date: when(night.firstNight, venue.timeZone, { weekday: "long", month: "long", day: "numeric" }),
-      time: when(night.firstNight, venue.timeZone, { hour: "numeric", minute: "2-digit" }),
-      fee:
-        venue.talentBudgetCents > 0
-          ? `up to ${formatMoney(venue.talentBudgetCents, venue.currency)}`
-          : "a fee we agree together",
-    },
-  )
+  const unpictured = [...offered, ...references].filter((act) => !act.profile.imageUrl).map((act) => act.name)
+  const [messages, pictures] = await Promise.all([
+    writeOutreach(
+      {
+        venue: venue.name,
+        night: night.conceptName,
+        acts: offered.map((act) => ({ actId: act.entityId, name: act.name, sharedTastes })),
+      },
+      {
+        date: when(night.firstNight, venue.timeZone, { weekday: "long", month: "long", day: "numeric" }),
+        time: when(night.firstNight, venue.timeZone, { hour: "numeric", minute: "2-digit" }),
+        fee:
+          venue.talentBudgetCents > 0
+            ? `up to ${formatMoney(venue.talentBudgetCents, venue.currency)}`
+            : "a fee we agree together",
+      },
+    ),
+    picturesFor(unpictured),
+  ])
 
   const row = (act: RankedAct, source: TalentSource, cacheId: string | null, signals: string[]): TalentInsert => ({
     concept_id: night.conceptId,
@@ -169,6 +174,7 @@ export async function findTalent(admin: AdminSupabase, venue: TalentVenue, night
     outreach_draft: messages.get(act.entityId) ?? null,
     profile: {
       ...act.profile,
+      imageUrl: act.profile.imageUrl ?? pictures.get(act.name) ?? null,
       star: verdicts.get(act.name)?.star ?? null,
       home: verdicts.get(act.name)?.home ?? null,
     } as unknown as Json,

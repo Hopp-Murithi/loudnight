@@ -42,6 +42,8 @@ function render({ subject, heading, paragraphs, action, footnote }: EmailContent
 }
 
 const LINK_NOTE = "The link works once and expires in one hour."
+const DOOR_APP_NOTE =
+  "To check guests in, sign in to the Loudnight Door app, or the Door page on the website, with this email and that password."
 
 export const emailTemplates = {
   verifyEmail: (params: { name: string; url: string }) =>
@@ -89,23 +91,42 @@ export const emailTemplates = {
       footnote: `${LINK_NOTE} If you did not ask for this, ignore this email and nothing changes.`,
     }),
 
-  teamInvite: (params: { venueName: string; inviterName: string; roleLabel: string; url: string }) =>
+  teamInvite: (params: { venueName: string; inviterName: string; roleLabel: string; url: string; door: boolean }) =>
     render({
       subject: `${params.inviterName} added you to ${params.venueName} on ${SITE.name}`,
       heading: `Join ${params.venueName}`,
       paragraphs: [
         `${params.inviterName} added you to ${params.venueName} as ${params.roleLabel}.`,
         "Select the button below, select Continue, then choose a password for your account.",
+        ...(params.door ? [DOOR_APP_NOTE] : []),
       ],
       action: { label: "Set my password", url: params.url },
-      footnote: `${LINK_NOTE} If it has expired, use Forgot password on the sign-in page.`,
+      footnote: `${LINK_NOTE} If it has expired, ask ${params.inviterName} to invite you again, or use Forgot password on the sign-in page.`,
     }),
 
-  addedToTeam: (params: { venueName: string; inviterName: string; roleLabel: string; url: string }) =>
+  addedToTeam: (params: {
+    venueName: string
+    inviterName: string
+    roleLabel: string
+    signInUrl: string
+    passwordUrl: string | null
+    door: boolean
+  }) =>
     render({
       subject: `You now work at ${params.venueName} on ${SITE.name}`,
       heading: `You have been added to ${params.venueName}`,
-      paragraphs: [`${params.inviterName} added you to ${params.venueName} as ${params.roleLabel}.`],
-      action: { label: `Open ${params.venueName}`, url: params.url },
+      paragraphs: [
+        `${params.inviterName} added you to ${params.venueName} as ${params.roleLabel}. Sign in with your email and password at ${params.signInUrl}`,
+        ...(params.passwordUrl
+          ? ["Never chosen a password, or forgotten it? Use the button below to choose one."]
+          : []),
+        ...(params.door ? [DOOR_APP_NOTE] : []),
+      ],
+      action: params.passwordUrl
+        ? { label: "Choose my password", url: params.passwordUrl }
+        : { label: `Open ${params.venueName}`, url: params.signInUrl },
+      footnote: params.passwordUrl
+        ? `${LINK_NOTE} Your current password keeps working until you save a new one.`
+        : undefined,
     }),
 }
