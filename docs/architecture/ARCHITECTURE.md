@@ -92,7 +92,7 @@ A `venue` is a tenant. Every venue-owned row carries `venue_id`, and every child
 | Venue    | `owner`         | The whole venue, money included, and its audit history      | Everything at the venue, the team, deleting it |
 | Venue    | `manager`       | The whole venue, money included                             | Plans, series, nights, settings, spend         |
 | Venue    | `door`          | Plans, guest list, check-ins. Never money                   | Check guests in, link RSVPs                    |
-| Guest    | none            | Published event pages                                       | RSVP, self check-in. Reads nothing back        |
+| Guest    | none            | Published event pages                                       | RSVP. Reads nothing back                       |
 
 Anonymous visitors are real Supabase users (`is_anonymous`), so a judge or a curious owner gets a working session in one tap and can later add an email without losing their venue.
 

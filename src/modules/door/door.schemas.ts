@@ -16,9 +16,6 @@ export const checkinSchema = z.union([
 ])
 export type CheckinInput = z.infer<typeof checkinSchema>
 
-export const selfCheckinSchema = z.object({ partySize })
-export type SelfCheckinInput = z.infer<typeof selfCheckinSchema>
-
 // What the night took, in whole units of the venue's currency, as the owner tells it.
 export const spendSchema = z.object({
   amount: z.number({ error: "Enter what the night took." }).min(0, "Use 0 or more.").max(20_000_000),

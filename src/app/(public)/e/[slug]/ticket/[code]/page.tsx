@@ -48,7 +48,8 @@ export default async function TicketPage({ params }: PageProps<"/e/[slug]/ticket
         <p className="font-mono text-lg tracking-[0.3em] text-black">{code.toUpperCase()}</p>
       </div>
       <p className="text-sm text-muted-foreground">
-        Show this at the door. Turn your screen brightness up. Keep this page: it is your ticket.
+        Show this at the door on the night. It lets your whole party in once. Turn your screen brightness up and keep
+        this page: it is your ticket.
       </p>
       <EventActions
         slug={event.slug}

@@ -1,13 +1,10 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
-import { StickyActionBar } from "@/components/shared/sticky-action-bar"
-import { Button } from "@/components/ui/button"
 import { createServerSupabase } from "@/lib/supabase/server"
-import { TYPE } from "@/lib/typography"
 import { EventActions } from "@/modules/events/components/event-actions"
 import { EventBody, EventNotice } from "@/modules/events/components/event-body"
 import { EventHero } from "@/modules/events/components/event-hero"
-import { RsvpForm } from "@/modules/events/components/rsvp-form"
+import { ReserveSection } from "@/modules/events/components/reserve-section"
 import { eventUrl } from "@/modules/events/events.links"
 import { readEventPage } from "@/modules/events/events.read"
 
@@ -39,21 +36,7 @@ export default async function EventPage({ params }: Props) {
         description={event.blurb ?? event.twist}
         location={`${event.venue.name}, ${event.venue.address}`}
       />
-      {open && (
-        <section aria-labelledby="rsvp-heading" className="space-y-4 border bg-card p-5 sm:p-6">
-          <h2 id="rsvp-heading" className={TYPE.h2}>
-            Save your place
-          </h2>
-          <RsvpForm slug={event.slug} venueName={event.venue.name} />
-        </section>
-      )}
-      {open && (
-        <StickyActionBar>
-          <Button size="lg" className="w-full" nativeButton={false} render={<a href="#rsvp-heading" />}>
-            Save my place
-          </Button>
-        </StickyActionBar>
-      )}
+      {open && <ReserveSection slug={event.slug} venueName={event.venue.name} />}
     </article>
   )
 }

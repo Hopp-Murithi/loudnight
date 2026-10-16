@@ -3,18 +3,15 @@ import { AppError, conflict, fromDatabaseError, notFound } from "@/lib/http/erro
 import type { ServerSupabase } from "@/lib/supabase/server"
 import type { RequestContext } from "@/modules/auth/types"
 import { codeFrom } from "@/modules/events/events.codes"
-import { readEventPage } from "@/modules/events/events.read"
 import { managedVenue } from "@/modules/venues/venues.access"
 import { toCents, type VenueDetail } from "@/modules/venues/venues.schemas"
 import { venuesService } from "@/modules/venues/venues.service"
 import { nightNumbers } from "./door.metrics"
 import { doorRepository } from "./door.repository"
 import type { CheckinInput, CheckinResult, DoorView } from "./door.schemas"
+import { DOOR_OPEN_HOURS, doorWindow } from "./door.window"
 
 const HOUR = 3_600_000
-// A night stays at the door until six hours after it starts; guests may check themselves in from an hour before.
-const OPEN_BEFORE = HOUR
-const OPEN_AFTER = 6 * HOUR
 const RECENT = 5
 
 type Night = NonNullable<Awaited<ReturnType<typeof doorRepository.findNight>>>
@@ -67,7 +64,7 @@ export async function readDoor(ctx: RequestContext, venueId: string, now = new D
   const night = await doorRepository.currentNight(
     ctx.supabase,
     venueId,
-    new Date(now.getTime() - OPEN_AFTER).toISOString(),
+    new Date(now.getTime() - DOOR_OPEN_HOURS * HOUR).toISOString(),
   )
   return night ? build(ctx, night, venue) : null
 }
@@ -78,10 +75,23 @@ async function readNight(ctx: RequestContext, nightId: string): Promise<DoorView
   return build(ctx, night, await venuesService.getDetail(ctx, night.venue_id))
 }
 
-// One arrival. A ticket scanned twice says when it was first used rather than counting the guests again.
-async function checkIn(ctx: RequestContext, nightId: string, input: CheckinInput): Promise<CheckinResult> {
+const CLOSED = {
+  early: "Check-in opens on the day of the night.",
+  over: "This night has finished. Its tickets cannot be used again.",
+}
+
+// One arrival, only on the night. A ticket scanned twice says when it was first used rather than counting it again.
+async function checkIn(
+  ctx: RequestContext,
+  nightId: string,
+  input: CheckinInput,
+  now = new Date(),
+): Promise<CheckinResult> {
   const night = await doorRepository.findNight(ctx.supabase, nightId)
   if (!night) throw notFound("That night does not exist, or you cannot see it.")
+  if (night.status !== "published") throw conflict("This night is not on.")
+  const window = doorWindow(night.starts_at, await doorRepository.timeZone(ctx.supabase, night.venue_id), now)
+  if (window !== "open") throw conflict(CLOSED[window])
 
   if ("walkIn" in input) {
     const { at, failure } = await doorRepository.addArrival(ctx.supabase, {
@@ -134,24 +144,6 @@ async function checkIn(ctx: RequestContext, nightId: string, input: CheckinInput
   return { status: "in", name: rsvp.guest_name, partySize: rsvp.party_size, at }
 }
 
-// A guest taps "I'm here" from the door's QR. Only around the night's start; the database holds the same window.
-async function selfCheckIn(supabase: ServerSupabase, slug: string, partySize: number, now = new Date()) {
-  const page = await readEventPage(supabase, slug, now)
-  if (!page) throw notFound("This night does not exist.")
-  if (page.status === "cancelled") throw conflict("This night has been cancelled.")
-  if (page.paused) throw conflict("This venue is not taking check-ins right now.")
-  const starts = new Date(page.startsAt).getTime()
-  if (now.getTime() < starts - OPEN_BEFORE) throw conflict("Check-in opens an hour before the night starts.")
-  if (now.getTime() > starts + OPEN_AFTER) throw conflict("This night has finished.")
-  const failure = await doorRepository.addSelfArrival(supabase, {
-    event_night_id: page.nightId,
-    venue_id: page.venueId,
-    party_size: partySize,
-  })
-  if (failure) throw fromDatabaseError({ code: failure })
-  return { checkedIn: true }
-}
-
 // What the night took, as the owner tells it. Owners and managers only; RLS refuses door staff too.
 async function logSpend(ctx: RequestContext, nightId: string, amount: number) {
   const night = await doorRepository.findNight(ctx.supabase, nightId)
@@ -177,4 +169,4 @@ async function ticketForStaff(supabase: ServerSupabase, nightId: string, code: s
   }
 }
 
-export const doorService = { readNight, checkIn, selfCheckIn, logSpend, ticketForStaff }
+export const doorService = { readNight, checkIn, logSpend, ticketForStaff }

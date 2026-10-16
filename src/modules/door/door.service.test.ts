@@ -5,18 +5,16 @@ import type { RequestContext } from "@/modules/auth/types"
 const repo = {
   arrivalByKey: vi.fn(),
   findNight: vi.fn(),
+  timeZone: vi.fn(),
   rsvpByCode: vi.fn(),
   rsvpById: vi.fn(),
   arrivalOf: vi.fn(),
   addArrival: vi.fn(),
-  addSelfArrival: vi.fn(),
   saveSpend: vi.fn(),
 }
-const readEventPage = vi.fn()
 const managedVenue = vi.fn()
 
 vi.mock("./door.repository", () => ({ doorRepository: repo }))
-vi.mock("@/modules/events/events.read", () => ({ readEventPage }))
 vi.mock("@/modules/venues/venues.access", () => ({ managedVenue }))
 vi.mock("@/modules/venues/venues.service", () => ({ venuesService: { getDetail: vi.fn() } }))
 
@@ -36,13 +34,31 @@ const ada = { id: "r1", event_night_id: "n1", venue_id: "v1", guest_name: "Ada",
 
 beforeEach(() => {
   vi.clearAllMocks()
+  vi.useFakeTimers({ toFake: ["Date"] })
+  vi.setSystemTime(new Date("2026-10-20T20:10:00Z"))
   repo.findNight.mockResolvedValue(night)
+  repo.timeZone.mockResolvedValue("America/Chicago")
   repo.rsvpByCode.mockResolvedValue(ada)
   repo.arrivalOf.mockResolvedValue(null)
   repo.addArrival.mockResolvedValue({ at: "2026-10-20T20:14:00Z", failure: null })
 })
 
 describe("doorService.checkIn", () => {
+  it("lets no one in before the night's day or after it is over, and not for a night that is not on", async () => {
+    vi.setSystemTime(new Date("2026-10-19T20:00:00Z"))
+    await expect(doorService.checkIn(ctx, "n1", { code: "ab2c3d4e5f6g" })).rejects.toMatchObject({
+      message: "Check-in opens on the day of the night.",
+    })
+    vi.setSystemTime(new Date("2026-10-21T05:00:00Z"))
+    await expect(doorService.checkIn(ctx, "n1", { walkIn: true, partySize: 1 })).rejects.toMatchObject({
+      code: "conflict",
+    })
+    vi.setSystemTime(new Date("2026-10-20T20:10:00Z"))
+    repo.findNight.mockResolvedValue({ ...night, status: "cancelled" })
+    await expect(doorService.checkIn(ctx, "n1", { code: "ab2c3d4e5f6g" })).rejects.toMatchObject({ code: "conflict" })
+    expect(repo.addArrival).not.toHaveBeenCalled()
+  })
+
   it("lets a ticket's guests in, read from the ticket's link", async () => {
     const result = await doorService.checkIn(ctx, "n1", { code: "https://encore.example/e/s/ticket/AB2C3D4E5F6G" })
     expect(repo.rsvpByCode).toHaveBeenCalledWith(ctx.supabase, "ab2c3d4e5f6g")
@@ -93,38 +109,6 @@ describe("doorService.checkIn", () => {
     const result = await doorService.checkIn(ctx, "n1", { walkIn: true, partySize: 2, clientKey: key })
     expect(repo.arrivalByKey).toHaveBeenCalledWith(ctx.supabase, "n1", key)
     expect(result).toMatchObject({ status: "in", at: "2026-10-20T20:05:00Z" })
-  })
-})
-
-describe("doorService.selfCheckIn", () => {
-  const page = { nightId: "n1", venueId: "v1", status: "published", startsAt: "2026-10-20T20:00:00Z" }
-
-  beforeEach(() => {
-    readEventPage.mockResolvedValue(page)
-    repo.addSelfArrival.mockResolvedValue(null)
-  })
-
-  it("counts a guest from an hour before the start to six hours after", async () => {
-    await doorService.selfCheckIn({} as never, "s", 2, new Date("2026-10-20T19:05:00Z"))
-    expect(repo.addSelfArrival).toHaveBeenCalledWith({}, { event_night_id: "n1", venue_id: "v1", party_size: 2 })
-  })
-
-  it("is closed before and after that window, and for a cancelled night", async () => {
-    await expect(doorService.selfCheckIn({} as never, "s", 1, new Date("2026-10-20T18:00:00Z"))).rejects.toMatchObject({
-      code: "conflict",
-    })
-    await expect(doorService.selfCheckIn({} as never, "s", 1, new Date("2026-10-21T03:00:00Z"))).rejects.toMatchObject({
-      code: "conflict",
-    })
-    readEventPage.mockResolvedValue({ ...page, status: "cancelled" })
-    await expect(doorService.selfCheckIn({} as never, "s", 1, new Date("2026-10-20T20:00:00Z"))).rejects.toMatchObject({
-      code: "conflict",
-    })
-    readEventPage.mockResolvedValue({ ...page, paused: true })
-    await expect(doorService.selfCheckIn({} as never, "s", 1, new Date("2026-10-20T20:00:00Z"))).rejects.toMatchObject({
-      message: "This venue is not taking check-ins right now.",
-    })
-    expect(repo.addSelfArrival).not.toHaveBeenCalled()
   })
 })
 

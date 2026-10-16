@@ -4,7 +4,6 @@ import { PageHeader } from "@/components/layout/page-header"
 import { ROUTES } from "@/config/site"
 import { formatNightTime } from "@/lib/format"
 import { getPageContext } from "@/modules/auth/server/context"
-import { DoorQr } from "@/modules/door/components/door-qr"
 import { DoorScreen } from "@/modules/door/components/door-screen"
 import { readDoor } from "@/modules/door/door.service"
 import { DoorPreview } from "@/modules/series/components/door-preview"
@@ -40,7 +39,6 @@ export default async function VenueDoorPage({ params }: PageProps<"/venues/[id]/
         description={`The door, ${formatNightTime(door.night.startsAt, venue.timeZone)}. Counts update live on every phone.`}
       />
       <DoorScreen initial={door} />
-      {venue.role !== "door" && <DoorQr slug={door.night.slug} title={door.night.title} />}
     </>
   )
 }

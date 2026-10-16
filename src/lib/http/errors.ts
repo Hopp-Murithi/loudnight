@@ -68,6 +68,8 @@ export function fromDatabaseError(error: PostgresErrorLike): AppError {
       return notFound()
     case "EA429":
       return rateLimited()
+    case "EA410":
+      return conflict("Check-in is open only on the night.")
     case "PGRST205":
       return new AppError("internal", "A required database update is not installed.")
     default:

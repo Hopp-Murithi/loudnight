@@ -33,6 +33,12 @@ export const doorRepository = {
     return data
   },
 
+  async timeZone(supabase: ServerSupabase, venueId: string) {
+    const { data, error } = await supabase.from("venues").select("time_zone").eq("id", venueId).maybeSingle()
+    check(error)
+    return data?.time_zone ?? "UTC"
+  },
+
   async guestList(supabase: ServerSupabase, nightId: string) {
     const { data, error } = await supabase
       .from("rsvps")
@@ -117,13 +123,6 @@ export const doorRepository = {
   },
 
   // A guest checking themselves in cannot read the row back, so nothing is selected.
-  async addSelfArrival(
-    supabase: ServerSupabase,
-    row: { event_night_id: string; venue_id: string; party_size: number },
-  ) {
-    const { error } = await supabase.from("checkins").insert(row)
-    return error?.code ?? null
-  },
 
   // Results across nights, three queries in all: the nights, then everyone and everything for them at once.
   async publicNights(supabase: ServerSupabase, venueId: string) {

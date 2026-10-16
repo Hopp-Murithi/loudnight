@@ -87,7 +87,6 @@ Administrators additionally see "Admin" (`/admin`, plan 08). Navigation is a cou
 | `/account`                      | Signed in        | 03         | Display name, add email, sign out                                                           |
 | `/e/[slug]`                     | Guests           | 12         | Poster, details, RSVP form, add to calendar, share; single column, max 640px                |
 | `/e/[slug]/ticket/[code]`       | Guests           | 12         | QR ticket full width, brightness tip, add to wallet-style save                              |
-| `/e/[slug]/here`                | Guests at door   | 13         | One big "I'm here" button with party size                                                   |
 | `/admin` and children           | Administrators   | 08         | Overview KPIs, tables with detail sheets                                                    |
 | `/dev/components`               | Development only | 01         | Gallery of every component, theme and width switches; `notFound()` in production            |
 

@@ -67,15 +67,24 @@ Out: the keep, tweak or swap decision (plan 14); offline door mode (plan 15).
 
 - **Tickets hold their own link.** The ticket QR is the ticket page's address, so door staff can scan with any phone's own camera (iPhone included) and no decoder library is needed. The ticket page shows a team member the guest's name, party size and a Check in button; a guest sees only their ticket. The door screen also scans with the camera where the browser has `BarcodeDetector` (Chrome on Android), and the code can always be typed.
 - **A ticket counts once.** `checkins.rsvp_id` is unique: a second scan says when the guest first came in, even when two phones scan at the same moment.
-- **Self check-in** from a printable door QR (`/e/[slug]/here`) works from an hour before the start to six hours after; the database enforces the same window. One check-in per device is remembered on the device; the per-IP limit stops floods.
+- ~~**Self check-in** from a printable door QR (`/e/[slug]/here`).~~ Removed Oct 16, see below.
 - **Takings** are one figure per night in `night_spend`, owners and managers only, updated in place.
 - **Live** uses Supabase Realtime on `rsvps` and `checkins`, filtered to the night. The browser hands Realtime the signed-in session before subscribing; without that, the subscription ran as an anonymous visitor and the database rules hid every event.
 - **Door staff** see the count without the break-even target (it lives in the venue's settings, which are owners' and managers' only).
 - The Results page shows tonight live, a row per published night with takings entry, and the monthly sum in the owner's own numbers with "pays for Loudnight N times" where a price is set for the currency.
 
+## Revision, Oct 16: only the team checks in, only on the night
+
+- **No self check-in.** A guest could check themselves in, which made the count easy to fake. The `/e/[slug]/here` page, its API route and the door QR are gone; guests lose the right to add arrivals (`checkins` insert revoked from `anon`, the guest branch of the policy dropped).
+- **A ticket works only on the night**: from the start of the night's day in the venue's time zone until eight hours after it begins (`door.window.ts`, `DOOR_OPEN_HOURS`). The door service refuses earlier and later check-ins with a plain message; the `checkins_on_the_night` trigger refuses the same in the database (`EA410`), and a night that is not published.
+- **Once, for the whole party.** A ticket lets in the number of people it was reserved for, once (`checkins.rsvp_id` is unique). When paid tickets arrive, the guest pays for that same number of people.
+- The event page shows "You have a place" with the ticket instead of the form once this phone holds a ticket, and the phone-only "Save my place" bar no longer doubles the form's button on wider screens.
+- [x] Check-ins outside the night refused by the service (`door.window.test.ts`, `door.service.test.ts`)
+- [ ] Migration `door_only_on_the_night` applied to the hosted project and `rls.sql` run there
+
 ## Verification
 
-`npm run validate`, `npm run db:test`; a phone as the door and another as a guest: RSVP, scan, walk-in, self check-in; watch the laptop dashboard update; log spend as the owner; try spend as door staff and see it refused.
+`npm run validate`, `npm run db:test`; a phone as the door and another as a guest: RSVP, scan, walk-in, a scan the day before (refused); watch the laptop dashboard update; log spend as the owner; try spend as door staff and see it refused.
 
 ## Prompt
 

@@ -200,10 +200,9 @@ begin
   failed := false;
   begin perform 1 from public.rsvps; exception when insufficient_privilege then failed := true; end;
   assert failed, 'guests never read the guest list';
-  insert into public.checkins (event_night_id, venue_id, party_size) values (night_live, v_mine, 2);
   failed := false;
-  begin insert into public.checkins (event_night_id, venue_id, party_size) values (night_later, v_mine, 1); exception when insufficient_privilege then failed := true; end;
-  assert failed, 'guests check themselves in only around the night''s start';
+  begin insert into public.checkins (event_night_id, venue_id, party_size) values (night_live, v_mine, 2); exception when insufficient_privilege then failed := true; end;
+  assert failed, 'guests never check themselves in; only the venue''s team does';
   failed := false;
   begin perform 1 from public.night_spend; exception when insufficient_privilege then failed := true; end;
   assert failed, 'guests never see what a night took';
@@ -234,6 +233,10 @@ begin
   select id into v_rsvp from public.rsvps where checkin_code = 'code-guest-1';
   assert v_rsvp is not null, 'door staff read the guest list';
   insert into public.checkins (event_night_id, venue_id, rsvp_id) values (night_live, v_mine, v_rsvp);
+  insert into public.checkins (event_night_id, venue_id, party_size) values (night_live, v_mine, 2);
+  failed := false;
+  begin insert into public.checkins (event_night_id, venue_id, party_size) values (night_later, v_mine, 1); exception when sqlstate 'EA410' then failed := true; end;
+  assert failed, 'the door checks guests in only on the night itself';
   select count(*) into n from public.venue_settings where venue_id = v_mine; assert n = 0, 'door staff never see money';
   select count(*) into n from public.rsvps where venue_id = v_mine; assert n = 2, 'door staff see every name on the list';
   select count(*) into n from public.rsvp_contacts where venue_id = v_mine; assert n = 0, 'but never a guest''s contact';
