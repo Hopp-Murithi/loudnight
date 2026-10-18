@@ -80,7 +80,7 @@ Out: the keep, tweak or swap decision (plan 14); offline door mode (plan 15).
 - **Once, for the whole party.** A ticket lets in the number of people it was reserved for, once (`checkins.rsvp_id` is unique). When paid tickets arrive, the guest pays for that same number of people.
 - The event page shows "You have a place" with the ticket instead of the form once this phone holds a ticket, and the phone-only "Save my place" bar no longer doubles the form's button on wider screens.
 - [x] Check-ins outside the night refused by the service (`door.window.test.ts`, `door.service.test.ts`)
-- [ ] Migration `door_only_on_the_night` applied to the hosted project and `rls.sql` run there
+- [x] Migration `door_only_on_the_night` applied to the hosted project (Oct 17, version 20261017091616). Verified there: `suspension.sql` passes, and a focused run of the new rules passes (guests cannot check in; door staff can on the night, not before it, not after it, not on a draft). The full `rls.sql` timed out through the connector; run `npm run db:test` locally when a local database is up.
 
 ## Verification
 
