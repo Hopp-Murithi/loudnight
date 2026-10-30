@@ -1,6 +1,8 @@
 # Plan 18: Deployment and environments
 
 Status: In progress. Production live on Oct 13 at https://encore-seven-dusky.vercel.app (project `hoppmurithis-projects/encore`).
+
+Oct 30: the public address is https://loudnight.aihookd.site (the Vercel alias still works) and the repository is `Hopp-Murithi/loudnight`. `NEXT_PUBLIC_APP_URL` still points at the Vercel alias, so emailed links and QR codes use it until it is switched together with the Supabase redirect list.
 Depends on: 00
 Phase: 2 (first preview deploy) and 5 (production and the final deploy)
 Judging criteria: all four depend on a working, publicly accessible app

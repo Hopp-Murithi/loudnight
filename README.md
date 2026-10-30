@@ -3,9 +3,9 @@
 </p>
 
 <p align="center">
-  <a href="https://encore-seven-dusky.vercel.app"><img alt="Open the live app" src="https://img.shields.io/badge/Open_the_live_app-F2B860?style=for-the-badge"></a>
-  <a href="https://encore-seven-dusky.vercel.app/demo/8f6a1f8e-2c1b-4c55-9d2e-0b7a3c1e0001"><img alt="See a finished plan, no sign-up" src="https://img.shields.io/badge/See_a_finished_plan-no_sign--up-3ECF8E?style=for-the-badge"></a>
-  <a href="https://encore-seven-dusky.vercel.app/e/cider-alt-country-wednesdays-wed-oct-21-6726"><img alt="A live event page" src="https://img.shields.io/badge/A_live_event_page-guest_view-A4361C?style=for-the-badge"></a>
+  <a href="https://loudnight.aihookd.site"><img alt="Open the live app" src="https://img.shields.io/badge/Open_the_live_app-F2B860?style=for-the-badge"></a>
+  <a href="https://loudnight.aihookd.site/demo/8f6a1f8e-2c1b-4c55-9d2e-0b7a3c1e0001"><img alt="See a finished plan, no sign-up" src="https://img.shields.io/badge/See_a_finished_plan-no_sign--up-3ECF8E?style=for-the-badge"></a>
+  <a href="https://loudnight.aihookd.site/e/cider-alt-country-wednesdays-wed-oct-21-6726"><img alt="A live event page" src="https://img.shields.io/badge/A_live_event_page-guest_view-A4361C?style=for-the-badge"></a>
 </p>
 
 <p align="center">
@@ -14,7 +14,7 @@
   <img alt="Supabase" src="https://img.shields.io/badge/Supabase-Postgres-1c1613?style=flat-square">
   <img alt="Claude" src="https://img.shields.io/badge/Claude-Sonnet_5.5-1c1613?style=flat-square">
   <img alt="Expo SDK 57" src="https://img.shields.io/badge/Door_app-Expo_SDK_57-1c1613?style=flat-square">
-  <a href="https://github.com/Hopp-Murithi/encore/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/Hopp-Murithi/encore/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://github.com/Hopp-Murithi/loudnight/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/Hopp-Murithi/loudnight/actions/workflows/ci.yml/badge.svg"></a>
   <img alt="MIT licence" src="https://img.shields.io/badge/licence-MIT-1c1613?style=flat-square">
 </p>
 
@@ -65,10 +65,10 @@ No account is needed for the first three steps.
 
 | Step | Open                                                                                                                               | What to look for                                                                                                                                           |
 | ---- | ---------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1    | [The landing page](https://encore-seven-dusky.vercel.app)                                                                          | Scroll down: each scroll moves the story on, and it zooms into your own country.                                                                           |
-| 2    | [A finished plan for The Copper Room in Brooklyn](https://encore-seven-dusky.vercel.app/demo/8f6a1f8e-2c1b-4c55-9d2e-0b7a3c1e0001) | Three scored nights. **Tap any number** to see the exact Qloo question and answer it came from. Compare it with the plain chatbot answer on the same page. |
-| 3    | [A live event page](https://encore-seven-dusky.vercel.app/e/cider-alt-country-wednesdays-wed-oct-21-6726)                          | What a guest sees: the night, the performers, and a button that reserves a place and gives them a ticket.                                                  |
-| 4    | [Add your own venue](https://encore-seven-dusky.vercel.app/signup)                                                                 | Choose your country, find your venue, pick your quiet nights. About three minutes later you have three nights planned for your street.                     |
+| 1    | [The landing page](https://loudnight.aihookd.site)                                                                          | Scroll down: each scroll moves the story on, and it zooms into your own country.                                                                           |
+| 2    | [A finished plan for The Copper Room in Brooklyn](https://loudnight.aihookd.site/demo/8f6a1f8e-2c1b-4c55-9d2e-0b7a3c1e0001) | Three scored nights. **Tap any number** to see the exact Qloo question and answer it came from. Compare it with the plain chatbot answer on the same page. |
+| 3    | [A live event page](https://loudnight.aihookd.site/e/cider-alt-country-wednesdays-wed-oct-21-6726)                          | What a guest sees: the night, the performers, and a button that reserves a place and gives them a ticket.                                                  |
+| 4    | [Add your own venue](https://loudnight.aihookd.site/signup)                                                                 | Choose your country, find your venue, pick your quiet nights. About three minutes later you have three nights planned for your street.                     |
 
 ## See it work: a Wednesday in Austin
 
@@ -148,10 +148,10 @@ We tested the whole journey on Oct 14 with a made-up restaurant, Juniper Supper 
 
 | Criterion                        | What Loudnight brings                                                                                                                                                                                                                                                                                                                                                                                                                        | Where to check                                                                                                                                                              |
 | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Technological Implementation** | Qloo is used at five of the six planning steps, about 35 calls for each plan. The AI planner decides which pairs of tastes to test, and Qloo confirms or rejects each pair for that neighbourhood. Every number is saved with the Qloo answer it came from, and **the database refuses any number that is not in that answer**. Each venue's data is kept private by the database itself. More than 500 automated tests run on every change. | [How Loudnight uses Qloo](#how-loudnight-uses-qloo), and tap any number in the [demo plan](https://encore-seven-dusky.vercel.app/demo/8f6a1f8e-2c1b-4c55-9d2e-0b7a3c1e0001) |
+| **Technological Implementation** | Qloo is used at five of the six planning steps, about 35 calls for each plan. The AI planner decides which pairs of tastes to test, and Qloo confirms or rejects each pair for that neighbourhood. Every number is saved with the Qloo answer it came from, and **the database refuses any number that is not in that answer**. Each venue's data is kept private by the database itself. More than 500 automated tests run on every change. | [How Loudnight uses Qloo](#how-loudnight-uses-qloo), and tap any number in the [demo plan](https://loudnight.aihookd.site/demo/8f6a1f8e-2c1b-4c55-9d2e-0b7a3c1e0001) |
 | **Design**                       | One complete journey: address, plan, four-week series, performers, ads, event page, tickets, door, results and administration. It works on a phone first, in light and dark, with every empty, loading and error screen designed, plus a separate phone app for door staff.                                                                                                                                                                  | [See it work](#see-it-work-a-wednesday-in-austin)                                                                                                                           |
 | **Potential Impact**             | It goes after a cost every venue owner knows: the nights that lose money. The owner sees the break-even number on every screen, the live count at the door, and each night's takings. It works in any country and currency.                                                                                                                                                                                                                  | [The problem](#the-problem), [How Loudnight solves it](#how-loudnight-solves-it)                                                                                            |
-| **Quality of the Idea**          | It uses taste data to help the business, not the customer: it tells a venue what to run, instead of telling a person what to watch. Its nights combine tastes from different areas (music with food, a film with a night out), and Qloo confirms each combination locally. A plain chatbot answer sits beside it to show the difference.                                                                                                     | The "Generic AI" comparison on the [demo plan](https://encore-seven-dusky.vercel.app/demo/8f6a1f8e-2c1b-4c55-9d2e-0b7a3c1e0001)                                             |
+| **Quality of the Idea**          | It uses taste data to help the business, not the customer: it tells a venue what to run, instead of telling a person what to watch. Its nights combine tastes from different areas (music with food, a film with a night out), and Qloo confirms each combination locally. A plain chatbot answer sits beside it to show the difference.                                                                                                     | The "Generic AI" comparison on the [demo plan](https://loudnight.aihookd.site/demo/8f6a1f8e-2c1b-4c55-9d2e-0b7a3c1e0001)                                             |
 
 ## How Loudnight uses Qloo
 
@@ -221,7 +221,7 @@ This is the planned pricing. During the hackathon every feature is free for ever
 
 ## How it is built
 
-**Where it runs:** the web app on [Vercel](https://encore-seven-dusky.vercel.app); data, sign-in and live updates on [Supabase](https://supabase.com) (Postgres); taste data from [Qloo](https://www.qloo.com); planning and writing by [Claude](https://www.anthropic.com); places from Google; events from Ticketmaster; automatic checks on every change in [GitHub Actions](.github/workflows/ci.yml).
+**Where it runs:** the web app on [Vercel](https://loudnight.aihookd.site); data, sign-in and live updates on [Supabase](https://supabase.com) (Postgres); taste data from [Qloo](https://www.qloo.com); planning and writing by [Claude](https://www.anthropic.com); places from Google; events from Ticketmaster; automatic checks on every change in [GitHub Actions](.github/workflows/ci.yml).
 
 ```
 Browser or door app
