@@ -42,7 +42,7 @@ export const TICKETMASTER = {
 
 // Open data for performers Qloo knows few of. Both ask callers to name themselves; MusicBrainz allows one call a second.
 export const OPEN_DATA = {
-  userAgent: "Loudnight/0.1 (https://encore-seven-dusky.vercel.app)",
+  userAgent: "Loudnight/0.1 (https://loudnight.aihookd.site)",
   cacheTtlDays: 7,
   wikidata: { url: "https://query.wikidata.org/sparql", timeoutMs: 25_000 },
   musicbrainz: { url: "https://musicbrainz.org/ws/2", timeoutMs: 10_000 },
