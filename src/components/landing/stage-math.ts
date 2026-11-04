@@ -1,5 +1,5 @@
-// The landing stage is driven by one number: how far through the story the visitor has scrolled, from 0 (the first
-// scene) to the last scene's index. Everything that moves is worked out from it here, so it can be tested.
+// The landing stage is driven by one number: where the story is, from 0 (the first scene) to the last scene's index.
+// Everything that moves is worked out from it here, so it can be tested.
 
 const clamp = (value: number, min = 0, max = 1) => Math.min(max, Math.max(min, value))
 
@@ -9,21 +9,21 @@ function stretch(position: number, from: number, to: number): number {
   return t * t * (3 - 2 * t)
 }
 
-// How far through the story a scroll position is, given where the stage starts and how tall it is.
-export function storyPosition(scrollY: number, top: number, height: number, viewport: number, scenes: number): number {
-  const travel = Math.max(1, height - viewport)
-  return clamp((scrollY - top) / travel) * (scenes - 1)
-}
-
 export const sceneAt = (position: number) => Math.round(position)
 
-// Where one wheel gesture goes: the next scene in its direction. Null past either end, so the page scrolls on
-// normally to the footer or back to the top.
-export function wheelTarget(position: number, deltaY: number, scenes: number): number | null {
-  if (deltaY === 0) return null
-  const target = sceneAt(position) + Math.sign(deltaY)
+// Where one gesture goes from the scene the story is on or heading to: the next scene in its direction, never two.
+// Null past either end, so the page scrolls on normally to the footer.
+export function stepTarget(scene: number, direction: number, scenes: number): number | null {
+  if (direction === 0) return null
+  const target = scene + Math.sign(direction)
   return target < 0 || target > scenes - 1 ? null : target
 }
+
+// A finger has to travel this far before a swipe counts, so a tap or a wobble never moves the story.
+export const SWIPE_PX = 36
+
+// Which way a swipe is going: 1 for up the screen (the next scene), -1 for down, 0 while it is still too short.
+export const swipeStep = (startY: number, y: number) => (Math.abs(startY - y) < SWIPE_PX ? 0 : Math.sign(startY - y))
 
 // The style values the stage's layers read. Pictures cross-fade straight into each other, so no frame is ever empty.
 export function stageVars(position: number, scenes: number): Record<string, string> {
@@ -48,8 +48,8 @@ export const easeInOut = (t: number) => {
 }
 
 // The scene a key press moves to, or null when the key is not one that moves the story.
-export function keyTarget(position: number, key: string, scenes: number): number | null {
+export function keyTarget(scene: number, key: string, scenes: number): number | null {
   const step =
     key === "ArrowDown" || key === "PageDown" || key === " " ? 1 : key === "ArrowUp" || key === "PageUp" ? -1 : 0
-  return step === 0 ? null : wheelTarget(position, step, scenes)
+  return stepTarget(scene, step, scenes)
 }

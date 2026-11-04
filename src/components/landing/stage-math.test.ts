@@ -1,13 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { easeInOut, keyTarget, sceneAt, stageVars, storyPosition, wheelTarget } from "./stage-math"
-
-describe("storyPosition", () => {
-  it("runs from the first scene to the last as the stage scrolls past", () => {
-    expect(storyPosition(0, 100, 5000, 1000, 5)).toBe(0)
-    expect(storyPosition(2100, 100, 5000, 1000, 5)).toBe(2)
-    expect(storyPosition(9000, 100, 5000, 1000, 5)).toBe(4)
-  })
-})
+import { easeInOut, keyTarget, sceneAt, stageVars, stepTarget, SWIPE_PX, swipeStep } from "./stage-math"
 
 describe("stageVars", () => {
   it("shows exactly the scene the visitor is on", () => {
@@ -42,18 +34,35 @@ describe("stageVars", () => {
   })
 })
 
-describe("wheelTarget", () => {
-  it("moves one scene in the wheel's direction, however hard the wheel is spun", () => {
-    expect(wheelTarget(0, 3, 5)).toBe(1)
-    expect(wheelTarget(0, 900, 5)).toBe(1)
-    expect(wheelTarget(2, -100, 5)).toBe(1)
-    expect(wheelTarget(1.4, 100, 5)).toBe(2)
+describe("stepTarget", () => {
+  it("moves exactly one scene per gesture, however hard the wheel is spun", () => {
+    expect(stepTarget(0, 3, 5)).toBe(1)
+    expect(stepTarget(0, 900, 5)).toBe(1)
+    expect(stepTarget(2, -100, 5)).toBe(1)
+  })
+
+  it("chains fast gestures one scene at a time from where the story is heading", () => {
+    let scene = 0
+    for (let flick = 0; flick < 3; flick += 1) scene = stepTarget(scene, 1, 5) ?? scene
+    expect(scene).toBe(3)
   })
 
   it("lets the page scroll on normally past the last scene and before the first", () => {
-    expect(wheelTarget(4, 100, 5)).toBeNull()
-    expect(wheelTarget(0, -100, 5)).toBeNull()
-    expect(wheelTarget(2, 0, 5)).toBeNull()
+    expect(stepTarget(4, 100, 5)).toBeNull()
+    expect(stepTarget(0, -100, 5)).toBeNull()
+    expect(stepTarget(2, 0, 5)).toBeNull()
+  })
+})
+
+describe("swipeStep", () => {
+  it("ignores a tap or a wobble", () => {
+    expect(swipeStep(500, 500)).toBe(0)
+    expect(swipeStep(500, 500 - SWIPE_PX + 1)).toBe(0)
+  })
+
+  it("reads a swipe up the screen as the next scene and down as the one before", () => {
+    expect(swipeStep(500, 300)).toBe(1)
+    expect(swipeStep(300, 700)).toBe(-1)
   })
 })
 

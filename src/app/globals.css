@@ -276,20 +276,10 @@
   font-family: var(--font-flag), sans-serif;
 }
 
-/* The landing stage: one pinned screen; scroll moves the story on, and each layer reads its own visibility. */
-/* Touch screens snap one swipe to one scene; a mouse or trackpad glides there by script, so snapping stays off there. */
-@media (pointer: coarse) {
-  html:has(.stage-track) {
-    scroll-snap-type: y mandatory;
-  }
-  .stage-snap {
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
-  }
-  html:has(.stage-track) .shell-footer,
-  .stage-credits {
-    scroll-snap-align: end;
-  }
+/* The landing stage: one still screen; each gesture moves the story on, and each layer reads its own visibility. */
+/* The stage takes every gesture itself, so the browser never pulls to refresh or bounces it mid-story. */
+html:has(.stage-track) {
+  overscroll-behavior-y: none;
 }
 /* On the home page the header floats over the first scene, so the first scroll goes straight to the second. */
 html:has(.stage-track) .shell-header {

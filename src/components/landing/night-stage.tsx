@@ -7,7 +7,7 @@ import { stageVars } from "./stage-math"
 import { SceneCopy, StageDots } from "./stage-copy"
 import { AreaLayer, FinaleLayer, WorldLayer } from "./stage-maps"
 import { LightsLayer, RoomLayer } from "./stage-room"
-import { useScrollStage } from "./use-scroll-stage"
+import { useSceneStage } from "./use-scene-stage"
 
 const SCENES = STAGE_SCENES.length
 // The first frame, drawn on the server, so nothing flashes before the page wakes up.
@@ -19,24 +19,14 @@ interface NightStageProps {
   exampleHref: string | null
 }
 
-// The landing page as one pinned stage. Scrolling does not move the page: it moves the story on, one scene per
-// scroll, snapping to each. The story zooms into the visitor's own part of the world.
+// The landing page as one still stage: each scroll or swipe moves the story one scene, zooming into the visitor's world.
 export function NightStage({ region, signedIn, exampleHref }: NightStageProps) {
-  const trackRef = useRef<HTMLDivElement>(null)
   const stageRef = useRef<HTMLDivElement>(null)
-  const { scene, goTo } = useScrollStage(trackRef, stageRef, SCENES)
+  const { scene, goTo } = useSceneStage(stageRef, SCENES)
 
   return (
-    <div ref={trackRef} className="stage-track relative" style={{ height: `${SCENES * 100}svh` }}>
-      {STAGE_SCENES.map((entry, index) => (
-        <div
-          key={entry.id}
-          aria-hidden
-          className="stage-snap pointer-events-none absolute inset-x-0 h-svh"
-          style={{ top: `${index * 100}svh` }}
-        />
-      ))}
-      <div ref={stageRef} className="sticky top-0 h-svh overflow-hidden bg-background" style={FIRST_FRAME}>
+    <div className="stage-track">
+      <div ref={stageRef} className="relative h-svh overflow-hidden bg-background" style={FIRST_FRAME}>
         <WorldLayer region={region} />
         <AreaLayer region={region} active={scene === 1} />
         <RoomLayer region={region} active={scene === 2} />

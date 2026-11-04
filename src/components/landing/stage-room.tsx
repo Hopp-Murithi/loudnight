@@ -17,7 +17,7 @@ export function RoomLayer({ region, active }: { region: LandingRegion; active: b
       <div className="absolute inset-0 bg-linear-to-t from-background via-background/60 to-background/10" />
       <div
         className={cn(
-          "absolute top-[14%] right-4 w-64 border border-spotlight/60 bg-background/85 p-4 shadow-2xl backdrop-blur sm:right-[8%] sm:w-72",
+          "absolute top-[14%] right-4 w-64 border border-spotlight/60 bg-background/90 p-4 shadow-2xl sm:right-[8%] sm:w-72 sm:backdrop-blur",
           active && "taste-in",
         )}
       >

@@ -55,7 +55,7 @@ function Tastes({ tastes, place, active }: { tastes: readonly string[]; place: s
         <li
           key={taste}
           className={cn(
-            "border border-spotlight/50 bg-background/70 px-2.5 py-1 text-sm backdrop-blur",
+            "border border-spotlight/50 bg-background/85 px-2.5 py-1 text-sm sm:bg-background/70 sm:backdrop-blur",
             active && "taste-in",
           )}
           style={{ "--taste-delay": `${0.15 + index * 0.1}s` } as CSSProperties}
@@ -69,26 +69,26 @@ function Tastes({ tastes, place, active }: { tastes: readonly string[]; place: s
 
 function ReadyList({ active }: { active: boolean }) {
   return (
-    <ul className="grid grid-cols-2 gap-3 pt-2 lg:grid-cols-4">
+    <ul className="grid gap-2 pt-1 sm:grid-cols-2 sm:gap-3 sm:pt-2 lg:grid-cols-4">
       {NIGHT_READY.map((item, index) => (
         <li
           key={item.label}
           className={cn(
-            "overflow-hidden rounded-md border border-foreground/15 bg-foreground/[0.06] shadow-2xl backdrop-blur-md",
+            "flex items-center overflow-hidden rounded-md border border-foreground/15 bg-background/85 sm:block sm:bg-foreground/[0.06] sm:shadow-2xl sm:backdrop-blur-md",
             active && "taste-in",
           )}
-          style={{ "--taste-delay": `${0.2 + index * 0.12}s` } as CSSProperties}
+          style={{ "--taste-delay": `${0.1 + index * 0.08}s` } as CSSProperties}
         >
-          <div className="relative aspect-[4/3] border-b border-foreground/10">
+          <div className="relative aspect-[4/3] w-16 shrink-0 border-r border-foreground/10 sm:w-full sm:border-r-0 sm:border-b">
             <Image
               src={item.image}
               alt={item.alt}
               fill
-              sizes="(min-width: 1024px) 12rem, 45vw"
+              sizes="(min-width: 1024px) 12rem, (min-width: 640px) 45vw, 4rem"
               className="object-cover object-top"
             />
           </div>
-          <p className="px-3 py-2 text-sm leading-snug font-medium">{item.label}</p>
+          <p className="min-w-0 px-3 py-2 text-sm leading-snug font-medium">{item.label}</p>
         </li>
       ))}
     </ul>
